@@ -319,8 +319,6 @@ export const SHOW_ZOOM_CONTROLS =
   process.env.NEXT_PUBLIC_HIDE_ZOOM_CONTROLS !== '1';
 export const SHOW_TAKEN_AT_TIME =
   process.env.NEXT_PUBLIC_HIDE_TAKEN_AT_TIME !== '1';
-export const SHOW_REPO_LINK =
-  process.env.NEXT_PUBLIC_HIDE_REPO_LINK !== '1';
 
 // GRID
 
@@ -467,7 +465,6 @@ export const APP_CONFIGURATION = {
   showExifInfo: SHOW_EXIF_DATA,
   showZoomControls: SHOW_ZOOM_CONTROLS,
   showTakenAtTimeHidden: SHOW_TAKEN_AT_TIME,
-  showRepoLink: SHOW_REPO_LINK,
   // Grid
   isGridHomepageEnabled: GRID_HOMEPAGE_ENABLED,
   gridAspectRatio: GRID_ASPECT_RATIO,

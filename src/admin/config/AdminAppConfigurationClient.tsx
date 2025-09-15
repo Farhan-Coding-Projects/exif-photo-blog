@@ -102,7 +102,6 @@ export default function AdminAppConfigurationClient({
   showExifInfo,
   showZoomControls,
   showTakenAtTimeHidden,
-  showRepoLink,
   // Grid
   isGridHomepageEnabled,
   gridAspectRatio,
@@ -747,14 +746,6 @@ export default function AdminAppConfigurationClient({
             Set environment variable to {'"1"'} to hide
             taken at time from photo meta:
             {renderEnvVars(['NEXT_PUBLIC_HIDE_TAKEN_AT_TIME'])}
-          </ChecklistRow>
-          <ChecklistRow
-            title="Show repo link"
-            status={showRepoLink}
-            optional
-          >
-            Set environment variable to {'"1"'} to hide footer link:
-            {renderEnvVars(['NEXT_PUBLIC_HIDE_REPO_LINK'])}
           </ChecklistRow>
         </>;
       case 'Grid':

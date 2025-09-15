@@ -142,7 +142,6 @@ export const TEXT = {
     loading: 'Loading ...',
     finishing: 'Finishing ...',
     uploading: 'Uploading',
-    repo: 'Made with',
     copyPhrase: '{{label}} copied',
   },
   utility: {
