@@ -142,7 +142,6 @@ export const TEXT: I18N = {
     loading: 'Memuat ...',
     finishing: 'Menyelesaikan ...',
     uploading: 'Mengunggah',
-    repo: 'Dibuat dengan',
     copyPhrase: '{{label}} disalin',
   },
   utility: {

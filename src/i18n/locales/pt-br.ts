@@ -143,7 +143,6 @@ export const TEXT: I18N = {
     loading: 'Carregando ...',
     finishing: 'Finalizando ...',
     uploading: 'Enviando',
-    repo: 'Feito com',
     copyPhrase: '{{label}} copiado',
   },
   utility: {

@@ -144,7 +144,6 @@ export const TEXT: I18N = {
     loading: 'Yükleniyor ...',
     finishing: 'Tamamlanıyor ...',
     uploading: 'Yükleniyor',
-    repo: 'Hazırlayan:',
     copyPhrase: '{{label}} kopyalandı',
   },
   utility: {

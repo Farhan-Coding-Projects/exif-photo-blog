@@ -144,7 +144,6 @@ export const TEXT: I18N = {
     loading: 'लोड हो रहा है...',
     finishing: 'समाप्त कर रहे हैं...',
     uploading: 'अपलोड हो रहा है',
-    repo: 'निर्मित',
     copyPhrase: '{{label}} कॉपी किया गया',
   },
   utility: {

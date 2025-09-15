@@ -142,7 +142,6 @@ export const TEXT: I18N = {
     loading: '加载中...',
     finishing: '完成中...',
     uploading: '上传中',
-    repo: '基于',
     copyPhrase: '{{label}} 已复制',
   },
   utility: {

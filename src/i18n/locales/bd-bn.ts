@@ -143,7 +143,6 @@ export const TEXT: I18N = {
     loading: 'লোড হচ্ছে ...',
     finishing: 'সম্পন্ন হচ্ছে ...',
     uploading: 'আপলোড হচ্ছে',
-    repo: 'তৈরি হয়েছে',
     copyPhrase: '{{label}} কপি হয়েছে',
   },
   utility: {
