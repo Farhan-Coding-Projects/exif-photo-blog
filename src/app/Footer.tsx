@@ -59,8 +59,8 @@ export default function Footer() {
                   : isCheckingAuth
                     ? <Spinner size={16} className="translate-y-[2px]" />
                     : <Link href={PATH_ADMIN_PHOTOS}>
-                        {appText.nav.admin}
-                      </Link>}
+                      {appText.nav.admin}
+                    </Link>}
               </div>
               <div className="flex items-center h-10">
                 <ThemeSwitcher />
