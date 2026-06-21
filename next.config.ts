@@ -75,6 +75,7 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 31536000,
   },
   turbopack: {
+    root: __dirname,
     resolveAlias: {
       [LOCALE_ALIAS]: `@/${LOCALE_DYNAMIC}`,
     },
