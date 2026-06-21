@@ -2,6 +2,7 @@ import { CategoryQueryMeta } from '@/category';
 import type { Photo } from '@/photo';
 import { isCameraMakeApple } from '@/platforms/apple';
 import { formatSonyModel, isMakeSony } from '@/platforms/sony';
+import { formatDjiModel, isMakeDji } from '@/platforms/dji';
 import { MakeModelTextLength, parameterize } from '@/utility/string';
 
 const CAMERA_PLACEHOLDER: Camera = { make: 'Camera', model: 'Model' };
@@ -64,7 +65,11 @@ export const formatCameraText = (
 ) => {
   // Capture simple make without modifiers like 'Corporation' or 'Company'
   const makeSimple = make.match(/^(\S+)/)?.[1];
-  let model = isMakeSony(make) ? formatSonyModel(_model) : _model;
+  let model = isMakeSony(make)
+    ? formatSonyModel(_model)
+    : isMakeDji(make)
+      ? formatDjiModel(_model)
+      : _model;
   const doesModelStartWithMake = (
     makeSimple &&
     model.toLocaleLowerCase().startsWith(makeSimple.toLocaleLowerCase())
