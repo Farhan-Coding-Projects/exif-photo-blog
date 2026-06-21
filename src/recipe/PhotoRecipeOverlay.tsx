@@ -19,13 +19,13 @@ import { TbChecklist } from 'react-icons/tb';
 import CopyButton from '@/components/CopyButton';
 import PhotoRecipe from './PhotoRecipe';
 import { useAppText } from '@/i18n/state/client';
-import useCategoryCounts from '@/category/useCategoryCounts';
 
 export default function PhotoRecipeOverlay({
   ref,
   title,
   data,
   film,
+  make,
   onClose,
   isOnPhoto = true,
 }: RecipeProps & {
@@ -48,11 +48,6 @@ export default function PhotoRecipeOverlay({
   } = data;
 
   const appText = useAppText();
-
-  const {
-    getRecipeCount,
-    getFilmCount,
-  } = useCategoryCounts();
 
   const whiteBalanceTypeFormatted = formatWhiteBalance(data);
 
@@ -134,7 +129,6 @@ export default function PhotoRecipeOverlay({
                 '[&>*>*>*>*]:text-black',
                 'tracking-wide',
               )}
-              countOnHover={getRecipeCount(title)}
             />
             : renderRecipeTitle}
         </div>
@@ -170,6 +164,7 @@ export default function PhotoRecipeOverlay({
             <div className="flex items-center gap-1.5">
               <PhotoFilm
                 film={film}
+                make={isOnPhoto ? make : undefined}
                 contrast="frosted"
                 className={clsx(
                   'translate-y-[-0.5px]',
@@ -177,7 +172,6 @@ export default function PhotoRecipeOverlay({
                   'opacity-80 hover:opacity-60 active:opacity-80',
                 )}
                 badged={false}
-                countOnHover={getFilmCount(film)}
               />
             </div>,
             undefined,

@@ -8,6 +8,7 @@ import AnimateItems from '@/components/AnimateItems';
 import { ComponentProps, useCallback, useState, ReactNode } from 'react';
 import { GRID_SPACE_CLASSNAME } from '@/components';
 import { SortBy } from './sort';
+import { MASONRY_GRID_ENABLED } from '@/app/config';
 
 export default function PhotoGridContainer({
   cacheKey,
@@ -19,6 +20,7 @@ export default function PhotoGridContainer({
   animateOnFirstLoadOnly,
   header,
   sidebar,
+  className,
   ...categories
 }: {
   cacheKey: string
@@ -28,7 +30,11 @@ export default function PhotoGridContainer({
   excludeFromFeeds?: boolean
   header?: ReactNode
   sidebar?: ReactNode
+  className?: string
 } & ComponentProps<typeof PhotoGrid>) {
+  const shouldRenderInitialGrid =
+    !MASONRY_GRID_ENABLED || count <= photos.length;
+
   const [
     shouldAnimateDynamicItems,
     setShouldAnimateDynamicItems,
@@ -40,6 +46,7 @@ export default function PhotoGridContainer({
     <AppGrid
       contentMain={<div className={clsx(
         header && 'space-y-8 mt-1.5',
+        className,
       )}>
         {header &&
           <AnimateItems
@@ -48,15 +55,18 @@ export default function PhotoGridContainer({
             animateOnFirstLoadOnly
           />}
         <div className={GRID_SPACE_CLASSNAME}>
-          <PhotoGrid {...{
-            photos,
-            ...categories,
-            animateOnFirstLoadOnly,
-            onAnimationComplete,
-          }} />
+          {shouldRenderInitialGrid && (
+            <PhotoGrid {...{
+              photos,
+              ...categories,
+              animateOnFirstLoadOnly,
+              onAnimationComplete,
+            }} />
+          )}
           {count > photos.length &&
             <PhotoGridInfinite {...{
               cacheKey,
+              initialPhotos: MASONRY_GRID_ENABLED ? photos : undefined,
               initialOffset: photos.length,
               sortBy,
               sortWithPriority,

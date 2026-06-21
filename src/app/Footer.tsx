@@ -4,6 +4,8 @@ import { clsx } from 'clsx/lite';
 import AppGrid from '../components/AppGrid';
 import ThemeSwitcher from '@/app/ThemeSwitcher';
 import Link from 'next/link';
+import { SHOW_REPO_LINK } from '@/app/config';
+import RepoLink from '../components/RepoLink';
 import { usePathname } from 'next/navigation';
 import { PATH_ADMIN_PHOTOS, isPathAdmin, isPathSignIn } from './path';
 import SubmitButtonWithStatus from '@/components/SubmitButtonWithStatus';
@@ -43,12 +45,18 @@ export default function Footer() {
                 'flex items-center gap-1',
                 'text-dim min-h-10',
               )}>
-              <div className="flex gap-x-3 xs:gap-x-4 grow flex-wrap">
+              <div className={clsx(
+                'flex gap-x-3 xs:gap-x-4 grow flex-wrap',
+                'w-full min-w-0',
+              )}>
                 {userEmail || userEmailEager
                   ? <>
-                    <div className="truncate max-w-full">
+                    <Link
+                      href={PATH_ADMIN_PHOTOS}
+                      className="truncate max-w-full max-sm:hidden"
+                    >
                       {userEmail || userEmailEager}
-                    </div>
+                    </Link>
                     <form action={() => signOutAction()
                       .then(clearAuthStateAndRedirectIfNecessary)}>
                       <SubmitButtonWithStatus styleAs="link">
@@ -58,11 +66,13 @@ export default function Footer() {
                   </>
                   : isCheckingAuth
                     ? <Spinner size={16} className="translate-y-[2px]" />
-                    : <Link href={PATH_ADMIN_PHOTOS}>
-                      {appText.nav.admin}
-                    </Link>}
+                    : SHOW_REPO_LINK
+                      ? <RepoLink />
+                      : <Link href={PATH_ADMIN_PHOTOS}>
+                        {appText.nav.admin}
+                      </Link>}
               </div>
-              <div className="flex items-center h-10">
+              <div className="flex items-center h-10 shrink-0">
                 <ThemeSwitcher />
               </div>
             </div>]

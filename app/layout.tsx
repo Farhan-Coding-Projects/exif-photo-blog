@@ -10,6 +10,9 @@ import {
   HTML_LANG,
   SITE_FEEDS_ENABLED,
   ADMIN_DEBUG_TOOLS_ENABLED,
+  PAGE_SCRIPT_URLS,
+  VERCEL_GIT_COMMIT_SHA_SHORT,
+  DEBUG_OUTPUTS_ENABLED,
 } from '@/app/config';
 import AppStateProvider from '@/app/AppStateProvider';
 import ToasterWithThemes from '@/toast/ToasterWithThemes';
@@ -30,6 +33,7 @@ import SharedHoverProvider from '@/components/shared-hover/SharedHoverProvider';
 import { PATH_FEED_JSON, PATH_RSS_XML } from '@/app/path';
 import SelectPhotosProvider from '@/admin/select/SelectPhotosProvider';
 import AdminBatchEditPanel from '@/admin/select/AdminBatchEditPanel';
+import Script from 'next/script';
 
 import '../tailwind.css';
 
@@ -68,6 +72,11 @@ export const metadata: Metadata = {
     type: 'image/png',
     sizes: '180x180',
   }],
+  ...DEBUG_OUTPUTS_ENABLED && {
+    other: {
+      'build': VERCEL_GIT_COMMIT_SHA_SHORT ?? 'unknown',
+    },
+  },
   ...SITE_FEEDS_ENABLED && {
     alternates: {
       types: {
@@ -89,6 +98,9 @@ export default function RootLayout({
       // Suppress hydration errors due to next-themes behavior
       suppressHydrationWarning
     >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+      </head>
       <body className={clsx(
         // Center on large screens
         '3xl:flex flex-col items-center',
@@ -137,13 +149,14 @@ export default function RootLayout({
                   </SharedHoverProvider>
                 </SwrConfigClient>
                 <Analytics debug={false} />
-                <SpeedInsights debug={false}  />
+                <SpeedInsights debug={false} />
                 <PhotoEscapeHandler />
                 <ToasterWithThemes />
               </ThemeProvider>
             </SelectPhotosProvider>
           </AppTextProvider>
         </AppStateProvider>
+        {PAGE_SCRIPT_URLS.map(url => <Script key={url} src={url} />)}
       </body>
     </html>
   );

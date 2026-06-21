@@ -5,11 +5,15 @@
 /.pnp
 .pnp.js
 
+#db
+*.sql
+
 # testing
 /coverage
 
 # next.js
 /.next/
+/.next-alt/
 /out/
 
 # production
@@ -35,5 +39,7 @@ yarn-error.log*
 next-env.d.ts
 
 # temp files
+/backup
+/app/restore
 temp.jpg
 .env*

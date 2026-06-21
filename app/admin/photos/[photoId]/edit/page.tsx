@@ -5,6 +5,10 @@ import {
   getUniqueRecipesCached,
   getUniqueTagsCached,
 } from '@/photo/cache';
+import {
+  getAlbumTitlesForPhotoCached,
+  getAlbumsWithMetaCached,
+} from '@/album/cache';
 import { PATH_ADMIN } from '@/app/path';
 import PhotoEditPageClient from '@/photo/PhotoEditPageClient';
 import {
@@ -27,11 +31,15 @@ export default async function PhotoEditPage({
 
   const [
     photo,
+    photoAlbumTitles,
+    albums,
     uniqueTags,
     uniqueRecipes,
     uniqueFilms,
   ] = await Promise.all([
     getPhotoNoStore(photoId, true),
+    getAlbumTitlesForPhotoCached(photoId),
+    getAlbumsWithMetaCached(),
     getUniqueTagsCached(),
     getUniqueRecipesCached(),
     getUniqueFilmsCached(),
@@ -60,6 +68,8 @@ export default async function PhotoEditPage({
     <PhotoEditPageClient {...{
       photo,
       photoStorageUrls,
+      photoAlbumTitles,
+      albums,
       uniqueTags,
       uniqueRecipes,
       uniqueFilms,

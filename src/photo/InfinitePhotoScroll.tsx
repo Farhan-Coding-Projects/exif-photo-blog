@@ -1,13 +1,7 @@
 'use client';
 
 import useSwrInfinite from 'swr/infinite';
-import {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import { ReactNode, useCallback, useMemo, useRef } from 'react';
 import AppGrid from '@/components/AppGrid';
 import Spinner from '@/components/Spinner';
 import { getPhotosCachedAction, getPhotosAction } from '@/photo/actions';
@@ -16,9 +10,9 @@ import { PhotoSetCategory } from '../category';
 import { clsx } from 'clsx/lite';
 import { useAppState } from '@/app/AppState';
 import useVisibility from '@/utility/useVisibility';
-import { ADMIN_DB_OPTIMIZE_ENABLED } from '@/app/config';
 import { SortBy } from './sort';
 import { SWR_KEYS } from '@/swr';
+import { useAppText } from '@/i18n/state/client';
 
 const SIZE_KEY_SEPARATOR = '__';
 const getSizeFromKey = (key: string) =>
@@ -30,39 +24,51 @@ export type RevalidatePhoto = (
 ) => Promise<any>;
 
 export default function InfinitePhotoScroll({
+  initialPhotos,
   cacheKey,
   initialOffset,
   itemsPerPage,
   sortBy,
   sortWithPriority,
   excludeFromFeeds,
+  recent,
+  year,
   camera,
   lens,
+  album,
   tag,
   recipe,
   film,
   focal,
+  moreButtonClassName = 'mt-4',
   wrapMoreButtonInGrid,
   useCachedPhotos = true,
   includeHiddenPhotos,
   children,
 }: {
+  // Required for masonry grid:
+  // initialPhotos necessary to build layout without random gaps
+  initialPhotos?: Photo[]
   initialOffset: number
   itemsPerPage: number
   sortBy?: SortBy
   sortWithPriority?: boolean
   excludeFromFeeds?: boolean
   cacheKey: string
+  moreButtonClassName?: string
   wrapMoreButtonInGrid?: boolean
   useCachedPhotos?: boolean
   includeHiddenPhotos?: boolean
   children: (props: {
+    key: string
     photos: Photo[]
-    onLastPhotoVisible: () => void
+    onLastPhotoVisible?: () => void
     revalidatePhoto?: RevalidatePhoto
   }) => ReactNode
 } & PhotoSetCategory) {
   const { isUserSignedIn } = useAppState();
+  
+  const { utility } = useAppText();
 
   const keyGenerator = useCallback(
     (size: number, prev: Photo[]) => prev && prev.length === 0
@@ -82,8 +88,11 @@ export default function InfinitePhotoScroll({
       excludeFromFeeds,
       limit: itemsPerPage,
       hidden: includeHiddenPhotos ? 'include' : 'exclude',
+      recent,
+      year,
       camera,
       lens,
+      album,
       tag,
       recipe,
       film,
@@ -97,31 +106,28 @@ export default function InfinitePhotoScroll({
     initialOffset,
     itemsPerPage,
     includeHiddenPhotos,
+    recent,
+    year,
     camera,
     lens,
+    album,
     tag,
     recipe,
     film,
     focal,
   ]);
 
-  const { data, isLoading, isValidating, error, mutate, size, setSize } =
+  const { data, isLoading, isValidating, error, mutate, setSize } =
     useSwrInfinite<Photo[]>(
       keyGenerator,
       fetcher,
       {
-        initialSize: ADMIN_DB_OPTIMIZE_ENABLED ? 0 : 2,
+        initialSize: 2,
         revalidateFirstPage: false,
         revalidateOnFocus: Boolean(isUserSignedIn),
         revalidateOnReconnect: Boolean(isUserSignedIn),
       },
     );
-
-  useEffect(() => {
-    if (ADMIN_DB_OPTIMIZE_ENABLED) {
-      fetcher(`${SIZE_KEY_SEPARATOR}0`, true);
-    }
-  }, [fetcher]);
 
   const buttonContainerRef = useRef<HTMLDivElement>(null);
   
@@ -133,11 +139,9 @@ export default function InfinitePhotoScroll({
 
   const advance = useCallback(() => {
     if (!isFinished && !isLoadingOrValidating) {
-      setSize(size => size + 1);
+      setSize((data?.length ?? 0) + 1);
     }
-  }, [isFinished, isLoadingOrValidating, setSize]);
-
-  const photos = useMemo(() => (data ?? [])?.flat(), [data]);
+  }, [isFinished, isLoadingOrValidating, setSize, data]);
 
   const revalidatePhoto: RevalidatePhoto = useCallback((
     photoId: string,
@@ -150,13 +154,9 @@ export default function InfinitePhotoScroll({
     },
   } as any), [data, mutate]);
 
-  useVisibility({ ref: buttonContainerRef, onVisible: () => {
-    if (ADMIN_DB_OPTIMIZE_ENABLED && size === 0) {
-      advance();
-    }
-  }});
+  useVisibility({ ref: buttonContainerRef, onVisible: advance });
 
-  const renderMoreButton = () =>
+  const renderMoreButton =
     <div ref={buttonContainerRef}>
       <button
         type="button"
@@ -168,23 +168,43 @@ export default function InfinitePhotoScroll({
         )}
       >
         {error
-          ? 'Try Again'
+          ? utility.tryAgain
           : isLoadingOrValidating
             ? <Spinner size={20} />
-            : 'Load More'}
+            : utility.loadMore}
       </button>
     </div>;
 
+  const flattenedPhotos = initialPhotos
+    ? initialPhotos.concat(data?.flat() ?? [])
+    : undefined;
+
   return (
-    <div className="space-y-4">
-      {children({
-        photos, 
-        onLastPhotoVisible: advance,
-        revalidatePhoto,
-      })}
-      {!isFinished && (wrapMoreButtonInGrid
-        ? <AppGrid contentMain={renderMoreButton()} />
-        : renderMoreButton())}
-    </div>
+    <>
+      {flattenedPhotos
+        ? children({
+          key: cacheKey,
+          photos: flattenedPhotos,
+          onLastPhotoVisible: !isFinished ? advance : undefined,
+          revalidatePhoto,
+        })
+        : (
+          data?.map((photos, index) => (
+            children({
+              key: `${cacheKey}-${index}`,
+              photos,
+              onLastPhotoVisible: index === data.length - 1
+                ? advance
+                : undefined,
+              revalidatePhoto,
+            })
+          ))
+        )}
+      {!isFinished && <div className={moreButtonClassName}>
+        {wrapMoreButtonInGrid
+          ? <AppGrid contentMain={renderMoreButton} />
+          : renderMoreButton}
+      </div>}
+    </>
   );
 }

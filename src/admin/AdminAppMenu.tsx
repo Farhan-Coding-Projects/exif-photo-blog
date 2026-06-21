@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  PATH_ADMIN_ALBUMS,
   PATH_ADMIN_CONFIGURATION,
   PATH_ADMIN_INSIGHTS,
   PATH_ADMIN_PHOTOS,
@@ -32,6 +33,12 @@ import SwitcherItemMenu from '@/components/switcher/SwitcherItemMenu';
 import { MoreMenuSection } from '@/components/more/MoreMenu';
 import { FiXSquare } from 'react-icons/fi';
 import { useSelectPhotosState } from './select/SelectPhotosState';
+import IconAlbum from '@/components/icons/IconAlbum';
+import { SHOW_ABOUT_PAGE } from '@/app/config';
+import {
+  HEIGHT_CLASS,
+  SWITCHER_ITEM_WIDTH,
+} from '@/components/switcher/SwitcherItem';
 
 export default function AdminAppMenu({
   isOpen,
@@ -44,6 +51,7 @@ export default function AdminAppMenu({
     photosCountTotal = 0,
     photosCountNeedSync = 0,
     uploadsCount = 0,
+    albumsCount = 0,
     tagsCount = 0,
     recipesCount = 0,
     isLoadingAdminData,
@@ -83,8 +91,8 @@ export default function AdminAppMenu({
         label: appText.admin.uploadPlural,
         annotation: `${uploadsCount}`,
         icon: <IconFolder
-          size={16}
-          className="translate-x-[1px] translate-y-[0.5px]"
+          size={15}
+          className="translate-x-[0.5px] translate-y-[0.5px]"
         />,
         href: PATH_ADMIN_UPLOADS,
       });
@@ -120,6 +128,17 @@ export default function AdminAppMenu({
           className="translate-x-[-0.5px] translate-y-[0.5px]"
         />,
         href: PATH_ADMIN_PHOTOS,
+      });
+    }
+    if (albumsCount) {
+      items.push({
+        label: appText.admin.manageAlbums,
+        annotation: `${albumsCount}`,
+        icon: <IconAlbum
+          size={15}
+          className="translate-x-[-0.5px] translate-y-[0.5px]"
+        />,
+        href: PATH_ADMIN_ALBUMS,
       });
     }
     if (tagsCount) {
@@ -186,6 +205,7 @@ export default function AdminAppMenu({
     photosCountTotal,
     recipesCount,
     showAppInsightsLink,
+    albumsCount,
     tagsCount,
     uploadsCount,
   ]);
@@ -205,23 +225,25 @@ export default function AdminAppMenu({
   return (
     <SwitcherItemMenu
       {...{ isOpen, setIsOpen }}
-      icon={<div className="w-[28px] h-[28px] overflow-hidden">
+      icon={<div className={`w-full ${HEIGHT_CLASS} overflow-hidden`}>
         <div className={clsx(
-          'relative flex flex-col items-center justify-center gap-2',
-          'translate-y-[-18px]',
+          'relative flex flex-col items-center gap-2',
+          'translate-y-[-16px]',
         )}>
           <IoArrowDown size={16} className="shrink-0" />
           <IoArrowUp size={16} className="shrink-0" />
         </div>
       </div>}
       align="start"
-      sideOffset={12}
-      alignOffset={-84}
+      sideOffset={10}
+      alignOffset={SHOW_ABOUT_PAGE
+        ? -(SWITCHER_ITEM_WIDTH * 3)
+        : -(SWITCHER_ITEM_WIDTH * 2)}
       onOpen={refreshAdminData}
       sections={sections}
       ariaLabel="Admin Menu"
       classNameButtonOpen={clsx(
-        '[&>*>*]:translate-y-[6px]',
+        '[&>*>*]:translate-y-[8px]',
         '[&>*>*]:duration-300',
       )}
     />

@@ -39,7 +39,14 @@ const generateRemotePattern = (
   pathname: '/**',
 });
 
-const remotePatterns: RemotePattern[] = [];
+const remotePatterns: RemotePattern[] = [
+  {
+    protocol: 'https',
+    hostname: 'api.qrserver.com',
+    port: '',
+    pathname: '/v1/create-qr-code/**',
+  },
+];
 
 if (HOSTNAME_VERCEL_BLOB) {
   remotePatterns.push(generateRemotePattern(HOSTNAME_VERCEL_BLOB));
@@ -68,12 +75,14 @@ const IMAGE_QUALITY =
     : 75;
 
 const nextConfig: NextConfig = {
+  ...(process.env.NEXT_DIST_DIR ? { distDir: process.env.NEXT_DIST_DIR } : {}),
   images: {
     imageSizes: [200],
     qualities: [75, IMAGE_QUALITY],
     remotePatterns,
     minimumCacheTTL: 31536000,
   },
+  serverExternalPackages: ['exifr'],
   turbopack: {
     root: __dirname,
     resolveAlias: {
