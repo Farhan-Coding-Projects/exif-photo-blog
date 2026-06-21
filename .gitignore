@@ -42,4 +42,8 @@ next-env.d.ts
 /backup
 /app/restore
 temp.jpg
+/scraping
 .env*
+scraping/.vision.env
+google-photos-credentials.json
+*-credentials.json
