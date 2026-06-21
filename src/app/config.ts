@@ -12,6 +12,7 @@ import { getNavSortControlFromString, getSortByFromString } from '@/photo/sort';
 import { parseChromaCutoff, parseStartingHue } from '@/photo/color/sort';
 import { parseSocialKeysFromString } from '@/social';
 import { dependencies } from '../../package.json';
+import { normalizeRedisUrl } from '@/platforms/redis';
 
 // HARD-CODED GLOBAL CONFIGURATION
 
@@ -165,13 +166,20 @@ export const POSTGRES_SSL_ENABLED =
   process.env.DISABLE_POSTGRES_SSL === '1' ? false : true;
 
 // STORAGE: REDIS
+export const REDIS_URL = normalizeRedisUrl(
+  process.env.KV_URL ||
+  process.env.KV_REST_API_URL ||
+  process.env.EXIF_KV_REST_API_URL ||
+  process.env.UPSTASH_REDIS_REST_URL,
+);
+export const REDIS_TOKEN = (
+  process.env.KV_TOKEN ||
+  process.env.KV_REST_API_TOKEN ||
+  process.env.EXIF_KV_REST_API_TOKEN ||
+  process.env.UPSTASH_REDIS_REST_TOKEN
+);
 export const HAS_REDIS_STORAGE =
-  Boolean(
-    process.env.KV_URL ||
-    process.env.KV_REST_API_URL ||
-    process.env.EXIF_KV_REST_API_URL ||
-    process.env.UPSTASH_REDIS_REST_URL,
-  );
+  Boolean(REDIS_URL && REDIS_TOKEN);
 
 // STORAGE: VERCEL BLOB
 export const HAS_VERCEL_BLOB_STORAGE =
@@ -347,6 +355,8 @@ export const SHOW_REPO_LINK =
 
 export const GRID_HOMEPAGE_ENABLED =
   process.env.NEXT_PUBLIC_GRID_HOMEPAGE === '1';
+export const MASONRY_GRID_ENABLED =
+  process.env.NEXT_PUBLIC_MASONRY_GRID === '1';
 export const GRID_ASPECT_RATIO =
   process.env.NEXT_PUBLIC_GRID_ASPECT_RATIO
     ? parseFloat(process.env.NEXT_PUBLIC_GRID_ASPECT_RATIO)
@@ -507,6 +517,7 @@ export const APP_CONFIGURATION = {
   showRepoLink: SHOW_REPO_LINK,
   // Grid
   isGridHomepageEnabled: GRID_HOMEPAGE_ENABLED,
+  isMasonryGridEnabled: MASONRY_GRID_ENABLED,
   gridAspectRatio: GRID_ASPECT_RATIO,
   hasGridAspectRatio: Boolean(process.env.NEXT_PUBLIC_GRID_ASPECT_RATIO),
   hasHighGridDensity: HIGH_DENSITY_GRID,
