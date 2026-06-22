@@ -86,6 +86,7 @@ export default function PhotoLarge({
   onVisible,
   showAdminKeyCommands,
   showStorageCheck,
+  hideMetaOnMobile = false,
 }: {
   photo: Photo
   className?: string
@@ -119,6 +120,7 @@ export default function PhotoLarge({
   onVisible?: () => void
   showAdminKeyCommands?: boolean
   showStorageCheck?: boolean
+  hideMetaOnMobile?: boolean
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const refZoomControls = useRef<ZoomControlsRef>(null);
@@ -294,7 +296,7 @@ export default function PhotoLarge({
           {renderLargePhoto}
         </Link>}
       classNameSide="relative"
-      sideHiddenOnMobile={false}
+      sideHiddenOnMobile={hideMetaOnMobile}
       contentSide={
         <div className="md:absolute inset-0 -mt-1">
           <MaskedScroll className="sticky top-4 self-start">

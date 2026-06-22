@@ -2,6 +2,7 @@ import AnimateItems from '@/components/AnimateItems';
 import { Photo } from '.';
 import PhotoLarge from './PhotoLarge';
 import { RevalidatePhoto } from './InfinitePhotoScroll';
+import { HIDE_FEED_META_ON_MOBILE } from '@/app/config';
 
 export default function PhotosLarge({
   photos,
@@ -38,6 +39,7 @@ export default function PhotosLarge({
             ? onLastPhotoVisible
             : undefined}
           showStorageCheck={showStorageCheck}
+          hideMetaOnMobile={HIDE_FEED_META_ON_MOBILE}
         />)}
       itemKeys={photos.map(photo => photo.id)}
     />

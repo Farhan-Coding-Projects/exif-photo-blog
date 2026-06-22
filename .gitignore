@@ -47,3 +47,9 @@ temp.jpg
 scraping/.vision.env
 google-photos-credentials.json
 *-credentials.json
+.cloud.env
+scraping/.cloud.env
+ready for production/
+production/
+portfolio/
+.playwright-mcp/
