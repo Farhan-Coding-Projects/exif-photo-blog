@@ -1,7 +1,5 @@
 'use client';
 
-
-
 import {
   Photo,
   altTextForPhoto,
