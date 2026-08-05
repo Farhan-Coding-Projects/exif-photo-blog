@@ -34,7 +34,9 @@ export const generateAiImageQueries = async ({
         existingTitle,
         uniqueTags,
       );
-      return generateOpenAiImageObjectQuery(
+      // Await here so provider/network rejections are handled by this
+      // function's catch block instead of escaping the upload action.
+      return await generateOpenAiImageObjectQuery(
         imageBase64,
         query,
         schema,

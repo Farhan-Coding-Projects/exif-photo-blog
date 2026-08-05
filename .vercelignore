@@ -1,0 +1,22 @@
+.next
+node_modules
+.git
+scraping
+production
+portfolio
+
+# Local camera samples, not site assets
+/DJI_*.png
+/DJI_*.jpeg
+/DJI_*.jpg
+/dji_*.jpeg
+/dji_*.jpg
+
+# Development/documentation-only files
+__tests__
+readme
+jest.config.ts
+jest.setup.ts
+clean-media.sh
+*.backup
+tsconfig.tsbuildinfo

@@ -172,6 +172,7 @@ const addUpload = async ({
       caption: aiCaption,
       tags: aiTags,
       semantic,
+      error: aiError,
     } = await generateAiImageQueries({
       imageBase64: imageResizedBase64,
       textFieldsToGenerate: getAiTextFieldsToGenerate(
@@ -183,6 +184,10 @@ const addUpload = async ({
       existingTitle: title,
       uniqueTags,
     });
+
+    if (aiError) {
+      console.error(`AI metadata generation skipped for upload: ${aiError}`);
+    }
 
     const form: Partial<PhotoFormData> = {
       ...formDataFromExif,
@@ -600,11 +605,10 @@ export const syncPhotoAction = async (
         generateBlurData: BLUR_ENABLED,
         generateResizedImage: AI_CONTENT_GENERATION_ENABLED,
         // In update mode, only update color fields if necessary
-        updateColorFields: !(
-          updateMode &&
-          photo.colorData !== undefined &&
-          photo.colorSort !== undefined
-        ),
+        // Do not recalculate color/AI-derived fields for every batch sync.
+        // This is especially important for migrated R2 photos: their fields
+        // have already been populated and the provider call is unnecessary.
+        updateColorFields: photo.colorData == null || photo.colorSort == null,
       });
 
       const uniqueTags = await getUniqueTags();
@@ -626,17 +630,20 @@ export const syncPhotoAction = async (
           }
         }
 
+        const missingAiFields = photo.updateStatus?.isMissingAiTextFields ?? [];
         const {
           title: atTitle,
           caption: aiCaption,
           tags: aiTags,
           semantic: aiSemanticDescription,
-        } = await generateAiImageQueries({
-          imageBase64: imageResizedBase64,
-          textFieldsToGenerate: photo.updateStatus?.isMissingAiTextFields ?? [],
-          isBatch,
-          uniqueTags,
-        });
+        } = missingAiFields.length > 0
+          ? await generateAiImageQueries({
+            imageBase64: imageResizedBase64,
+            textFieldsToGenerate: missingAiFields,
+            isBatch,
+            uniqueTags,
+          })
+          : {};
 
         const formDataFromPhoto = convertPhotoToFormData(photo);
 

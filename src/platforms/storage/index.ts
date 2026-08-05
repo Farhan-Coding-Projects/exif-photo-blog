@@ -119,11 +119,22 @@ export const uploadFromClientViaPresignedUrl = async (
   file: File | Blob,
   fileName: string,
 ) => {
-  const url = await fetch(`${PATH_API_PRESIGNED_URL}/${fileName}`)
-    .then((response) => response.text());
+  const signedUrlResponse = await fetch(`${PATH_API_PRESIGNED_URL}/${fileName}`);
+  if (!signedUrlResponse.ok) {
+    const detail = await signedUrlResponse.text().catch(() => '');
+    throw new Error(
+      `Could not create R2 upload URL (${signedUrlResponse.status})${
+        detail ? `: ${detail.slice(0, 160)}` : ''
+      }`,
+    );
+  }
+  const url = await signedUrlResponse.text();
 
-  return fetch(url, { method: 'PUT', body: file })
-    .then(() => `${baseUrlForStorage(CURRENT_STORAGE)}/${fileName}`);
+  const uploadResponse = await fetch(url, { method: 'PUT', body: file });
+  if (!uploadResponse.ok) {
+    throw new Error(`R2 upload failed (${uploadResponse.status})`);
+  }
+  return `${baseUrlForStorage(CURRENT_STORAGE)}/${fileName}`;
 };
 
 export const uploadFileFromClient = async (

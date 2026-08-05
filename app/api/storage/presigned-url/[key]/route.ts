@@ -9,12 +9,17 @@ export async function GET(
 
   const session = await auth();
   
-  if (session?.user && key) {    
-    const url = await getSignedUrlForKey(key, 'PUT');
-    return new Response(
-      url,
-      { headers: { 'content-type': 'text/plain' } },
-    );
+  if (session?.user && key) {
+    try {
+      const url = await getSignedUrlForKey(key, 'PUT');
+      return new Response(
+        url,
+        { headers: { 'content-type': 'text/plain' } },
+      );
+    } catch (error) {
+      console.error('Unable to create storage upload URL', error);
+      return new Response('Unable to create storage upload URL', { status: 500 });
+    }
   } else {
     return new Response('Unauthorized request', { status: 401 });
   }

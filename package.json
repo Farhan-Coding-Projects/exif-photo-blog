@@ -5,6 +5,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "migrate:vercel-blob-to-r2": "node --env-file-if-exists=.env.local scripts/migrate-vercel-blob-to-r2.mjs",
+    "sync:r2-exif-metadata": "node --env-file-if-exists=.env.local scripts/sync-r2-exif-metadata.mjs",
+    "generate:r2-ai-metadata": "node --env-file-if-exists=.env.local scripts/generate-r2-ai-metadata.mjs",
     "test": "jest --watch --transformIgnorePatterns 'node_modules/(?!my-library-dir)/'",
     "analyze": "ANALYZE=true next build --webpack"
   },

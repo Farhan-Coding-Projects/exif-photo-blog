@@ -26,12 +26,14 @@ export default function AddUploadButton({
   const router = useRouter();
 
   const [isAddingLocal, setIsAddingLocal] = useState(false);
+  const [error, setError] = useState<string>();
 
   return (
     <LoaderButton
       {...props}
       icon={<IconAddUpload />}
       onClick={() => {
+        setError(undefined);
         onAddStart?.();
         setIsAddingLocal(true);
         addUploadAction({
@@ -49,13 +51,15 @@ export default function AddUploadButton({
               setIsAddingLocal(false);
             }
           })
-          .catch(() => {
+          .catch((error: Error) => {
+            console.error('Could not add upload', error);
+            setError(error.message || 'Could not add photo');
             onAddFinish?.(false);
             setIsAddingLocal(false);
           });
       }}
       isLoading={isAddingLocal}
-      tooltip="Add directly"
+      tooltip={error ?? 'Add directly'}
       hideText="never"
     >
       Add
