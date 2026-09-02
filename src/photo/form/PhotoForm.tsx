@@ -73,6 +73,8 @@ import FieldsetAlbum from '@/album/FieldsetAlbum';
 import Form from 'next/form';
 import { useRouter, useSearchParams } from 'next/navigation';
 import DateTimePicker from '@/components/DateTimePicker';
+import { Locations } from '@/location';
+import FieldsetLocation from '@/location/FieldsetLocation';
 
 const THUMBNAIL_SIZE = 300;
 
@@ -83,7 +85,9 @@ export default function PhotoForm({
   updatedExifData,
   updatedBlurData,
   photoAlbumTitles = [],
+  photoLocationTitles = [],
   albums,
+  locations,
   uniqueTags,
   uniqueRecipes,
   uniqueFilms,
@@ -99,7 +103,9 @@ export default function PhotoForm({
   updatedExifData?: Partial<PhotoFormData>
   updatedBlurData?: string
   photoAlbumTitles?: string[]
+  photoLocationTitles?: string[]
   albums: Albums
+  locations: Locations
   uniqueTags: Tags
   uniqueRecipes: Recipes
   uniqueFilms: Films
@@ -130,6 +136,14 @@ export default function PhotoForm({
     .sort((a, b) => a.localeCompare(b))
     .join(',');
 
+  const [locationTitles, setLocationTitles] = useState(photoLocationTitles
+    .sort((a, b) => a.localeCompare(b))
+    .join(','));
+
+  const areLocationTitlesModified = locationTitles !== photoLocationTitles
+    .sort((a, b) => a.localeCompare(b))
+    .join(',');
+
   const { hash } = useHash();
 
   const { invalidateSwr, shouldDebugImageFallbacks } = useAppState();
@@ -139,7 +153,9 @@ export default function PhotoForm({
   const changedFormKeys = useMemo(() =>
     getChangedFormFields(initialPhotoForm, formData),
   [initialPhotoForm, formData]);
-  const formHasChanged = changedFormKeys.length > 0 || areAlbumTitlesModified;
+  const formHasChanged = changedFormKeys.length > 0 ||
+    areAlbumTitlesModified ||
+    areLocationTitlesModified;
   const onlyChangedFieldIsBlurData =
     changedFormKeys.length === 1 &&
     changedFormKeys[0] === 'blurData';
@@ -643,6 +659,19 @@ export default function PhotoForm({
                           value={albumTitles}
                           onChange={value => setAlbumTitles(value)}
                           isModified={areAlbumTitlesModified}
+                          className={clsx(
+                            fieldProps.className,
+                            'relative z-1',
+                          )}
+                        />;
+                      case 'locations':
+                        return <FieldsetLocation
+                          key={key}
+                          {...fieldProps}
+                          locationOptions={locations}
+                          value={locationTitles}
+                          onChange={value => setLocationTitles(value)}
+                          isModified={areLocationTitlesModified}
                           className={clsx(
                             fieldProps.className,
                             'relative z-1',

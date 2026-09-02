@@ -3,6 +3,7 @@ import { createLensKey, Lens } from '@/lens';
 import { useCallback } from 'react';
 import { useAppState } from '@/app/AppState';
 import { Album } from '@/album';
+import { Location } from '@/location';
 
 export default function useCategoryCounts() {
   const { categoriesWithCounts } = useAppState();
@@ -27,6 +28,11 @@ export default function useCategoryCounts() {
   const getAlbumCount = useCallback((album: Album) => {
     const albumCounts = categoriesWithCounts?.albums ?? {};
     return albumCounts[album.slug];
+  }, [categoriesWithCounts]);
+
+  const getLocationCount = useCallback((location: Location) => {
+    const locationCounts = categoriesWithCounts?.locations ?? {};
+    return locationCounts[location.slug];
   }, [categoriesWithCounts]);
 
   const getTagCount = useCallback((tag: string) => {
@@ -55,6 +61,7 @@ export default function useCategoryCounts() {
     getCameraCount,
     getLensCount,
     getAlbumCount,
+    getLocationCount,
     getTagCount,
     getRecipeCount,
     getFilmCount,

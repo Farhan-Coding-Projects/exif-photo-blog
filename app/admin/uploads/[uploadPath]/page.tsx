@@ -16,6 +16,7 @@ import { getRecipeTitleForData } from '@/photo/query';
 import { getAlbumsWithMeta } from '@/album/query';
 import { addAiTextToFormData } from '@/photo/ai/server';
 import AppGrid from '@/components/AppGrid';
+import { getLocationsWithMeta } from '@/location/query';
 
 export const maxDuration = 60;
 
@@ -30,6 +31,7 @@ export default async function UploadPage({ params, searchParams }: Params) {
 
   const [
     albums,
+    locations,
     uniqueRecipes,
     uniqueFilms,
     uniqueTags, {
@@ -40,6 +42,7 @@ export default async function UploadPage({ params, searchParams }: Params) {
       error,
     }] = await Promise.all([
     getAlbumsWithMeta(),
+    getLocationsWithMeta(),
     getUniqueRecipesCached(),
     getUniqueFilmsCached(),
     getUniqueTagsCached(),
@@ -93,6 +96,7 @@ export default async function UploadPage({ params, searchParams }: Params) {
         blobId,
         formDataFromExif,
         albums,
+        locations,
         uniqueTags,
         uniqueRecipes,
         uniqueFilms,

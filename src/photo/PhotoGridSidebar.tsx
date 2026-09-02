@@ -41,6 +41,8 @@ import { chunkArray } from '@/utility/array';
 import PhotoRecents from '@/recents/PhotoRecents';
 import IconAlbum from '@/components/icons/IconAlbum';
 import PhotoAlbum from '@/album/PhotoAlbum';
+import PhotoLocation from '@/location/PhotoLocation';
+import { TbMapPin } from 'react-icons/tb';
 
 const APPROXIMATE_ITEM_HEIGHT = 40;
 const ABOUT_HEIGHT_OFFSET = 24;
@@ -73,6 +75,7 @@ export default function PhotoGridSidebar({
     cameras,
     lenses,
     albums,
+    locations,
     tags,
     films,
     recipes,
@@ -261,6 +264,25 @@ export default function PhotoGridSidebar({
     />
     : null;
 
+  const locationsContent = locations.length > 0
+    ? <HeaderList
+      key="locations"
+      title="Locations"
+      icon={<TbMapPin size={14} />}
+      maxItems={maxItemsPerCategory}
+      items={locations.map(({ location, count }) =>
+        <PhotoLocation
+          key={location.slug}
+          location={location}
+          type="text-only"
+          prefetch={false}
+          contrast="low"
+          hoverCount={count}
+          badged
+        />)}
+    />
+    : null;
+
   const recipesContent = recipes.length > 0
     ? <HeaderList
       key="recipes"
@@ -349,6 +371,7 @@ export default function PhotoGridSidebar({
           case 'cameras': return camerasContent;
           case 'lenses': return lensesContent;
           case 'albums': return albumsContent;
+          case 'locations': return locationsContent;
           case 'tags': return tagsContent;
           case 'recipes': return recipesContent;
           case 'films': return filmsContent;

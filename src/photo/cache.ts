@@ -36,6 +36,7 @@ import {
   pathForPhoto,
   PREFIX_YEAR,
   PREFIX_ALBUM,
+  PREFIX_LOCATION,
 } from '@/app/path';
 import { createLensKey } from '@/lens';
 import {
@@ -54,6 +55,7 @@ import {
   revalidateCamerasKey,
   revalidateLensesKey,
   revalidateAlbumsKey,
+  revalidateLocationsKey,
   revalidateTagsKey,
   revalidateFilmsKey,
   revalidateRecipesKey,
@@ -77,6 +79,10 @@ const getCacheKeyForPhotoQueryOptions = (
     case 'album': {
       const album = options[option];
       return album?.id ? `${option}-${album.id}` : null;
+    }
+    case 'location': {
+      const location = options[option];
+      return location?.id ? `${option}-${location.id}` : null;
     }
     case 'takenBefore':
     case 'takenAfterInclusive': 
@@ -112,6 +118,7 @@ export const revalidatePhoto = (photoId: string) => {
   revalidateCamerasKey();
   revalidateLensesKey();
   revalidateAlbumsKey();
+  revalidateLocationsKey();
   revalidateTagsKey();
   revalidateFilmsKey();
   revalidateRecipesKey();
@@ -124,6 +131,7 @@ export const revalidatePhoto = (photoId: string) => {
   revalidatePath(PREFIX_CAMERA, 'layout');
   revalidatePath(PREFIX_LENS, 'layout');
   revalidatePath(PREFIX_ALBUM, 'layout');
+  revalidatePath(PREFIX_LOCATION, 'layout');
   revalidatePath(PREFIX_TAG, 'layout');
   revalidatePath(PREFIX_FILM, 'layout');
   revalidatePath(PREFIX_RECIPE, 'layout');

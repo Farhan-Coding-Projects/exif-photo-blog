@@ -297,6 +297,8 @@ export const SHOW_LENSES =
   CATEGORY_VISIBILITY.includes('lenses');
 export const SHOW_ALBUMS =
   CATEGORY_VISIBILITY.includes('albums');
+export const SHOW_LOCATIONS =
+  CATEGORY_VISIBILITY.includes('locations');
 export const SHOW_TAGS =
   CATEGORY_VISIBILITY.includes('tags');
 export const SHOW_RECIPES =

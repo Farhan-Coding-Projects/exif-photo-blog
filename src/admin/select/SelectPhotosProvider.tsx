@@ -52,6 +52,7 @@ export default function SelectPhotosProvider({
     useState(false);
 
   const [albumTitles, setAlbumTitles] = useState<string>();
+  const [locationTitles, setLocationTitles] = useState<string>();
   const [tags, setTags] = useState<string>();
   const [tagErrorMessage, setTagErrorMessage] = useState('');
 
@@ -123,6 +124,7 @@ export default function SelectPhotosProvider({
       setSelectAllPhotoOptions(undefined);
       setSelectAllCount(undefined);
       setAlbumTitles(undefined);
+      setLocationTitles(undefined);
       setTags(undefined);
       setTagErrorMessage('');
     }
@@ -145,6 +147,8 @@ export default function SelectPhotosProvider({
       setIsPerformingSelectEdit,
       albumTitles,
       setAlbumTitles,
+      locationTitles,
+      setLocationTitles,
       tags,
       setTags,
       tagErrorMessage,

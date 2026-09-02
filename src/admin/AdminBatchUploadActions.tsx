@@ -27,6 +27,8 @@ import { PhotoFormData } from '@/photo/form';
 import FieldsetVisibility from '@/photo/visibility/FieldsetVisibility';
 import { Albums } from '@/album';
 import FieldsetAlbum from '@/album/FieldsetAlbum';
+import { Locations } from '@/location';
+import FieldsetLocation from '@/location/FieldsetLocation';
 
 const UPLOAD_BATCH_SIZE = 2;
 
@@ -34,6 +36,7 @@ export default function AdminBatchUploadActions({
   uploadUrls,
   uploadTitles,
   uniqueAlbums,
+  uniqueLocations,
   uniqueTags,
   isAdding,
   setIsAdding,
@@ -45,6 +48,7 @@ export default function AdminBatchUploadActions({
   uploadUrls: string[]
   uploadTitles: string[]
   uniqueAlbums: Albums
+  uniqueLocations: Locations
   uniqueTags?: Tags
   isAdding: boolean
   setIsAdding: Dispatch<SetStateAction<boolean>>
@@ -59,6 +63,7 @@ export default function AdminBatchUploadActions({
   const [tagErrorMessage, setTagErrorMessage] = useState('');
   const [formData, setFormData] = useState<Partial<PhotoFormData>>({});
   const [albumTitles, setAlbumTitles] = useState<string>();
+  const [locationTitles, setLocationTitles] = useState<string>();
 
   const [buttonText, setButtonText] = useState('Add All Uploads');
   const [actionErrorMessage, setActionErrorMessage] = useState('');
@@ -80,6 +85,7 @@ export default function AdminBatchUploadActions({
         uploadTitles: titles,
         ...showBulkSettings && {
           albumTitles: albumTitles?.split(','),
+          locationTitles: locationTitles?.split(','),
           tags,
           favorite,
           excludeFromFeeds,
@@ -158,6 +164,13 @@ export default function AdminBatchUploadActions({
                 onChange={albums => setAlbumTitles(albums)}
                 readOnly={isAdding}
                 className="relative z-11"
+              />
+              <FieldsetLocation
+                locationOptions={uniqueLocations}
+                value={locationTitles ?? ''}
+                onChange={setLocationTitles}
+                readOnly={isAdding}
+                className="relative z-10"
               />
               <FieldsetTag
                 label="Tags"

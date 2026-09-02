@@ -17,6 +17,8 @@ export type SelectPhotosState = {
   setIsPerformingSelectEdit?: Dispatch<SetStateAction<boolean>>
   albumTitles?: string
   setAlbumTitles?: Dispatch<SetStateAction<string | undefined>>
+  locationTitles?: string
+  setLocationTitles?: Dispatch<SetStateAction<string | undefined>>
   tags?: string
   setTags?: Dispatch<SetStateAction<string | undefined>>
   tagErrorMessage?: string

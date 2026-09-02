@@ -22,12 +22,17 @@ import FieldsetAlbum from '@/album/FieldsetAlbum';
 import IconAlbum from '@/components/icons/IconAlbum';
 import FieldsetWithStatus from '@/components/FieldsetWithStatus';
 import { convertStringToArray } from '@/utility/string';
+import { Locations } from '@/location';
+import FieldsetLocation from '@/location/FieldsetLocation';
+import { TbMapPin } from 'react-icons/tb';
 
 export default function AdminBatchEditPanelClient({
   uniqueAlbums,
+  uniqueLocations,
   uniqueTags,
 }: {
   uniqueAlbums: Albums
+  uniqueLocations: Locations
   uniqueTags: Tags
 }) {
   const refNote = useRef<HTMLDivElement>(null);
@@ -46,6 +51,8 @@ export default function AdminBatchEditPanelClient({
     setIsPerformingSelectEdit,
     albumTitles,
     setAlbumTitles,
+    locationTitles,
+    setLocationTitles,
     tags,
     setTags,
     tagErrorMessage,
@@ -55,6 +62,7 @@ export default function AdminBatchEditPanelClient({
   const appText = useAppText();
 
   const isInAlbumMode = albumTitles !== undefined;
+  const isInLocationMode = locationTitles !== undefined;
   const isInTagMode = tags !== undefined;
 
   const batchPhotoActionArguments = (
@@ -98,7 +106,7 @@ export default function AdminBatchEditPanelClient({
         {photosText} selected
       </ResponsiveText>;
 
-  const renderActions = isInTagMode || isInAlbumMode
+  const renderActions = isInTagMode || isInAlbumMode || isInLocationMode
     ? <>
       <LoaderButton
         className="min-h-[2.5rem]"
@@ -108,6 +116,7 @@ export default function AdminBatchEditPanelClient({
         />}
         onClick={() => {
           setAlbumTitles?.(undefined);
+          setLocationTitles?.(undefined);
           setTags?.(undefined);
           setTagErrorMessage?.('');
         }}
@@ -119,8 +128,11 @@ export default function AdminBatchEditPanelClient({
         confirmText={isInTagMode
           // eslint-disable-next-line max-len
           ? `Are you sure you want to apply tags to ${photosText}? This action cannot be undone.`
-          // eslint-disable-next-line max-len
-          : `Are you sure you want to add ${photosText} to these albums? This action cannot be undone.`}
+          : isInLocationMode
+            // eslint-disable-next-line max-len
+            ? `Are you sure you want to add ${photosText} to these locations? This action cannot be undone.`
+            // eslint-disable-next-line max-len
+            : `Are you sure you want to add ${photosText} to these albums? This action cannot be undone.`}
         onClick={() => {
           setIsPerformingSelectEdit?.(true);
           if (isInTagMode) {
@@ -153,12 +165,27 @@ export default function AdminBatchEditPanelClient({
                 stopSelectingPhotos?.();
               })
               .finally(() => setIsPerformingSelectEdit?.(false));
+          } else if (isInLocationMode) {
+            const locationTitlesArray = convertStringToArray(
+              locationTitles,
+              false,
+            );
+            batchPhotoAction({
+              ...batchPhotoActionArguments,
+              locationTitles: locationTitlesArray,
+            })
+              .then(() => {
+                toastSuccess(`${photosText} added to locations`);
+                stopSelectingPhotos?.();
+              })
+              .finally(() => setIsPerformingSelectEdit?.(false));
           }
         }}
         disabled={
           (
             (!tags || Boolean(tagErrorMessage)) &&
             !albumTitles
+            && !locationTitles
           ) ||
           isFormDisabled
         }
@@ -210,6 +237,13 @@ export default function AdminBatchEditPanelClient({
         Tag
       </LoaderButton>
       <LoaderButton
+        onClick={() => setLocationTitles?.('')}
+        disabled={isFormDisabled}
+        icon={<TbMapPin size={16} />}
+      >
+        Location
+      </LoaderButton>
+      <LoaderButton
         icon={<IoCloseSharp size={19} />}
         onClick={stopSelectingPhotos}
       />
@@ -256,22 +290,31 @@ export default function AdminBatchEditPanelClient({
                 openOnLoad
                 hideLabel
               />
-              : isInTagMode
-                ? <FieldsetTag
-                  tags={tags}
-                  tagOptions={uniqueTags}
-                  placeholder={`Tag ${photosText} ...`}
-                  onChange={tags => setTags?.(tags)}
-                  onError={setTagErrorMessage}
+              : isInLocationMode
+                ? <FieldsetLocation
+                  locationOptions={uniqueLocations}
+                  value={locationTitles}
+                  onChange={setLocationTitles}
                   readOnly={isPerformingSelectEdit}
                   openOnLoad
                   hideLabel
                 />
-                : <div className="grow">
-                  <div className="flex items-center gap-2">
-                    {renderPhotoSelectionStatus}
-                  </div>
-                </div>}
+                : isInTagMode
+                  ? <FieldsetTag
+                    tags={tags}
+                    tagOptions={uniqueTags}
+                    placeholder={`Tag ${photosText} ...`}
+                    onChange={tags => setTags?.(tags)}
+                    onError={setTagErrorMessage}
+                    readOnly={isPerformingSelectEdit}
+                    openOnLoad
+                    hideLabel
+                  />
+                  : <div className="grow">
+                    <div className="flex items-center gap-2">
+                      {renderPhotoSelectionStatus}
+                    </div>
+                  </div>}
             {renderActions}
           </div>
           {shouldShowSelectAll &&

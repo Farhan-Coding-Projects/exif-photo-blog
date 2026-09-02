@@ -10,3 +10,25 @@ const DJI_MODEL_LABELS: Record<string, string> = {
 
 export const formatDjiModel = (model: string) =>
   DJI_MODEL_LABELS[model.toLocaleUpperCase()] ?? model;
+
+const DJI_MINI_4K_MODEL = 'FC7703';
+const DJI_MINI_4K_LENS_LABEL = 'MINI 4K';
+const DJI_MINI_4K_LENS_ALIASES = [
+  '20.7 mm',
+  'DJI Main Camera',
+  'Mini 4K Main Camera',
+  'MINI 4K MAIN CAMERA (20.7MM)',
+  DJI_MINI_4K_LENS_LABEL,
+];
+
+export const normalizeDjiLensModel = (
+  make?: string,
+  model?: string,
+  lensModel?: string,
+) => isMakeDji(make) &&
+  model?.toLocaleUpperCase() === DJI_MINI_4K_MODEL &&
+  lensModel &&
+  DJI_MINI_4K_LENS_ALIASES.some(alias =>
+    alias.toLocaleLowerCase() === lensModel.toLocaleLowerCase())
+  ? DJI_MINI_4K_LENS_LABEL
+  : lensModel;

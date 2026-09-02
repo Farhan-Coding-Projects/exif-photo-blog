@@ -14,11 +14,13 @@ import { useMemo } from 'react';
 import { Recipes } from '@/recipe';
 import { Films } from '@/film';
 import { Albums } from '@/album';
+import { Locations } from '@/location';
 
 export default function UploadPageClient({
   blobId,
   formDataFromExif,
   albums,
+  locations,
   uniqueTags,
   uniqueRecipes,
   uniqueFilms,
@@ -29,6 +31,7 @@ export default function UploadPageClient({
   blobId?: string
   formDataFromExif: Partial<PhotoFormData>
   albums: Albums
+  locations: Locations
   uniqueTags: Tags
   uniqueRecipes: Recipes
   uniqueFilms: Films
@@ -74,6 +77,7 @@ export default function UploadPageClient({
       <PhotoForm
         initialPhotoForm={initialPhotoForm}
         albums={albums}
+        locations={locations}
         uniqueTags={uniqueTags}
         uniqueRecipes={uniqueRecipes}
         uniqueFilms={uniqueFilms}

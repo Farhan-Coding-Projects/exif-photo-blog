@@ -8,6 +8,7 @@ import {
   SHOW_YEARS,
   SHOW_RECENTS,
   SHOW_ALBUMS,
+  SHOW_LOCATIONS,
 } from '@/app/config';
 import { createLensKey } from '@/lens';
 import { sortTagsByCount } from '@/tag';
@@ -24,6 +25,7 @@ import {
   getUniqueYearsCached,
 } from '@/photo/cache';
 import { getAlbumsWithMetaCached } from '@/album/cache';
+import { getLocationsWithMetaCached } from '@/location/cache';
 
 type CategoryData = Awaited<ReturnType<typeof getDataForCategories>>;
 
@@ -37,6 +39,7 @@ export const NULL_CATEGORY_DATA: CategoryData = {
   films: [],
   focalLengths: [],
   albums: [],
+  locations: [],
 };
 
 export const getDataForCategories = () => Promise.all([
@@ -87,6 +90,10 @@ export const getDataForCategories = () => Promise.all([
     ? getAlbumsWithMetaCached()
       .catch(() => [])
     : undefined,
+  SHOW_LOCATIONS
+    ? getLocationsWithMetaCached()
+      .catch(() => [])
+    : undefined,
 ]).then(([
   recents = [],
   years = [],
@@ -97,6 +104,7 @@ export const getDataForCategories = () => Promise.all([
   films = [],
   focalLengths = [],
   albums = [],
+  locations = [],
 ]) => ({
   recents,
   years,
@@ -107,6 +115,7 @@ export const getDataForCategories = () => Promise.all([
   films,
   focalLengths,
   albums,
+  locations,
 }));
 
 export const getCountsForCategories = async () => {
@@ -116,6 +125,7 @@ export const getCountsForCategories = async () => {
     cameras,
     lenses,
     albums,
+    locations,
     tags,
     recipes,
     films,
@@ -132,6 +142,10 @@ export const getCountsForCategories = async () => {
     }, {} as Record<string, number>),
     albums: albums.reduce((acc, { album, count }) => {
       acc[album.slug] = count;
+      return acc;
+    }, {} as Record<string, number>),
+    locations: locations.reduce((acc, { location, count }) => {
+      acc[location.slug] = count;
       return acc;
     }, {} as Record<string, number>),
     cameras: cameras.reduce((acc, camera) => {
@@ -168,6 +182,7 @@ export const getLastModifiedForCategories = (
     cameras,
     lenses,
     albums,
+    locations,
     tags,
     recipes,
     films,
@@ -180,6 +195,7 @@ export const getLastModifiedForCategories = (
   ...cameras.map(({ lastModified }) => lastModified),
   ...lenses.map(({ lastModified }) => lastModified),
   ...albums.map(({ lastModified }) => lastModified),
+  ...locations.map(({ lastModified }) => lastModified),
   ...tags.map(({ lastModified }) => lastModified),
   ...recipes.map(({ lastModified }) => lastModified),
   ...films.map(({ lastModified }) => lastModified),

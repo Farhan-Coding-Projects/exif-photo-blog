@@ -18,6 +18,7 @@ import EntityLink from '@/components/entity/EntityLink';
 import { useAppText } from '@/i18n/state/client';
 import { getTopEntities } from '@/category/mobile';
 import { BiExpandVertical } from 'react-icons/bi';
+import PhotoLocation from '@/location/PhotoLocation';
 
 const ENTITY_LINK_PROPS: Partial<ComponentProps<typeof EntityLink>> = {
   badged: true,
@@ -40,6 +41,7 @@ export default function TopPhotoEntities({
     hasFavs,
     hasRecents,
     albums,
+    locations,
     tags,
     camera,
     lens,
@@ -73,6 +75,13 @@ export default function TopPhotoEntities({
         <PhotoAlbum
           key={album.id}
           album={album}
+          {...ENTITY_LINK_PROPS}
+        />,
+      )}
+      {locations.map(({ location }) =>
+        <PhotoLocation
+          key={location.id}
+          location={location}
           {...ENTITY_LINK_PROPS}
         />,
       )}

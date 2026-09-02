@@ -9,6 +9,8 @@ import {
   isPathFocalLength,
   isPathFocalLengthPhoto,
   isPathPhoto,
+  isPathLocation,
+  isPathLocationPhoto,
   isPathProtected,
   isPathTag,
   isPathTagPhoto,
@@ -26,6 +28,7 @@ import {
   PREFIX_FILM,
   PREFIX_FOCAL_LENGTH,
   PREFIX_LENS,
+  PREFIX_LOCATION,
   PREFIX_RECENTS,
   PREFIX_RECIPE,
   PREFIX_TAG,
@@ -42,6 +45,7 @@ const LENS_MAKE                     = 'fujifilm';
 const LENS_MODEL                    = 'xf90mmf2-r-lm-wr';
 const LENS_OBJECT                   = { make: LENS_MAKE, model: LENS_MODEL };
 const ALBUM                         = 'album-name';
+const LOCATION                      = 'location-name';
 const TAG                           = 'tag-name';
 const RECIPE                        = 'nature-nurture';
 const FILM                          = 'acros';
@@ -64,6 +68,9 @@ const PATH_LENS_PHOTO               = `${PATH_LENS}/${PHOTO_ID}`;
 
 const PATH_ALBUM                    = `${PREFIX_ALBUM}/${ALBUM}`;
 const PATH_ALBUM_PHOTO              = `${PATH_ALBUM}/${PHOTO_ID}`;
+
+const PATH_LOCATION                 = `${PREFIX_LOCATION}/${LOCATION}`;
+const PATH_LOCATION_PHOTO           = `${PATH_LOCATION}/${PHOTO_ID}`;
 
 const PATH_TAG                      = `${PREFIX_TAG}/${TAG}`;
 const PATH_TAG_PHOTO                = `${PATH_TAG}/${PHOTO_ID}`;
@@ -104,6 +111,8 @@ describe('Paths', () => {
     expect(isPathPhoto(PATH_PHOTO)).toBe(true);
     expect(isPathCamera(PATH_CAMERA)).toBe(true);
     expect(isPathCameraPhoto(PATH_CAMERA_PHOTO)).toBe(true);
+    expect(isPathLocation(PATH_LOCATION)).toBe(true);
+    expect(isPathLocationPhoto(PATH_LOCATION_PHOTO)).toBe(true);
     expect(isPathTag(PATH_TAG)).toBe(true);
     expect(isPathTagPhoto(PATH_TAG_PHOTO)).toBe(true);
     expect(isPathFilm(PATH_FILM)).toBe(true);
@@ -159,6 +168,14 @@ describe('Paths', () => {
     expect(getPathComponents(PATH_ALBUM_PHOTO)).toEqual({
       photoId: PHOTO_ID,
       album: ALBUM,
+    });
+    // Location
+    expect(getPathComponents(PATH_LOCATION)).toEqual({
+      location: LOCATION,
+    });
+    expect(getPathComponents(PATH_LOCATION_PHOTO)).toEqual({
+      photoId: PHOTO_ID,
+      location: LOCATION,
     });
     // Tag
     expect(getPathComponents(PATH_TAG)).toEqual({
@@ -216,6 +233,9 @@ describe('Paths', () => {
     // Album
     expect(getEscapePath(PATH_ALBUM)).toEqual(PATH_ROOT);
     expect(getEscapePath(PATH_ALBUM_PHOTO)).toEqual(PATH_ALBUM);
+    // Location
+    expect(getEscapePath(PATH_LOCATION)).toEqual(PATH_ROOT);
+    expect(getEscapePath(PATH_LOCATION_PHOTO)).toEqual(PATH_LOCATION);
     // Tag
     expect(getEscapePath(PATH_TAG)).toEqual(PATH_ROOT);
     expect(getEscapePath(PATH_TAG_PHOTO)).toEqual(PATH_TAG);

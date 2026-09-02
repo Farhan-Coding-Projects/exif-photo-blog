@@ -4,6 +4,7 @@ import {
   ABSOLUTE_PATH_FULL,
   ABSOLUTE_PATH_GRID,
   absolutePathForAlbum,
+  absolutePathForLocation,
   absolutePathForCamera,
   absolutePathForFilm,
   absolutePathForFocalLength,
@@ -46,6 +47,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     cameras,
     lenses,
     albums,
+    locations,
     tags,
     recipes,
     films,
@@ -97,6 +99,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Albums
     ...albums.map(({ album, lastModified }) => ({
       url: absolutePathForAlbum(album),
+      priority: PRIORITY_CATEGORY,
+      lastModified,
+    })),
+    // Locations
+    ...locations.map(({ location, lastModified }) => ({
+      url: absolutePathForLocation(location),
       priority: PRIORITY_CATEGORY,
       lastModified,
     })),

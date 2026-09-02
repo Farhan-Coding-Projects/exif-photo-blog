@@ -26,6 +26,7 @@ import {
   PATH_GRID_INFERRED,
   PATH_SIGN_IN,
   pathForAlbum,
+  pathForLocation,
   pathForCamera,
   pathForFilm,
   pathForFocalLength,
@@ -104,6 +105,7 @@ import IconAlbum from '@/components/icons/IconAlbum';
 import usePhotoQuery from '@/photo/usePhotoQuery';
 import { clearCacheAction } from '@/photo/actions';
 import { toastSuccess } from '@/toast';
+import { TbMapPin } from 'react-icons/tb';
 
 const DIALOG_TITLE = 'Global Command-K Menu';
 const DIALOG_DESCRIPTION = 'For searching photos, views, and settings';
@@ -150,6 +152,7 @@ export default function CommandKClient({
   cameras,
   lenses,
   albums,
+  locations,
   tags: _tags,
   recipes,
   films,
@@ -390,6 +393,16 @@ export default function CommandKClient({
               path: pathForAlbum(album),
             })),
           };
+          case 'locations': return {
+            heading: 'Locations',
+            accessory: <TbMapPin size={14} />,
+            items: locations.map(({ location, count }) => ({
+              label: location.title,
+              annotation: formatCount(count),
+              annotationAria: formatCountDescriptive(count),
+              path: pathForLocation(location),
+            })),
+          };
           case 'tags': return {
             heading: appText.category.tagPlural,
             accessory: <IconTag
@@ -460,6 +473,7 @@ export default function CommandKClient({
     cameras,
     lenses,
     albums,
+    locations,
     tags,
     recipes,
     films,

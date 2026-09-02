@@ -105,6 +105,8 @@ To auto-generate text descriptions of photo:
      - `title` (default)
      - `caption`
      - `tags` (default)
+     - `albums` (default)
+     - `locations` (default)
      - `semantic` (default)
      - `none`
 

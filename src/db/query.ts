@@ -4,6 +4,9 @@ import sleep from '@/utility/sleep';
 import { ADMIN_SQL_DEBUG_ENABLED } from '@/app/config';
 import { createAlbumPhotoTable, createAlbumsTable } from '@/album/query';
 import { createAboutTable } from '@/about/query';
+import {
+  createLocationTables,
+} from '@/location/query';
 
 // Safe wrapper intended for most queries with JIT migration/table creation
 // Catches up to 3 migrations in older installations
@@ -55,6 +58,7 @@ export const safelyQuery = async <T>(
       await createPhotosTable();
       await createAlbumsTable();
       await createAlbumPhotoTable();
+      await createLocationTables();
       await createAboutTable();
       result = await callback();
     } else if (/relation "albums" does not exist/i.test(e.message)) {
@@ -62,6 +66,11 @@ export const safelyQuery = async <T>(
       console.log('Creating albums tables ...');
       await createAlbumsTable();
       await createAlbumPhotoTable();
+      result = await callback();
+    } else if (
+      /relation "locations?(_photo)?" does not exist/i.test(e.message)
+    ) {
+      await createLocationTables();
       result = await callback();
     } else if (/relation "about" does not exist/i.test(e.message)) {
       // Create about table if it doesn't exist

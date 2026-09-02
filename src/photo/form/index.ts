@@ -18,6 +18,7 @@ import { COLOR_SORT_ENABLED } from '@/app/config';
 
 type VirtualFields =
   'albums' |
+  'locations' |
   'visibility' |
   'favorite' |
   'applyRecipeTitleGlobally' |
@@ -114,6 +115,11 @@ const FORM_METADATA = (
   albums: {
     section: 'text',
     label: 'albums',
+    excludeFromInsert: true,
+  },
+  locations: {
+    section: 'text',
+    label: 'locations',
     excludeFromInsert: true,
   },
   visibility: {
