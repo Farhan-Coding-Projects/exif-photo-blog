@@ -76,7 +76,7 @@ export const sortLensesWithCount = (
 ) => {
   const aText = formatLensText(a.lens);
   const bText = formatLensText(b.lens);
-  return aText.localeCompare(bText);
+  return b.count - a.count || aText.localeCompare(bText);
 };
 
 export const lensFromPhoto = (

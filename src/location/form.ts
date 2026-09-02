@@ -31,7 +31,8 @@ export const convertFormDataToLocation = (formData: FormData): Location => {
 export const convertLocationsToAnnotatedTags = (
   locations: Locations = [],
 ): AnnotatedTag[] => locations
-  .sort((a, b) => a.location.title.localeCompare(b.location.title))
+  .sort((a, b) =>
+    b.count - a.count || a.location.title.localeCompare(b.location.title))
   .map(({ location, count }) => ({
     value: location.title,
     annotation: formatCount(count),

@@ -56,7 +56,7 @@ export const sortFilmsWithCount = (
 ) => {
   const aLabel = labelForFilm(a.film).large;
   const bLabel = labelForFilm(b.film).large;
-  return aLabel.localeCompare(bLabel);
+  return b.count - a.count || aLabel.localeCompare(bLabel);
 };
 
 export const titleForFilm = (
@@ -120,6 +120,7 @@ export const convertFilmsForForm = (
   make?: string,
 ): AnnotatedTag[] => {
   const filmOptions: AnnotatedTag[] = [];
+  const countsByFilm = new Map(films.map(({ film, count }) => [film, count]));
 
   if (currentFilm && !films.some(f => f.film === currentFilm)) {
     films.push({ film: currentFilm } as FilmWithMeta);
@@ -145,5 +146,7 @@ export const convertFilmsForForm = (
     });
   }
 
-  return filmOptions.sort((a, b) => a.value.localeCompare(b.value));
+  return filmOptions.sort((a, b) =>
+    (countsByFilm.get(b.value) ?? 0) - (countsByFilm.get(a.value) ?? 0) ||
+    a.value.localeCompare(b.value));
 };

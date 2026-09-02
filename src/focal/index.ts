@@ -75,4 +75,4 @@ export const generateMetaForFocalLength = (
 });
 
 export const sortFocalLengths = (focalLengths: FocalLengths) =>
-  focalLengths.sort((a, b) => a.focal - b.focal);
+  focalLengths.sort((a, b) => b.count - a.count || a.focal - b.focal);

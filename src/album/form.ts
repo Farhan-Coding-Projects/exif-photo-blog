@@ -32,7 +32,8 @@ export const convertAlbumsToAnnotatedTags = (
   albums: Albums = [],
 ): AnnotatedTag[] =>
   albums
-    .sort((a, b) => a.album.title.localeCompare(b.album.title))
+    .sort((a, b) =>
+      b.count - a.count || a.album.title.localeCompare(b.album.title))
     .map(({ album, count }) => ({
       value: album.title,
       annotation: formatCount(count),

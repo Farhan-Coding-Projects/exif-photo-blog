@@ -119,7 +119,7 @@ export const getLocationsWithMeta = () =>
     FROM locations l
     LEFT JOIN location_photo lp ON l.id = lp.location_id
     GROUP BY l.id
-    ORDER BY l.created_at DESC
+    ORDER BY COUNT(lp.photo_id) DESC, l.title ASC
   `.then(({ rows }): Locations => rows.map(({ count, ...location }) => ({
       location: parseLocationFromDb(location),
       count: parseInt(count, 10),

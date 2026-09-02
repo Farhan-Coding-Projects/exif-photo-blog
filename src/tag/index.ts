@@ -15,7 +15,7 @@ import {
   formatCount,
   formatCountDescriptive,
 } from '@/utility/string';
-import { CategoryQueryMeta, sortCategoryByCount } from '@/category';
+import { CategoryQueryMeta } from '@/category';
 import { AppTextState } from '@/i18n/state';
 
 // Reserved tags
@@ -81,11 +81,7 @@ export const sortTagsByCount = (
 ) => tags
   .filter(({ tag }) => tag !== tagToExclude)
   .sort(({ tag: tagA, count: countA }, { tag: tagB, count: countB }) =>
-    isTagFavs(tagA)
-      ? -1
-      : isTagFavs(tagB)
-        ? 1
-        : countB - countA);
+    countB - countA || tagA.localeCompare(tagB));
 
 export const sortTagsWithoutFavs = (tags: string[]) =>
   sortTagsArray(tags, TAG_FAVS);
@@ -156,24 +152,20 @@ export const addPrivateToTags = (
   lastModifiedPrivate = new Date(),
 ) =>
   countPrivate > 0
-    ? tags
-      .filter(({ tag }) => tag === TAG_FAVS)
+    ? sortTagsByCount(tags
+      .filter(({ tag }) => tag !== TAG_PRIVATE)
       .concat({
         tag: TAG_PRIVATE,
         count: countPrivate,
         lastModified: lastModifiedPrivate,
-      })
-      .concat(tags
-        .filter(({ tag }) => tag !== TAG_FAVS)
-        .sort(sortCategoryByCount),
-      )
+      }))
     : tags;
 
 export const convertTagsForForm = (
   tags: Tags = [],
   appText: AppTextState,
 ) =>
-  sortTagsObjectWithoutFavs(tags)
+  sortTagsByCount(tags, TAG_FAVS)
     .map(({ tag, count }) => ({
       value: tag,
       annotation: formatCount(count),

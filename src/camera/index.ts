@@ -48,7 +48,7 @@ export const sortCamerasWithCount = (
 ) => {
   const aText = formatCameraText(a.camera);
   const bText = formatCameraText(b.camera);
-  return aText.localeCompare(bText);
+  return b.count - a.count || aText.localeCompare(bText);
 };
 
 export const cameraFromPhoto = (

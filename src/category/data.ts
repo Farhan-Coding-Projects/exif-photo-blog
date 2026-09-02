@@ -54,6 +54,7 @@ export const getDataForCategories = () => Promise.all([
     : undefined,
   SHOW_YEARS
     ? getUniqueYearsCached()
+      .then(sortCategoriesByCount)
       .catch(() => [])
     : undefined,
   SHOW_CAMERAS
@@ -88,10 +89,12 @@ export const getDataForCategories = () => Promise.all([
     : undefined,
   SHOW_ALBUMS
     ? getAlbumsWithMetaCached()
+      .then(sortCategoriesByCount)
       .catch(() => [])
     : undefined,
   SHOW_LOCATIONS
     ? getLocationsWithMetaCached()
+      .then(sortCategoriesByCount)
       .catch(() => [])
     : undefined,
 ]).then(([

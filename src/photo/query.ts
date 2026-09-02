@@ -263,7 +263,7 @@ export const getUniqueCameras = async () =>
     AND trim(make) <> ''
     AND trim(model) <> ''
     GROUP BY make, model
-    ORDER BY camera ASC
+    ORDER BY COUNT(*) DESC, camera ASC
   `.then(({ rows }): Cameras => rows.map(({
       make, model, count, last_modified,
     }) => ({
@@ -284,7 +284,7 @@ export const getUniqueLenses = async () =>
     WHERE hidden IS NOT TRUE
     AND trim(lens_model) <> ''
     GROUP BY lens_make, lens_model
-    ORDER BY lens ASC
+    ORDER BY COUNT(*) DESC, lens ASC
   `.then(({ rows }): Lenses => rows
       .map(({ lens_make: make, lens_model: model, count, last_modified }) => ({
         lensKey: createLensKey({ make, model }),
@@ -302,7 +302,7 @@ export const getUniqueTags = async (includeHidden?: boolean) =>
     FROM photos
     ${includeHidden ? '' : 'WHERE hidden IS NOT TRUE'}
     GROUP BY tag
-    ORDER BY tag ASC
+    ORDER BY COUNT(*) DESC, tag ASC
   `).then(({ rows }): Tags => rows.map(({ tag, count, last_modified }) => ({
     tag,
     count: parseInt(count, 10),
@@ -318,7 +318,7 @@ export const getUniqueRecipes = async () =>
     FROM photos
     WHERE hidden IS NOT TRUE AND recipe_title IS NOT NULL
     GROUP BY recipe_title
-    ORDER BY recipe_title ASC
+    ORDER BY COUNT(*) DESC, recipe_title ASC
   `.then(({ rows }): Recipes => rows
       .map(({ recipe_title, count, last_modified }) => ({
         recipe: recipe_title,
@@ -336,7 +336,7 @@ export const getUniqueYears = async () =>
     FROM photos
     WHERE hidden IS NOT TRUE
     GROUP BY year
-    ORDER BY year DESC
+    ORDER BY COUNT(*) DESC, year DESC
   `.then(({ rows }): Years => rows.map(({ year, count, last_modified }) => ({
       year,
       count: parseInt(count, 10),
@@ -394,7 +394,7 @@ export const getUniqueFilms = async () =>
     FROM photos
     WHERE hidden IS NOT TRUE AND film IS NOT NULL
     GROUP BY film
-    ORDER BY film ASC
+    ORDER BY COUNT(*) DESC, film ASC
   `.then(({ rows }): Films => rows
       .map(({ film, count, last_modified }) => ({
         film,
@@ -411,7 +411,7 @@ export const getUniqueFocalLengths = async () =>
     FROM photos
     WHERE hidden IS NOT TRUE AND focal_length IS NOT NULL
     GROUP BY focal_length
-    ORDER BY focal_length ASC
+    ORDER BY COUNT(*) DESC, focal_length ASC
   `.then(({ rows }): FocalLengths => rows
       .map(({ focal_length, count, last_modified }) => ({
         focal: parseInt(focal_length, 10),
