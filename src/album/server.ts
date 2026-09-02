@@ -2,10 +2,12 @@ import { capitalizeWords, parameterize } from '@/utility/string';
 import {
   addPhotoAlbumId,
   clearPhotoAlbumIds,
+  deletePhotoAlbumId,
   getAlbumsWithMeta,
   insertAlbum,
 } from './query';
 import { deletePhotoTagGlobally, getPhotos } from '@/photo/query';
+import { ALBUM_FAVS_TITLE } from '.';
 
 export const createAlbumsAndGetIds = async (titles: string[]) => {
   const albums = await getAlbumsWithMeta();
@@ -28,6 +30,17 @@ export const addAlbumTitlesToPhoto = async (
   const albumIds = await createAlbumsAndGetIds(albumTitles);
   if (shouldClearPhotoAlbumIds) { await clearPhotoAlbumIds(photoId); }
   await Promise.all(albumIds.map(albumId => addPhotoAlbumId(photoId, albumId)));
+};
+
+export const syncFavsAlbumForPhoto = async (
+  photoId: string,
+  isFavorite: boolean,
+) => {
+  const [albumId] = await createAlbumsAndGetIds([ALBUM_FAVS_TITLE]);
+  if (!albumId) { return; }
+  return isFavorite
+    ? addPhotoAlbumId(photoId, albumId)
+    : deletePhotoAlbumId(photoId, albumId);
 };
 
 export const upgradeTagToAlbum = async (tag: string) => {

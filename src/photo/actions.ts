@@ -80,6 +80,7 @@ import { getAlbumTitlesFromFormData } from '@/album/form';
 import {
   addAlbumTitlesToPhoto,
   createAlbumsAndGetIds,
+  syncFavsAlbumForPhoto,
   upgradeTagToAlbum,
 } from '@/album/server';
 import { addPhotoAlbumIds } from '@/album/query';
@@ -112,6 +113,10 @@ export const createPhotoAction = async (formData: FormData) =>
       photo.url = updatedUrl;
       await insertPhoto(photo);
       await addAlbumTitlesToPhoto(albumTitles, photo.id, false);
+      await syncFavsAlbumForPhoto(
+        photo.id,
+        photo.tags?.some(isTagFavs) ?? false,
+      );
       await addLocationTitlesToPhoto(locationTitles, photo.id, false);
       await propagateRecipeTitleIfNecessary(formData, photo);
       revalidateAllKeysAndPaths();
@@ -229,6 +234,10 @@ const addUpload = async ({
       if (albumIds.length > 0) {
         await addPhotoAlbumIds([photo.id], albumIds);
       }
+      await syncFavsAlbumForPhoto(
+        photo.id,
+        photo.tags?.some(isTagFavs) ?? false,
+      );
       if (locationIds.length > 0) {
         await addPhotoLocationIds([photo.id], locationIds);
       }
@@ -344,6 +353,10 @@ export const updatePhotoAction = async (formData: FormData) =>
     const albumTitles = getAlbumTitlesFromFormData(formData);
     const locationTitles = getLocationTitlesFromFormData(formData);
     await addAlbumTitlesToPhoto(albumTitles, photo.id);
+    await syncFavsAlbumForPhoto(
+      photo.id,
+      photo.tags?.some(isTagFavs) ?? false,
+    );
     await addLocationTitlesToPhoto(locationTitles, photo.id);
    
     let urlToDelete: string | undefined;
@@ -381,6 +394,7 @@ export const toggleFavoritePhotoAction = async (
         ? tags.filter(tag => !isTagFavs(tag))
         : [...tags, TAG_FAVS];
       await updatePhoto(convertPhotoToPhotoDbInsert(photo));
+      await syncFavsAlbumForPhoto(photo.id, isPhotoFav(photo));
       revalidateAllKeysAndPaths();
       if (shouldRedirect) {
         redirect(pathForPhoto({ photo: photoId }));
@@ -783,6 +797,8 @@ export const batchPhotoAction = async ({
   switch (action) {
     case 'favorite':
       await addTagsToPhotos([TAG_FAVS], photoIds);
+      await Promise.all(photoIds.map(photoId =>
+        syncFavsAlbumForPhoto(photoId, true)));
       break;
     case 'delete':
       for (const photoId of photoIds) {

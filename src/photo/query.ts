@@ -296,11 +296,12 @@ export const getUniqueLenses = async () =>
 
 export const getUniqueTags = async (includeHidden?: boolean) =>
   safelyQuery(() => query(`
-    SELECT DISTINCT unnest(tags) as tag,
+    SELECT tag,
       COUNT(*),
       MAX(updated_at) as last_modified
-    FROM photos
-    ${includeHidden ? '' : 'WHERE hidden IS NOT TRUE'}
+    FROM photos, unnest(tags) as tag
+    WHERE tag <> 'favs'
+    ${includeHidden ? '' : 'AND hidden IS NOT TRUE'}
     GROUP BY tag
     ORDER BY COUNT(*) DESC, tag ASC
   `).then(({ rows }): Tags => rows.map(({ tag, count, last_modified }) => ({

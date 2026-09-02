@@ -81,7 +81,10 @@ export const getAlbumsWithMeta = () =>
     FROM albums a
     LEFT JOIN album_photo ap ON a.id = ap.album_id
     GROUP BY a.id
-    ORDER BY COUNT(ap.photo_id) DESC, a.title ASC
+    ORDER BY
+      CASE WHEN a.slug = 'favs' THEN 0 ELSE 1 END,
+      COUNT(ap.photo_id) DESC,
+      a.title ASC
   `.then(({ rows }): Albums => rows.map(({
       count,
       ...album
@@ -96,6 +99,12 @@ export const clearPhotoAlbumIds = (photoId: string) =>
   safelyQuery(() => sql`
     DELETE FROM album_photo WHERE photo_id=${photoId}
   `, 'clearPhotoAlbumIds');
+
+export const deletePhotoAlbumId = (photoId: string, albumId: string) =>
+  safelyQuery(() => sql`
+    DELETE FROM album_photo
+    WHERE photo_id=${photoId} AND album_id=${albumId}
+  `, 'deletePhotoAlbumId');
 
 export const addPhotoAlbumIds = (photoIds: string[], albumIds: string[]) => {
   if (photoIds.length > 0 && albumIds.length > 0) {

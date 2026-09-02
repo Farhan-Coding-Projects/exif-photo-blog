@@ -1,5 +1,5 @@
 import { AnnotatedTag, FieldSetType } from '@/photo/form';
-import { Album, Albums } from '.';
+import { Album, Albums, sortAlbums } from '.';
 import { formatCount, formatCountDescriptive } from '@/utility/string';
 
 export const ALBUM_FORM_META: {
@@ -31,9 +31,7 @@ export const convertFormDataToAlbum = (formData: FormData): Album => {
 export const convertAlbumsToAnnotatedTags = (
   albums: Albums = [],
 ): AnnotatedTag[] =>
-  albums
-    .sort((a, b) =>
-      b.count - a.count || a.album.title.localeCompare(b.album.title))
+  sortAlbums(albums)
     .map(({ album, count }) => ({
       value: album.title,
       annotation: formatCount(count),

@@ -11,7 +11,7 @@ import {
   SHOW_LOCATIONS,
 } from '@/app/config';
 import { createLensKey } from '@/lens';
-import { sortTagsByCount } from '@/tag';
+import { sortTagsByCount, TAG_FAVS } from '@/tag';
 import { PhotoSetCategories, sortCategoriesByCount } from '@/category';
 import { sortFocalLengths } from '@/focal';
 import {
@@ -26,6 +26,7 @@ import {
 } from '@/photo/cache';
 import { getAlbumsWithMetaCached } from '@/album/cache';
 import { getLocationsWithMetaCached } from '@/location/cache';
+import { sortAlbums } from '@/album';
 
 type CategoryData = Awaited<ReturnType<typeof getDataForCategories>>;
 
@@ -69,7 +70,7 @@ export const getDataForCategories = () => Promise.all([
     : undefined,
   SHOW_TAGS
     ? getUniqueTagsCached()
-      .then(sortTagsByCount)
+      .then(tags => sortTagsByCount(tags, TAG_FAVS))
       .catch(() => [])
     : undefined,
   SHOW_RECIPES
@@ -89,7 +90,7 @@ export const getDataForCategories = () => Promise.all([
     : undefined,
   SHOW_ALBUMS
     ? getAlbumsWithMetaCached()
-      .then(sortCategoriesByCount)
+      .then(sortAlbums)
       .catch(() => [])
     : undefined,
   SHOW_LOCATIONS
