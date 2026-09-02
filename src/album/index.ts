@@ -25,12 +25,15 @@ type AlbumWithMeta = {
 
 export type Albums = AlbumWithMeta[];
 
-export const ALBUM_FAVS_TITLE = 'Favs';
-export const ALBUM_FAVS_SLUG = 'favs';
+export const ALBUM_FAVORITES_TITLE = 'Favorites';
+export const ALBUM_FAVORITES_SLUG = 'favorites';
+
+export const isAlbumFavorites = (album: Album) =>
+  album.slug === ALBUM_FAVORITES_SLUG;
 
 export const sortAlbums = (albums: Albums) => albums.sort((a, b) =>
-  Number(b.album.slug === ALBUM_FAVS_SLUG) -
-  Number(a.album.slug === ALBUM_FAVS_SLUG) ||
+  Number(isAlbumFavorites(b.album)) -
+  Number(isAlbumFavorites(a.album)) ||
   b.count - a.count ||
   a.album.title.localeCompare(b.album.title));
 

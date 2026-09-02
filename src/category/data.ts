@@ -30,6 +30,10 @@ import { sortAlbums } from '@/album';
 
 type CategoryData = Awaited<ReturnType<typeof getDataForCategories>>;
 
+const hideSinglePhotoCategories = <T extends { count: number }>(
+  categories: T[],
+) => categories.filter(({ count }) => count > 1);
+
 export const NULL_CATEGORY_DATA: CategoryData = {
   recents: [],
   years: [],
@@ -55,46 +59,57 @@ export const getDataForCategories = () => Promise.all([
     : undefined,
   SHOW_YEARS
     ? getUniqueYearsCached()
+      .then(hideSinglePhotoCategories)
       .then(sortCategoriesByCount)
       .catch(() => [])
     : undefined,
   SHOW_CAMERAS
     ? getUniqueCamerasCached()
+      .then(hideSinglePhotoCategories)
       .then(sortCategoriesByCount)
       .catch(() => [])
     : undefined,
   SHOW_LENSES
     ? getUniqueLensesCached()
+      .then(hideSinglePhotoCategories)
       .then(sortCategoriesByCount)
       .catch(() => [])
     : undefined,
   SHOW_TAGS
     ? getUniqueTagsCached()
-      .then(tags => sortTagsByCount(tags, TAG_FAVS))
+      .then(tags => sortTagsByCount(
+        hideSinglePhotoCategories(tags),
+        TAG_FAVS,
+      ))
       .catch(() => [])
     : undefined,
   SHOW_RECIPES
     ? getUniqueRecipesCached()
+      .then(hideSinglePhotoCategories)
       .then(sortCategoriesByCount)
       .catch(() => [])
     : undefined,
   SHOW_FILMS
     ? getUniqueFilmsCached()
+      .then(hideSinglePhotoCategories)
       .then(sortCategoriesByCount)
       .catch(() => [])
     : undefined,
   SHOW_FOCAL_LENGTHS
     ? getUniqueFocalLengthsCached()
+      .then(hideSinglePhotoCategories)
       .then(sortFocalLengths)
       .catch(() => [])
     : undefined,
   SHOW_ALBUMS
     ? getAlbumsWithMetaCached()
+      .then(hideSinglePhotoCategories)
       .then(sortAlbums)
       .catch(() => [])
     : undefined,
   SHOW_LOCATIONS
     ? getLocationsWithMetaCached()
+      .then(hideSinglePhotoCategories)
       .then(sortCategoriesByCount)
       .catch(() => [])
     : undefined,

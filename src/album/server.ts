@@ -7,7 +7,7 @@ import {
   insertAlbum,
 } from './query';
 import { deletePhotoTagGlobally, getPhotos } from '@/photo/query';
-import { ALBUM_FAVS_TITLE } from '.';
+import { ALBUM_FAVORITES_TITLE } from '.';
 
 export const createAlbumsAndGetIds = async (titles: string[]) => {
   const albums = await getAlbumsWithMeta();
@@ -36,7 +36,7 @@ export const syncFavsAlbumForPhoto = async (
   photoId: string,
   isFavorite: boolean,
 ) => {
-  const [albumId] = await createAlbumsAndGetIds([ALBUM_FAVS_TITLE]);
+  const [albumId] = await createAlbumsAndGetIds([ALBUM_FAVORITES_TITLE]);
   if (!albumId) { return; }
   return isFavorite
     ? addPhotoAlbumId(photoId, albumId)

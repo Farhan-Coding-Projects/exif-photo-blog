@@ -82,7 +82,7 @@ export const getAlbumsWithMeta = () =>
     LEFT JOIN album_photo ap ON a.id = ap.album_id
     GROUP BY a.id
     ORDER BY
-      CASE WHEN a.slug = 'favs' THEN 0 ELSE 1 END,
+      CASE WHEN a.slug = 'favorites' THEN 0 ELSE 1 END,
       COUNT(ap.photo_id) DESC,
       a.title ASC
   `.then(({ rows }): Albums => rows.map(({
