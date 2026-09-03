@@ -46,6 +46,7 @@ import { TbMapPin } from 'react-icons/tb';
 
 const APPROXIMATE_ITEM_HEIGHT = 40;
 const ABOUT_HEIGHT_OFFSET = 24;
+const HIDDEN_TAGS = new Set(['landscape', 'nature', 'city']);
 
 export default function PhotoGridSidebar({
   photosCount,
@@ -107,9 +108,13 @@ export default function PhotoGridSidebar({
 
   const { photosCountHidden } = useAppState();
 
+  const visibleTags = useMemo(() => tags.filter(
+    ({ tag }) => !HIDDEN_TAGS.has(tag.toLocaleLowerCase()),
+  ), [tags]);
+
   const tagsIncludingHidden = useMemo(() =>
-    addPrivateToTags(tags, photosCountHidden)
-  , [tags, photosCountHidden]);
+    addPrivateToTags(visibleTags, photosCountHidden)
+  , [visibleTags, photosCountHidden]);
 
   const recentsContent = recents.length > 0
     ? <HeaderList
@@ -220,7 +225,7 @@ export default function PhotoGridSidebar({
     />
     : null;
 
-  const tagsContent = tags.length > 0
+  const tagsContent = visibleTags.length > 0
     ? <HeaderList
       key="tags"
       title={appText.category.tagPlural}

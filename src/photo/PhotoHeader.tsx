@@ -106,10 +106,9 @@ export default function PhotoHeader({
         'grid',
         GRID_GAP_CLASSNAME,
         'items-start',
-        'grid-cols-4',
         isGridHighDensity
-          ? 'lg:grid-cols-6'
-          : 'md:grid-cols-3 lg:grid-cols-4',
+          ? 'grid-cols-4 lg:grid-cols-6'
+          : 'grid-cols-3',
       )}
     >
       {content}
@@ -128,14 +127,14 @@ export default function PhotoHeader({
             headerType === 'photo-set'
               ? isGridHighDensity
                 ? 'col-span-2 lg:col-span-3'
-                : 'col-span-2 md:col-span-1 lg:col-span-2'
+                : 'col-span-2 sm:col-span-1'
               : headerType === 'photo-detail-with-entity'
                 ? isGridHighDensity
                   ? 'col-span-2 lg:col-span-3'
-                  : 'col-span-2 md:col-span-1 lg:col-span-2'
+                  : 'col-span-1'
                 : isGridHighDensity
                   ? 'col-span-3 sm:col-span-3 lg:col-span-5 w-[110%] xl:w-full'
-                  : 'col-span-3 md:col-span-2 lg:col-span-3 w-[110%] xl:w-full',
+                  : 'col-span-2 w-[110%] xl:w-full',
           )}>
             {headerType === 'photo-detail-with-entity'
               ? renderContentA
@@ -154,7 +153,7 @@ export default function PhotoHeader({
             headerType === 'photo-set'
               ? isGridHighDensity
                 ? 'col-span-2 sm:col-span-1 lg:col-span-2'
-                : 'col-span-2 sm:col-span-1'
+                : 'col-span-1'
               : headerType === 'photo-detail-with-entity'
                 ? isGridHighDensity
                   ? 'col-span-1 lg:col-span-2'
@@ -206,10 +205,9 @@ export default function PhotoHeader({
         {richContent && renderBlock(
           <div className={clsx(
             // Use 2/3 or 3/4 grid on larger screens
-            'col-span-4',
             isGridHighDensity
-              ? 'lg:col-span-4'
-              : 'lg:col-span-3',
+              ? 'col-span-4'
+              : 'col-span-3',
             'mt-12',
           )}>
             {richContent}
