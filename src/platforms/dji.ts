@@ -12,7 +12,7 @@ export const formatDjiModel = (model: string) =>
   DJI_MODEL_LABELS[model.toLocaleUpperCase()] ?? model;
 
 const DJI_MINI_4K_MODEL = 'FC7703';
-const DJI_MINI_4K_LENS_LABEL = 'MINI 4K';
+const DJI_MINI_4K_LENS_LABEL = 'Mini 4K (20.7 mm)';
 const DJI_MINI_4K_LENS_ALIASES = [
   '20.7 mm',
   'DJI Main Camera',

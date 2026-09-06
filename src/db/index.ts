@@ -14,17 +14,13 @@ import { getLocationFromSlug } from '@/location/query';
 export const GENERATE_STATIC_PARAMS_LIMIT = 1000;
 export const PHOTO_DEFAULT_LIMIT = 100;
 
-// These must mirror utility/string.ts parameterization
-const CHARACTERS_TO_REMOVE = [',', '/'];
-const CHARACTERS_TO_REPLACE = ['+', '&', '|', ':', '_', ' '];
-
 const parameterizeForDb = (field: string) =>
   `REGEXP_REPLACE(
     REGEXP_REPLACE(
       LOWER(TRIM(${field})),
-      '[${CHARACTERS_TO_REMOVE.join('')}]', '', 'g'
+      '[^[:alnum:][:space:]_.–—+&|]', '', 'g'
     ),
-    '[${CHARACTERS_TO_REPLACE.join('')}]', '-', 'g'
+    '[[:space:]_–—+&|]', '-', 'g'
   )`;
 
 export type PhotoQueryOptions = {
