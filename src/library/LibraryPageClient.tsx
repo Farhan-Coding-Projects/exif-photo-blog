@@ -216,7 +216,7 @@ export default function LibraryPageClient({
             <AnimateItems
               className={clsx(
                 'grid gap-x-2 gap-y-6',
-                'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5',
+                'grid-cols-2 sm:grid-cols-3',
               )}
               items={items}
             />
