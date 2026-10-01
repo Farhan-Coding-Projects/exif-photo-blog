@@ -47,7 +47,8 @@ change and re-adding the hook):
 | Quicksand font | `tailwind.css` |
 | Favicons, hydration warning fix | `app/layout.tsx` |
 | Sort categories by count, hide single-photo categories | `src/category/data.ts`, `src/{camera,lens,tag,recipe,focal}/index.ts`, `src/film/index.tsx`, `src/photo/query.ts` |
-| 3-column grid | `src/photo/PhotoGrid.tsx` |
+| 3-column grid (incl. masonry on desktop) | `src/photo/{PhotoGrid,PhotoGridMasonry}.tsx` |
+| Favorites (`favs` tag) first in every sort | `src/db/index.ts` (`getOrderByFromOptions`), `__tests__/postgres.test.ts` |
 | Lens/camera label cleanup (Samsung, Sony, DJI) | `src/photo/form/server.ts`, `src/platforms/sony.ts`, `src/lens/index.ts`, `src/camera/index.ts` |
 | Hide meta on mobile (`NEXT_PUBLIC_HIDE_FEED_META_ON_MOBILE`) | `src/photo/{PhotoLarge,PhotosLarge}.tsx`, `src/app/config.ts` |
 | Upload error messages | `src/admin/{AddUploadButton,AdminUploadsTableRow}.tsx` |

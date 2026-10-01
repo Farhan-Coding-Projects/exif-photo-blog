@@ -22,8 +22,8 @@ function useMasonryColumns(small?: boolean, isGridHighDensity?: boolean) {
         else if (width >= 480) setColumns(4);
         else setColumns(2);
       } else {
-        if (width >= 1024) setColumns(4);
-        else if (width >= 768) setColumns(3);
+        // 3 columns on desktop
+        if (width >= 768) setColumns(3);
         else if (width >= 640) setColumns(4);
         else setColumns(2);
       }

@@ -8,13 +8,19 @@ import {
 describe('Postgres', () => {
   it('orders random photo queries with a stable recency stride', () => {
     expect(getOrderByFromOptions({ sortBy: 'random', limit: 3 }))
-      .toBe('ORDER BY (ROW_NUMBER() OVER (ORDER BY taken_at DESC, id) - 1) % 6, taken_at DESC, id');
+      .toBe('ORDER BY COALESCE(\'favs\' = ANY(tags), false) DESC, (ROW_NUMBER() OVER (ORDER BY taken_at DESC, id) - 1) % 6, taken_at DESC, id');
     expect(getOrderByFromOptions({ sortBy: 'random', limit: 6 }))
-      .toBe('ORDER BY (ROW_NUMBER() OVER (ORDER BY taken_at DESC, id) - 1) % 12, taken_at DESC, id');
+      .toBe('ORDER BY COALESCE(\'favs\' = ANY(tags), false) DESC, (ROW_NUMBER() OVER (ORDER BY taken_at DESC, id) - 1) % 12, taken_at DESC, id');
     expect(getOrderByFromOptions({ sortBy: 'random', limit: 0 }))
-      .toBe('ORDER BY (ROW_NUMBER() OVER (ORDER BY taken_at DESC, id) - 1) % 2, taken_at DESC, id');
+      .toBe('ORDER BY COALESCE(\'favs\' = ANY(tags), false) DESC, (ROW_NUMBER() OVER (ORDER BY taken_at DESC, id) - 1) % 2, taken_at DESC, id');
     expect(getOrderByFromOptions({ sortBy: 'takenAt' }))
-      .toBe('ORDER BY taken_at DESC');
+      .toBe('ORDER BY COALESCE(\'favs\' = ANY(tags), false) DESC, taken_at DESC');
+  });
+  it('orders favorites first, then by the selected sort', () => {
+    expect(getOrderByFromOptions({ sortBy: 'takenAtAsc' }))
+      .toBe('ORDER BY COALESCE(\'favs\' = ANY(tags), false) DESC, taken_at ASC');
+    expect(getOrderByFromOptions({ sortBy: 'createdAt', sortWithPriority: true }))
+      .toBe('ORDER BY COALESCE(\'favs\' = ANY(tags), false) DESC, priority_order ASC, created_at DESC');
   });
   it('Create many to many values', () => {
     expect(generateManyToManyValues(['1'], ['3']))

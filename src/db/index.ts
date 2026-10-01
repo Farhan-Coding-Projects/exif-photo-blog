@@ -12,7 +12,7 @@ import { getPathComponents } from '@/app/path';
 import { getAlbumFromSlug } from '@/album/query';
 import { Location } from '@/location';
 import { getLocationFromSlug } from '@/location/query';
-import { isTagPrivate } from '@/tag';
+import { isTagPrivate, TAG_FAVS } from '@/tag';
 import { getPhotoCount } from '@/photo/query';
 
 export const GENERATE_STATIC_PARAMS_LIMIT = 1000;
@@ -191,7 +191,7 @@ export const getWheresFromOptions = (
   };
 };
 
-export const getOrderByFromOptions = (options: PhotoQueryOptions) => {
+const getBaseOrderByFromOptions = (options: PhotoQueryOptions) => {
   const {
     sortBy = APP_DEFAULT_SORT_BY,
     sortWithPriority,
@@ -235,6 +235,13 @@ export const getOrderByFromOptions = (options: PhotoQueryOptions) => {
     }
   }
 };
+
+// Favorites first, then the selected sort within each group
+export const getOrderByFromOptions = (options: PhotoQueryOptions) =>
+  getBaseOrderByFromOptions(options)?.replace(
+    /^ORDER BY /,
+    `ORDER BY COALESCE('${TAG_FAVS}' = ANY(tags), false) DESC, `,
+  );
 
 export const getLimitAndOffsetFromOptions = (
   options: PhotoQueryOptions,
