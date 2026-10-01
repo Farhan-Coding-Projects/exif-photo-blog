@@ -251,25 +251,6 @@ Create Upstash Redis store from storage tab of Vercel dashboard and link to your
   - removes build identifier in `<head />`
   - disables `/admin/configuration/export.json`
 
-### Scripts & Analytics
-- Web Analytics
-  1. Open project on Vercel
-  2. Click "Analytics" tab
-  3. Follow "Enable Web Analytics" instructions (`@vercel/analytics` already included)
-- Speed Insights
-  1. Open project on Vercel
-  2. Click "Speed Insights" tab
-  3. Follow "Enable Speed Insights" instructions (`@vercel/speed-insights` already included)
-- `PAGE_SCRIPT_URLS`
-  - comma-separated list of URLs to be added to the bottom of the body tag via "next/script"
-  - urls must begin with 'https'
-  - ⚠️ this will invoke arbitrary script execution on every page—use with caution
-
-### Debugging
-- `DISABLE_DEBUG_OUTPUTS = 1`
-  - removes build identifier in `<head />`
-  - disables `/admin/configuration/export.json`
-
 ## Alternate storage providers
 
 Only one storage adapter—Vercel Blob, Cloudflare R2, AWS S3, or MinIO—can be used at a time. Ideally, this is configured before photos are uploaded (see [Issue #34](https://github.com/sambecker/exif-photo-blog/issues/34) for migration considerations). If you have multiple adapters, you can set one as preferred by storing `aws-s3`, `cloudflare-r2`, `minio`, or `vercel-blob` in `NEXT_PUBLIC_STORAGE_PREFERENCE`. See [FAQ](#will-there-be-support-for-image-storage-providers-beyond-vercel-aws-and-cloudflare) regarding unsupported providers.
@@ -307,26 +288,6 @@ Only one storage adapter—Vercel Blob, Cloudflare R2, AWS S3, or MinIO—can be
    - Store credentials (⚠️ _Ensure access keys are not prefixed with `NEXT_PUBLIC`_):
      - `CLOUDFLARE_R2_ACCESS_KEY`
      - `CLOUDFLARE_R2_SECRET_ACCESS_KEY`
-
-#### Migrating existing Vercel Blob objects
-
-If R2 is already configured and older photos still reference Vercel Blob, run
-the migration from a machine with both providers configured. It copies every
-Vercel Blob object—including optimized image variants—to R2 using the same key,
-then updates matching `photos.url` values in Postgres. The first command is a
-dry run; the second performs the copy and database updates:
-
-```bash
-pnpm migrate:vercel-blob-to-r2
-pnpm migrate:vercel-blob-to-r2 -- --execute
-```
-
-The command loads `.env.local` automatically when present. Otherwise, it
-requires `BLOB_READ_WRITE_TOKEN`, the five R2 variables above, and
-`POSTGRES_URL` in the shell environment. It is resumable: objects already
-present in R2 are skipped.
-Keep the Vercel Blob store until the final run completes successfully and the
-site has been checked, then remove the old Vercel Blob configuration.
 
 ### AWS S3
 

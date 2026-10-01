@@ -70,7 +70,6 @@ export default function EntityHover({
   const hasSplitLayout = photosToShow === 3;
   const hasFiveLayout = photosToShow === 5;
 
-
   const content = useMemo(() =>
     <div className="relative w-full h-full">
       {/* Photo grid */}
