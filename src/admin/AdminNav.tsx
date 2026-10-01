@@ -6,6 +6,7 @@ import {
   getUniqueTagsCached,
 } from '@/photo/cache';
 import { getAlbumsWithMetaCached } from '@/album/cache';
+import { getLocationsWithMetaCached } from '@/location/cache';
 import {
   PATH_ADMIN_ALBUMS,
   PATH_ADMIN_PHOTOS,
@@ -22,6 +23,7 @@ export default async function AdminNav() {
     countPhotos,
     countUploads,
     countAlbums,
+    countLocations,
     countTags,
     countRecipes,
     mostRecentPhotoUpdateTime,
@@ -36,6 +38,8 @@ export default async function AdminNav() {
         return 0;
       }),
     getAlbumsWithMetaCached().then(albums => albums.length)
+      .catch(() => 0),
+    getLocationsWithMetaCached().then(locations => locations.length)
       .catch(() => 0),
     getUniqueTagsCached(true).then(tags => tags.length)
       .catch(() => 0),
@@ -67,6 +71,13 @@ export default async function AdminNav() {
     label: appText.category.albumPlural,
     href: PATH_ADMIN_ALBUMS,
     count: countAlbums,
+  }); }
+
+  // Locations
+  if (countLocations > 0) { items.push({
+    label: 'Locations',
+    href: PATH_ADMIN_LOCATIONS,
+    count: countLocations,
   }); }
 
   // Tags

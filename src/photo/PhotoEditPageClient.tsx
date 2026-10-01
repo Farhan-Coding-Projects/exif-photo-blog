@@ -17,12 +17,15 @@ import { Recipes } from '@/recipe';
 import { Films } from '@/film';
 import { StorageListResponse } from '@/platforms/storage';
 import { Albums } from '@/album';
+import { Locations } from '@/location';
 
 export default function PhotoEditPageClient({
   photo,
   photoStorageUrls,
   photoAlbumTitles,
+  photoLocationTitles,
   albums,
+  locations,
   uniqueTags,
   uniqueRecipes,
   uniqueFilms,
@@ -34,7 +37,9 @@ export default function PhotoEditPageClient({
   photo: Photo
   photoStorageUrls?: StorageListResponse
   photoAlbumTitles: string[]
+  photoLocationTitles: string[]
   albums: Albums
+  locations: Locations
   uniqueTags: Tags
   uniqueRecipes: Recipes
   uniqueFilms: Films
@@ -91,7 +96,9 @@ export default function PhotoEditPageClient({
         updatedExifData={updatedExifData}
         updatedBlurData={blurData}
         photoAlbumTitles={photoAlbumTitles}
+        photoLocationTitles={photoLocationTitles}
         albums={albums}
+        locations={locations}
         uniqueTags={uniqueTags}
         uniqueRecipes={uniqueRecipes}
         uniqueFilms={uniqueFilms}

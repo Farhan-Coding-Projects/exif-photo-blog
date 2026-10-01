@@ -21,6 +21,7 @@ import {
 import YearHeader from '@/year/YearHeader';
 import RecentsHeader from '@/recents/RecentsHeader';
 import AlbumHeader from '@/album/AlbumHeader';
+import LocationHeader from '@/location/LocationHeader';
 import QueryHeader from '@/query/QueryHeader';
 
 export default function PhotoDetailPage({
@@ -33,6 +34,7 @@ export default function PhotoDetailPage({
   camera,
   lens,
   album,
+  location,
   tag,
   film,
   recipe,
@@ -101,6 +103,15 @@ export default function PhotoDetailPage({
   } else if (album) {
     customHeader = <AlbumHeader
       album={album}
+      photos={photos}
+      selectedPhoto={photo}
+      indexNumber={indexNumber}
+      count={count}
+      dateRange={dateRange}
+    />;
+  } else if (location) {
+    customHeader = <LocationHeader
+      location={location}
       photos={photos}
       selectedPhoto={photo}
       indexNumber={indexNumber}

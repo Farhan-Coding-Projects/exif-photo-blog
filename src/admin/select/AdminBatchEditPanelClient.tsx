@@ -20,6 +20,9 @@ import { useAppState } from '@/app/AppState';
 import { useSelectPhotosState } from './SelectPhotosState';
 import { Albums } from '@/album';
 import FieldsetAlbum from '@/album/FieldsetAlbum';
+import { Locations } from '@/location';
+import FieldsetLocation from '@/location/FieldsetLocation';
+import { TbMapPin } from 'react-icons/tb';
 import IconAlbum from '@/components/icons/IconAlbum';
 import FieldsetWithStatus from '@/components/FieldsetWithStatus';
 import { convertStringToArray } from '@/utility/string';
@@ -32,9 +35,11 @@ import IconHidden from '@/components/icons/IconHidden';
 
 export default function AdminBatchEditPanelClient({
   uniqueAlbums,
+  uniqueLocations = [],
   uniqueTags,
 }: {
   uniqueAlbums: Albums
+  uniqueLocations?: Locations
   uniqueTags: Tags
 }) {
   const refNote = useRef<HTMLDivElement>(null);
@@ -53,6 +58,8 @@ export default function AdminBatchEditPanelClient({
     setIsPerformingSelectEdit,
     albumTitles,
     setAlbumTitles,
+    locationTitles,
+    setLocationTitles,
     tags,
     setTags,
     tagErrorMessage,
@@ -66,9 +73,11 @@ export default function AdminBatchEditPanelClient({
   const { invalidateSwr, registerAdminUpdate } = useAppState();
 
   const isInAlbumMode = albumTitles !== undefined;
+  const isInLocationMode = locationTitles !== undefined;
   const isInTagMode = tags !== undefined;
   const isInVisibilityMode = visibility !== undefined;
-  const isInEditMode = isInAlbumMode || isInTagMode || isInVisibilityMode;
+  const isInEditMode =
+    isInAlbumMode || isInLocationMode || isInTagMode || isInVisibilityMode;
 
   const visibilityLabel = getVisibilityLabel(appText, visibility);
 
@@ -98,7 +107,9 @@ export default function AdminBatchEditPanelClient({
     ? Boolean(tags) && !tagErrorMessage
     : isInAlbumMode
       ? Boolean(albumTitles)
-      : Boolean(visibility);
+      : isInLocationMode
+        ? Boolean(locationTitles)
+        : Boolean(visibility);
 
   const performBatchAction = (
     args: Parameters<typeof batchPhotoAction>[0],
@@ -119,6 +130,7 @@ export default function AdminBatchEditPanelClient({
 
   const exitEditMode = () => {
     setAlbumTitles?.(undefined);
+    setLocationTitles?.(undefined);
     setTags?.(undefined);
     setTagErrorMessage?.('');
     setVisibility?.(undefined);
@@ -149,6 +161,16 @@ export default function AdminBatchEditPanelClient({
       value={albumTitles}
       placeholder={appText.admin.albumPlaceholder(photosText)}
       onChange={setAlbumTitles}
+      readOnly={isPerformingSelectEdit}
+      openOnLoad
+      hideLabel
+    />
+    : isInLocationMode
+    ? <FieldsetLocation
+      locationOptions={uniqueLocations}
+      value={locationTitles}
+      placeholder={`Add ${photosText} to locations`}
+      onChange={setLocationTitles}
       readOnly={isPerformingSelectEdit}
       openOnLoad
       hideLabel
@@ -195,6 +217,8 @@ export default function AdminBatchEditPanelClient({
         ? appText.admin.tagConfirm(photosText)
         : isInAlbumMode
           ? appText.admin.albumConfirm(photosText)
+          : isInLocationMode
+          ? `Add ${photosText} to locations?`
           : appText.admin.setVisibilityConfirm(
             visibilityLabel ?? '',
             photosText,
@@ -222,6 +246,13 @@ export default function AdminBatchEditPanelClient({
           }, () => toastSuccess(
             appText.admin.albumSuccess(photosText, albumTitlesFormatted),
           ));
+        } else if (isInLocationMode) {
+          const locationTitlesArray =
+            convertStringToArray(locationTitles, false);
+          performBatchAction({
+            ...batchPhotoActionArguments,
+            locationTitles: locationTitlesArray,
+          }, () => toastSuccess(`${photosText} added to locations`));
         } else if (visibility) {
           performBatchAction({
             ...batchPhotoActionArguments,
@@ -266,6 +297,13 @@ export default function AdminBatchEditPanelClient({
       icon={<IconAlbum size={15} className="translate-y-[1.5px]" />}
     >
       {appText.category.album}
+    </LoaderButton>
+    <LoaderButton
+      onClick={() => setLocationTitles?.('')}
+      disabled={isFormDisabled}
+      icon={<TbMapPin size={15} className="translate-y-[1px]" />}
+    >
+      Location
     </LoaderButton>
     <LoaderButton
       onClick={() => setTags?.('')}

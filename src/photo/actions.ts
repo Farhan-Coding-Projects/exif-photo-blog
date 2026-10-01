@@ -92,6 +92,12 @@ import {
   upgradeTagToAlbum,
 } from '@/album/server';
 import { addPhotoAlbumIds } from '@/album/query';
+import { getLocationTitlesFromFormData } from '@/location/form';
+import {
+  addLocationTitlesToPhoto,
+  createLocationsAndGetIds,
+} from '@/location/server';
+import { addPhotoLocationIds } from '@/location/query';
 import { getStorageUrlsForPhoto } from './storage';
 import type { VisibilityValue } from './visibility';
 import {
@@ -109,6 +115,7 @@ export const createPhotoAction = async (formData: FormData) =>
       await convertFormDataToPhotoDbInsertAndLookupRecipeTitle(formData);
 
     const albumTitles = getAlbumTitlesFromFormData(formData);
+    const locationTitles = getLocationTitlesFromFormData(formData);
 
     const updatedUrl = await convertUploadToPhoto({
       uploadUrl: photo.url,
@@ -119,6 +126,7 @@ export const createPhotoAction = async (formData: FormData) =>
       photo.url = updatedUrl;
       await insertPhoto(photo);
       await addAlbumTitlesToPhoto(albumTitles, photo.id, false);
+      await addLocationTitlesToPhoto(locationTitles, photo.id, false);
       await propagateRecipeTitleIfNecessary(formData, photo);
       revalidateAllKeysAndPaths();
     }
@@ -131,6 +139,7 @@ const addUpload = async ({
   url,
   title: _title,
   albumIds = [],
+  locationIds = [],
   tags: _tags,
   favorite,
   hidden,
@@ -145,6 +154,7 @@ const addUpload = async ({
   url: string
   title?: string
   albumIds?: string[]
+  locationIds?: string[]
   tags?: string
   favorite?: string
   hidden?: string
@@ -229,6 +239,9 @@ const addUpload = async ({
       if (albumIds.length > 0) {
         await addPhotoAlbumIds([photo.id], albumIds);
       }
+      if (locationIds.length > 0) {
+        await addPhotoLocationIds([photo.id], locationIds);
+      }
       if (shouldRevalidateAllKeysAndPaths) {
         after(revalidateAllKeysAndPaths);
       }
@@ -247,6 +260,7 @@ export const addUploadsAction = async ({
   uploadTitles,
   shouldRevalidateAllKeysAndPaths = true,
   albumTitles,
+  locationTitles,
   tags,
   favorite,
   hidden,
@@ -255,12 +269,13 @@ export const addUploadsAction = async ({
   takenAtNaiveLocal,
 }: Omit<
   Parameters<typeof addUpload>[0],
-  'url' | 'onStreamUpdate' | 'onFinish' | 'albumIds'
+  'url' | 'onStreamUpdate' | 'onFinish' | 'albumIds' | 'locationIds'
 > & {
   uploadUrls: string[]
   uploadTitles: string[]
   shouldRevalidateAllKeysAndPaths?: boolean
   albumTitles?: string[]
+  locationTitles?: string[]
 }) =>
   runAuthenticatedAdminServerAction(async () => {
     const PROGRESS_TASK_COUNT = AI_CONTENT_GENERATION_ENABLED ? 5 : 4;
@@ -288,6 +303,10 @@ export const addUploadsAction = async ({
       ? await createAlbumsAndGetIds(albumTitles)
       : [];
 
+    const locationIds = locationTitles
+      ? await createLocationsAndGetIds(locationTitles)
+      : [];
+
     (async () => {
       try {
         for (const [index, url] of uploadUrls.entries()) {
@@ -300,6 +319,7 @@ export const addUploadsAction = async ({
             url,
             title,
             albumIds,
+            locationIds,
             tags,
             favorite,
             hidden,
@@ -333,7 +353,9 @@ export const updatePhotoAction = async (formData: FormData) =>
       await convertFormDataToPhotoDbInsertAndLookupRecipeTitle(formData);
 
     const albumTitles = getAlbumTitlesFromFormData(formData);
+    const locationTitles = getLocationTitlesFromFormData(formData);
     await addAlbumTitlesToPhoto(albumTitles, photo.id);
+    await addLocationTitlesToPhoto(locationTitles, photo.id);
    
     let urlToDelete: string | undefined;
     if (await shouldBackfillPhotoStorage(photo)) {
@@ -370,7 +392,6 @@ export const toggleFavoritePhotoAction = async (
         ? tags.filter(tag => !isTagFavs(tag))
         : [...tags, TAG_FAVS];
       await updatePhoto(convertPhotoToPhotoDbInsert(photo));
-      await syncFavsAlbumForPhoto(photo.id, isPhotoFav(photo));
       revalidateAllKeysAndPaths();
       if (shouldRedirect) {
         redirect(pathForPhoto({ photo: photoId }));
@@ -758,6 +779,7 @@ export const batchPhotoAction = async ({
   photoOptions,
   tags = [],
   albumTitles = [],
+  locationTitles = [],
   visibility,
   action,
 }: {
@@ -765,6 +787,7 @@ export const batchPhotoAction = async ({
   photoOptions?: PhotoQueryOptions
   tags?: string[]
   albumTitles?: string[]
+  locationTitles?: string[]
   visibility?: VisibilityValue
   action?: 'favorite' | 'delete'
 }) => runAuthenticatedAdminServerAction(async () => {
@@ -780,6 +803,10 @@ export const batchPhotoAction = async ({
   if (albumTitles.length > 0) {
     const albumIds = await createAlbumsAndGetIds(albumTitles);
     await addPhotoAlbumIds(photoIds, albumIds);
+  }
+  if (locationTitles.length > 0) {
+    const locationIds = await createLocationsAndGetIds(locationTitles);
+    await addPhotoLocationIds(photoIds, locationIds);
   }
   if (visibility !== undefined) {
     await setPhotoVisibilityForIds(

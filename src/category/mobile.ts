@@ -6,6 +6,7 @@ import {
   SHOW_FILMS,
   SHOW_FOCAL_LENGTHS,
   SHOW_LENSES,
+  SHOW_LOCATIONS,
   SHOW_RECENTS,
   SHOW_RECIPES,
   SHOW_TAGS,
@@ -18,6 +19,7 @@ export const getTopEntities = ({
   tags,
   recents,
   albums,
+  locations,
   recipes,
   films,
   focalLengths,
@@ -27,6 +29,9 @@ export const getTopEntities = ({
   hasFavs: tagsHaveFavs(tags),
   hasRecents: SHOW_RECENTS && recents.length > 0,
   albums: SHOW_ALBUMS ? albums.slice(0, MAX_ALBUM_TAG_COUNT) : [],
+  locations: SHOW_LOCATIONS
+    ? locations.slice(0, MAX_ALBUM_TAG_COUNT)
+    : [],
   tags: SHOW_TAGS ? getTopNonFavTags(tags).slice(0, MAX_ALBUM_TAG_COUNT) : [],
   recipe: SHOW_RECIPES ? recipes[0]?.recipe : undefined,
   film: SHOW_FILMS ? films[0]?.film : undefined,

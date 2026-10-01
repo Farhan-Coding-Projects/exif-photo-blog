@@ -1,5 +1,5 @@
 import { Photo, PhotoDateRangePostgres } from '@/photo';
-import PhotoGridContainer from '@/photo/PhotoGridContainer';
+import PhotoGridHybridContainer from '@/photo/PhotoGridHybridContainer';
 import { Location } from '.';
 import LocationHeader from './LocationHeader';
 
@@ -8,26 +8,28 @@ export default function LocationOverview({
   photos,
   count,
   dateRange,
+  animateOnFirstLoadOnly,
 }: {
-  location: Location
-  photos: Photo[]
-  count: number
-  dateRange?: PhotoDateRangePostgres
+  location: Location,
+  photos: Photo[],
+  count: number,
+  dateRange?: PhotoDateRangePostgres,
+  animateOnFirstLoadOnly?: boolean,
 }) {
   return (
-    <PhotoGridContainer
-      cacheKey={`location-${location.slug}`}
-      photos={photos}
-      count={count}
-      location={location}
-      header={<LocationHeader
-        location={location}
-        photos={photos}
-        count={count}
-        dateRange={dateRange}
-        showLocationMeta
-      />}
-      animateOnFirstLoadOnly
-    />
+    <PhotoGridHybridContainer {...{
+      cacheKey: `location-${location.slug}`,
+      photos,
+      count,
+      location,
+      header: <LocationHeader {...{
+        location,
+        photos,
+        count,
+        dateRange,
+        showLocationMeta: true,
+      }} />,
+      animateOnFirstLoadOnly,
+    }} />
   );
 }

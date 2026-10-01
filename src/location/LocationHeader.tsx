@@ -48,7 +48,6 @@ export default async function LocationHeader({
       indexNumber={indexNumber}
       count={count}
       dateRange={dateRange}
-      hasAiTextGeneration={AI_CONTENT_GENERATION_ENABLED}
       richContent={showLocationMeta && locationHasMeta(location)
         ? <div className="space-y-2">
           {location.subhead &&
@@ -65,6 +64,8 @@ export default async function LocationHeader({
             />}
         </div>
         : undefined}
+      hasAiContentGeneration={AI_CONTENT_GENERATION_ENABLED}
+      includeShareButton
     />
   );
 }

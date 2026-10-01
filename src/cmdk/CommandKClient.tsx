@@ -1,5 +1,6 @@
 'use client';
 
+import { TbMapPin } from 'react-icons/tb';
 import { Command } from 'cmdk';
 import {
   ReactNode,
@@ -28,6 +29,7 @@ import {
   PATH_GRID_INFERRED,
   PATH_SIGN_IN,
   pathForAlbum,
+  pathForLocation,
   pathForCamera,
   pathForFilm,
   pathForFocalLength,
@@ -160,6 +162,7 @@ export default function CommandKClient({
   cameras,
   lenses,
   albums,
+  locations,
   tags: _tags,
   recipes,
   films,
@@ -443,6 +446,16 @@ export default function CommandKClient({
               path: pathForAlbum(album),
             })),
           };
+          case 'locations': return {
+            heading,
+            accessory: <TbMapPin size={14} />,
+            items: locations.map(({ location, count }) => ({
+              label: location.title,
+              annotation: formatCount(count),
+              annotationAria: formatCountDescriptive(count),
+              path: pathForLocation(location),
+            })),
+          };
           case 'tags': return {
             heading,
             accessory: <IconTag
@@ -513,6 +526,7 @@ export default function CommandKClient({
     cameras,
     lenses,
     albums,
+    locations,
     tags,
     recipes,
     films,

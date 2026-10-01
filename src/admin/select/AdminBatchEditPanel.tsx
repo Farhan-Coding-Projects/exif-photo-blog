@@ -9,10 +9,12 @@ export default async function AdminBatchEditPanel({
   onBatchActionComplete?: () => Promise<void>
 }) {
   const uniqueAlbums = await getAlbumsWithMetaCached().catch(() => []);
+  const uniqueLocations = await getLocationsWithMetaCached().catch(() => []);
   const uniqueTags = await getUniqueTagsCached().catch(() => []);
   return (
     <AdminBatchEditPanelClient {...{
       uniqueAlbums,
+      uniqueLocations,
       uniqueTags,
       onBatchActionComplete,
     }} />

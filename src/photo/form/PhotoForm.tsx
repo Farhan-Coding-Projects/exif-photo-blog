@@ -87,6 +87,8 @@ import SmallDisclosure from '@/components/SmallDisclosure';
 import { TbPhoto } from 'react-icons/tb';
 import { Albums } from '@/album';
 import FieldsetAlbum from '@/album/FieldsetAlbum';
+import { Locations } from '@/location';
+import FieldsetLocation from '@/location/FieldsetLocation';
 import Form from 'next/form';
 import { useRouter, useSearchParams } from 'next/navigation';
 import DateTimePicker from '@/components/DateTimePicker';
@@ -101,6 +103,8 @@ export default function PhotoForm({
   updatedBlurData,
   photoAlbumTitles = [],
   albums,
+  photoLocationTitles = [],
+  locations = [],
   uniqueTags,
   uniqueRecipes,
   uniqueFilms,
@@ -118,6 +122,8 @@ export default function PhotoForm({
   updatedBlurData?: string
   photoAlbumTitles?: string[]
   albums: Albums
+  photoLocationTitles?: string[]
+  locations?: Locations
   uniqueTags: Tags
   uniqueRecipes: Recipes
   uniqueFilms: Films
@@ -151,6 +157,14 @@ export default function PhotoForm({
     .sort((a, b) => a.localeCompare(b))
     .join(',');
 
+  const [locationTitles, setLocationTitles] = useState(photoLocationTitles
+    .sort((a, b) => a.localeCompare(b))
+    .join(','));
+
+  const areLocationTitlesModified = locationTitles !== photoLocationTitles
+    .sort((a, b) => a.localeCompare(b))
+    .join(',');
+
   const { hash } = useHash();
 
   const { invalidateSwr, shouldDebugImageFallbacks } = useAppState();
@@ -160,7 +174,9 @@ export default function PhotoForm({
   const changedFormKeys = useMemo(() =>
     getChangedFormFields(initialPhotoForm, formData),
   [initialPhotoForm, formData]);
-  const formHasChanged = changedFormKeys.length > 0 || areAlbumTitlesModified;
+  const formHasChanged = changedFormKeys.length > 0 ||
+    areAlbumTitlesModified ||
+    areLocationTitlesModified;
   const onlyChangedFieldIsBlurData =
     changedFormKeys.length === 1 &&
     changedFormKeys[0] === 'blurData';
@@ -824,25 +840,6 @@ export default function PhotoForm({
                           key={key}
                           {...fieldProps}
                           className="relative z-3"
-                        />;
-                      case 'albums':
-                        return <FieldsetAlbum
-                          key={key}
-                          {...fieldProps}
-                          albumOptions={albums}
-                          value={albumTitles}
-                          onChange={value => setAlbumTitles(value)}
-                          isModified={areAlbumTitlesModified}
-                          className={clsx(
-                            fieldProps.className,
-                            'relative z-1',
-                          )}
-                        />;
-                      case 'tags':
-                        return <FieldsetWithStatus
-                          key={key}
-                          {...fieldProps}
-                          className="relative z-2"
                         />;
                       case 'albums':
                         return <FieldsetAlbum

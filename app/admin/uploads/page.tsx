@@ -12,6 +12,7 @@ export const maxDuration = 60;
 export default async function AdminUploadsPage() {
   const urls = await getStorageUploadUrlsNoStore();
   const uniqueAlbums = await getAlbumsWithMetaCached();
+  const uniqueLocations = await getLocationsWithMetaCached();
   const uniqueTags = await getUniqueTagsCached();
 
   if (urls.length === 0) {
@@ -23,6 +24,7 @@ export default async function AdminUploadsPage() {
           <AdminUploadsClient {...{
             urls,
             uniqueAlbums,
+            uniqueLocations,
             uniqueTags,
           }} />}
       />

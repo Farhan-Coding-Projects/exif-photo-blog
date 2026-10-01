@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Tags } from '@/tag';
 import AdminUploadsTable from './AdminUploadsTable';
 import { Albums } from '@/album';
+import { Locations } from '@/location';
 
 export type UrlAddStatus = StorageListItem & {
   status?: 'waiting' | 'adding' | 'added'
@@ -18,10 +19,12 @@ export default function AdminUploadsClient({
   urls,
   uniqueTags,
   uniqueAlbums,
+  uniqueLocations,
 }: {
   urls: StorageListResponse
   uniqueTags: Tags
   uniqueAlbums: Albums
+  uniqueLocations?: Locations
 }) {
   const [urlAddStatuses, setUrlAddStatuses] = useState<UrlAddStatus[]>(urls);
 
@@ -46,6 +49,7 @@ export default function AdminUploadsClient({
           uploadUrls,
           uploadTitles,
           uniqueAlbums,
+          uniqueLocations,
           uniqueTags,
           isAdding,
           setIsAdding,
