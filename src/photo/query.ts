@@ -3,7 +3,10 @@ import {
   sql,
   query,
 } from '@/platforms/postgres';
-import { convertArrayToPostgresString } from '@/db';
+import {
+  convertArrayToPostgresString,
+  parameterizeForDb,
+} from '@/db';
 import {
   PhotoDb,
   PhotoDbInsert,
@@ -63,6 +66,7 @@ export const createPhotosTable = () =>
       exposure_time DOUBLE PRECISION,
       exposure_compensation REAL,
       location_name VARCHAR(255),
+      location JSONB,
       latitude DOUBLE PRECISION,
       longitude DOUBLE PRECISION,
       film VARCHAR(255),
@@ -106,6 +110,7 @@ export const insertPhoto = (photo: PhotoDbInsert) =>
       exposure_time,
       exposure_compensation,
       location_name,
+      location,
       latitude,
       longitude,
       film,
@@ -141,6 +146,9 @@ export const insertPhoto = (photo: PhotoDbInsert) =>
       ${photo.exposureTime},
       ${photo.exposureCompensation},
       ${photo.locationName},
+      ${photo.location
+        ? JSON.stringify(photo.location)
+        : null},
       ${photo.latitude},
       ${photo.longitude},
       ${photo.film},
@@ -180,6 +188,9 @@ export const updatePhoto = (photo: PhotoDbInsert) =>
       exposure_time=${photo.exposureTime},
       exposure_compensation=${photo.exposureCompensation},
       location_name=${photo.locationName},
+      location=${photo.location
+        ? JSON.stringify(photo.location)
+        : null},
       latitude=${photo.latitude},
       longitude=${photo.longitude},
       film=${photo.film},
@@ -196,6 +207,33 @@ export const updatePhoto = (photo: PhotoDbInsert) =>
     WHERE id=${photo.id}
   `, 'updatePhoto');
 
+export const updatePhotoTitleCaption = (
+  photoIds: string[],
+  titles: (string | null)[],
+  captions: (string | null)[],
+) => {
+  if (photoIds.length === 0) {
+    return Promise.resolve();
+  }
+
+  const values: (string | null)[] = [];
+  const valueRows = photoIds.map((id, index) => {
+    const base = index * 3;
+    values.push(id, titles[index] ?? null, captions[index] ?? null);
+    return `($${base + 1}::text, $${base + 2}::text, $${base + 3}::text)`;
+  });
+  values.push((new Date()).toISOString());
+
+  return safelyQuery(() => query(`
+    UPDATE photos AS p SET
+      title = v.title,
+      caption = v.caption,
+      updated_at = $${values.length}
+    FROM (VALUES ${valueRows.join(', ')}) AS v(id, title, caption)
+    WHERE p.id = v.id
+  `, values), 'updatePhotoTitleCaption');
+};
+
 export const deletePhotoTagGlobally = (tag: string) =>
   safelyQuery(() => sql`
     UPDATE photos
@@ -209,6 +247,24 @@ export const renamePhotoTagGlobally = (tag: string, updatedTag: string) =>
     SET tags=ARRAY_REPLACE(tags, ${tag}, ${updatedTag})
     WHERE ${tag}=ANY(tags)
   `, 'renamePhotoTagGlobally');
+
+export const setPhotoVisibilityForIds = (
+  photoIds: string[],
+  hidden: boolean,
+  excludeFromFeeds: boolean,
+) =>
+  safelyQuery(() => query(`
+    UPDATE photos SET
+      hidden = $1,
+      exclude_from_feeds = $2,
+      updated_at = $3
+    WHERE id = ANY($4)
+  `, [
+    hidden,
+    excludeFromFeeds,
+    (new Date()).toISOString(),
+    convertArrayToPostgresString(photoIds),
+  ]), 'setPhotoVisibilityForIds');
 
 export const addTagsToPhotos = (tags: string[], photoIds: string[]) =>
   safelyQuery(() => query(`
@@ -254,44 +310,51 @@ export const getPhotosMostRecentUpdate = async () =>
   , 'getPhotosMostRecentUpdate');
 
 export const getUniqueCameras = async () =>
-  safelyQuery(() => sql`
-    SELECT DISTINCT make||' '||model as camera, make, model,
-      COUNT(*),
-      MAX(updated_at) as last_modified
+  safelyQuery(() => query(`
+    SELECT
+      MIN(make) AS make,
+      MIN(model) AS model,
+      COUNT(*) AS count,
+      MAX(updated_at) AS last_modified
     FROM photos
     WHERE hidden IS NOT TRUE
     AND trim(make) <> ''
     AND trim(model) <> ''
-    GROUP BY make, model
-    ORDER BY camera ASC
-  `.then(({ rows }): Cameras => rows.map(({
-      make, model, count, last_modified,
-    }) => ({
-      cameraKey: createCameraKey({ make, model }),
-      camera: { make, model },
-      count: parseInt(count, 10), 
-      lastModified: last_modified as Date,
-    })))
+    GROUP BY
+      ${parameterizeForDb('make')},
+      ${parameterizeForDb('model')}
+    ORDER BY 1, 2
+  `).then(({ rows }): Cameras => rows.map(({
+    make, model, count, last_modified,
+  }) => ({
+    cameraKey: createCameraKey({ make, model }),
+    camera: { make, model },
+    count: parseInt(count, 10), 
+    lastModified: last_modified as Date,
+  })))
   , 'getUniqueCameras');
 
 export const getUniqueLenses = async () =>
-  safelyQuery(() => sql`
-    SELECT DISTINCT lens_make||' '||lens_model as lens,
-      lens_make, lens_model,
-      COUNT(*),
-      MAX(updated_at) as last_modified
+  safelyQuery(() => query(`
+    SELECT
+      MIN(lens_make) AS lens_make,
+      MIN(lens_model) AS lens_model,
+      COUNT(*) AS count,
+      MAX(updated_at) AS last_modified
     FROM photos
     WHERE hidden IS NOT TRUE
     AND trim(lens_model) <> ''
-    GROUP BY lens_make, lens_model
-    ORDER BY lens ASC
-  `.then(({ rows }): Lenses => rows
-      .map(({ lens_make: make, lens_model: model, count, last_modified }) => ({
-        lensKey: createLensKey({ make, model }),
-        lens: { make, model },
-        count: parseInt(count, 10), 
-        lastModified: last_modified as Date,
-      })))
+    GROUP BY
+      ${parameterizeForDb('lens_make')},
+      ${parameterizeForDb('lens_model')}
+    ORDER BY 1, 2
+  `).then(({ rows }): Lenses => rows
+    .map(({ lens_make: make, lens_model: model, count, last_modified }) => ({
+      lensKey: createLensKey({ make, model }),
+      lens: { make, model },
+      count: parseInt(count, 10), 
+      lastModified: last_modified as Date,
+    })))
   , 'getUniqueLenses');
 
 export const getUniqueTags = async (includeHidden?: boolean) =>
@@ -358,6 +421,21 @@ export const getRecipeTitleForData = async (
     .then(({ rows }) => rows[0]?.recipe_title as string | undefined)
   , 'getRecipeTitleForData');
 
+export const getRecipeDataForTitle = async (title: string) =>
+  safelyQuery(() => sql`
+    SELECT recipe_data FROM photos
+    WHERE hidden IS NOT TRUE
+    AND recipe_title=${title}
+    AND recipe_data IS NOT NULL
+    AND recipe_data::text <> 'null'
+    ORDER BY taken_at DESC
+    LIMIT 1
+  `
+    .then(({ rows }) => rows[0]?.recipe_data
+      ? JSON.stringify(rows[0].recipe_data)
+      : undefined)
+  , 'getRecipeDataForTitle');
+
 export const getPhotosNeedingRecipeTitleCount = async (
   data: string,
   film: string,
@@ -409,7 +487,9 @@ export const getUniqueFocalLengths = async () =>
       COUNT(*),
       MAX(updated_at) as last_modified
     FROM photos
-    WHERE hidden IS NOT TRUE AND focal_length IS NOT NULL
+    WHERE hidden IS NOT TRUE
+    AND focal_length IS NOT NULL
+    AND focal_length > 0
     GROUP BY focal_length
     ORDER BY focal_length ASC
   `.then(({ rows }): FocalLengths => rows
@@ -486,7 +566,7 @@ export const getPhotos = async (options: PhotoQueryOptions = {}) =>
 export const getPhotoIds = async (options: PhotoQueryOptions = {}) =>
   safelyQuery(
     async () => _getPhotos(options, ['id'], { shouldParse: false })
-      .then(({ photos }) => photos.map(photo => photo.id)),
+      .then(({ photos }) => photos.map(photo => photo.id as string)),
     'getPhotoIds',
     // Seemingly necessary to pass `options` for expected cache behavior
     options,
@@ -651,12 +731,13 @@ const needsAiTextWhereClauses =
       })
     : [];
 
-const needsColorDataWhereClauses = COLOR_SORT_ENABLED
-  ? [`(
+const needsColorDataWhereClauses =
+  AI_CONTENT_GENERATION_ENABLED || COLOR_SORT_ENABLED
+    ? [`(
     color_data IS NULL OR
     color_sort IS NULL
   )`]
-  : [];
+    : [];
 
 const needsSyncWhereStatement =
   `WHERE ${[

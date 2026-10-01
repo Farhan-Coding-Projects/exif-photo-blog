@@ -72,12 +72,18 @@ export default function LoaderButton({
         styleAs === 'link-without-hover' && 'hover:text-main',
         'inline-flex items-center gap-1.5 self-start whitespace-nowrap',
         primary && 'primary',
-        hideFocusOutline && 'focus:outline-hidden',
+        // Hide mouse-click focus ring, but keep one for keyboard navigation
+        hideFocusOutline && [
+          'focus:outline-hidden',
+          'focus-visible:outline-2',
+          'focus-visible:outline-blue-600',
+          'focus-visible:outline-offset-2',
+        ],
         className,
       )}
       disabled={isLoading || disabled}
     >
-      {(icon || isLoading) &&
+      {icon &&
         <span className={clsx(
           'min-w-[1.25rem] max-h-5',
           styleAs === 'button' ? 'translate-y-[-0.5px]' : 'translate-y-[0.5px]',
@@ -110,6 +116,7 @@ export default function LoaderButton({
         content={tooltip}
         color={tooltipColor}
         side={tooltipSide}
+        triggerIsFocusable
       >
         {button}
       </Tooltip>

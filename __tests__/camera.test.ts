@@ -1,5 +1,7 @@
-import { Camera, formatCameraText } from '@/camera';
+import { Camera, createCameraKey, formatCameraText } from '@/camera';
+import { getCameraBrand } from '@/camera/brand';
 import { MAKE_SONY } from '@/platforms/sony';
+import { parameterize } from '@/utility/string';
 
 const APPLE     : Camera = { make: 'Apple', model: 'iPhone 11 Pro' };
 const APPLE_01  : Camera = { make: 'Apple', model: 'iPhone 11' };
@@ -74,11 +76,39 @@ describe('Camera', () => {
     expect(formatCameraText(RICOH, 'short')).toBe('GR III');
     expect(formatCameraText(NIKON, 'short')).toBe('D7000');
   });
+  it('recognizes camera brands from make', () => {
+    expect(getCameraBrand('FUJIFILM')).toBe('fujifilm');
+    expect(getCameraBrand('Fujifilm')).toBe('fujifilm');
+    expect(getCameraBrand('NIKON CORPORATION')).toBe('nikon');
+    expect(getCameraBrand('Nikon Corporation')).toBe('nikon');
+    expect(getCameraBrand('Canon')).toBe('canon');
+    expect(getCameraBrand('Canon Inc.')).toBe('canon');
+    expect(getCameraBrand('LEICA CAMERA AG')).toBe('leica');
+    expect(getCameraBrand('Leica Camera AG')).toBe('leica');
+    expect(getCameraBrand('HASSELBLAD')).toBe('hasselblad');
+    expect(getCameraBrand('Hasselblad')).toBe('hasselblad');
+    expect(getCameraBrand('Panasonic')).toBe('panasonic');
+    expect(getCameraBrand('LUMIX')).toBe('panasonic');
+    expect(getCameraBrand('SONY')).toBe('sony');
+    expect(getCameraBrand('Sony')).toBe('sony');
+    expect(getCameraBrand('RICOH IMAGING COMPANY, LTD.'))
+      .toBeUndefined();
+    expect(getCameraBrand('Apple')).toBeUndefined();
+    expect(getCameraBrand(undefined)).toBeUndefined();
+  });
   it('formats Sony cameras', () => {
     Object.entries(SONY_MODELS).forEach(([model, expected]) => {
       const camera = { make: MAKE_SONY, model };
       expect(formatCameraText(camera, 'medium'))
         .toBe(`${MAKE_SONY} ${expected}`.toLocaleUpperCase());
     });
+  });
+  it('normalizes camera identity regardless of casing', () => {
+    const majority: Camera = { make: 'Canon', model: 'Canon EOS R6 Mk II' };
+    const variant: Camera = { make: 'Canon', model: 'Canon EOS R6 MK II' };
+    expect(parameterize(variant.model))
+      .toBe(parameterize(majority.model));
+    expect(createCameraKey(variant))
+      .toBe(createCameraKey(majority));
   });
 });

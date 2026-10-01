@@ -16,7 +16,7 @@ export const PHOTO_DEFAULT_LIMIT = 100;
 const CHARACTERS_TO_REMOVE = [',', '/'];
 const CHARACTERS_TO_REPLACE = ['+', '&', '|', ':', '_', ' '];
 
-const parameterizeForDb = (field: string) =>
+export const parameterizeForDb = (field: string) =>
   `REGEXP_REPLACE(
     REGEXP_REPLACE(
       LOWER(TRIM(${field})),
@@ -159,7 +159,8 @@ export const getWheresFromOptions = (
     wheres.push(`recipe_title=$${valuesIndex++}`);
     wheresValues.push(recipe);
   }
-  if (focal) {
+  // Compare against undefined so focal lengths of 0 are filtered
+  if (focal !== undefined) {
     wheres.push(`focal_length=$${valuesIndex++}`);
     wheresValues.push(focal);
   }
@@ -181,6 +182,7 @@ export const getOrderByFromOptions = (options: PhotoQueryOptions) => {
   const {
     sortBy = APP_DEFAULT_SORT_BY,
     sortWithPriority,
+    limit = PHOTO_DEFAULT_LIMIT,
   } = options;
 
   switch (sortBy) {
@@ -209,6 +211,15 @@ export const getOrderByFromOptions = (options: PhotoQueryOptions) => {
       return sortWithPriority
         ? 'ORDER BY priority_order ASC, color_sort ASC, taken_at ASC'
         : 'ORDER BY color_sort ASC, taken_at ASC';
+    case 'random': {
+      // Stable newest-first stride, 2× limit so hits are spaced further apart
+      const stride = Math.max(2, (Math.floor(Number(limit)) || 1) * 2);
+      return [
+        'ORDER BY',
+        `(ROW_NUMBER() OVER (ORDER BY taken_at DESC, id) - 1) % ${stride},`,
+        'taken_at DESC, id',
+      ].join(' ');
+    }
   }
 };
 

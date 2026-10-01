@@ -11,12 +11,27 @@ import LoaderButton from '../primitives/LoaderButton';
 import { downloadFileFromBrowser } from '@/utility/url';
 import KeyCommand from '../primitives/KeyCommand';
 import LoaderLink from '../LoaderLink';
+import IconCheck from '../icons/IconCheck';
+import { getMenuItemColorClasses } from '../primitives/surface';
+
+// Indicate the active option in a menu of mutually-exclusive choices
+export const renderMenuItemCheck = (isChecked: boolean) => isChecked
+  ? <IconCheck size={13} />
+  : <span />;
+
+export const renderMenuItemLabel = (label: string, isSelected: boolean) => ({
+  label,
+  labelComplex: <span className={clsx(!isSelected && 'text-dim')}>
+    {label}
+  </span>,
+});
 
 export default function MoreMenuItem({
   label,
   labelComplex,
   annotation,
   icon,
+  accessoryEnd,
   color = 'grey',
   href,
   hrefDownloadName,
@@ -31,6 +46,7 @@ export default function MoreMenuItem({
   labelComplex?: ReactNode
   annotation?: ReactNode
   icon?: ReactNode
+  accessoryEnd?: ReactNode
   color?: 'grey' | 'red' | 'yellow'
   href?: string
   hrefDownloadName?: string
@@ -42,23 +58,6 @@ export default function MoreMenuItem({
   keyCommandModifier?: ComponentProps<typeof KeyCommand>['modifier']
 }) {
   const [isLoading, setIsLoading] = useState(false);
-
-  const getColorClasses = () => {
-    switch (color) {
-      case 'grey': return clsx(
-        'hover:bg-gray-100/90 active:bg-gray-200/75',
-        'dark:hover:bg-gray-800/60 dark:active:bg-gray-900/80',
-      );
-      case 'red': return clsx(
-        'hover:bg-red-100/50 active:bg-red-100/75',
-        'dark:hover:bg-red-950/55 dark:active:bg-red-950/80',
-      );
-      case 'yellow': return clsx(
-        'hover:bg-amber-100/50 active:bg-amber-100/75',
-        'dark:hover:bg-amber-950/55 dark:active:bg-amber-950/80',
-      );
-    }
-  };
 
   const buttonContent = <>
     <span>
@@ -75,13 +74,14 @@ export default function MoreMenuItem({
       disabled={isLoading}
       className={clsx(
         'flex items-center h-8.5 gap-4',
-        'px-2 py-2 rounded-sm',
+        'px-2 py-2 rounded-lg',
         'select-none hover:outline-hidden',
-        getColorClasses(),
+        getMenuItemColorClasses(color),
         'whitespace-nowrap',
         isLoading
-          ? 'cursor-not-allowed opacity-50'
+          ? 'cursor-not-allowed'
           : 'cursor-pointer',
+        isLoading && icon && 'text-dim',
         className,
       )}
       onSelect={async e => {
@@ -145,6 +145,10 @@ export default function MoreMenuItem({
         >
           {buttonContent}
         </LoaderButton>}
+      {accessoryEnd &&
+        <span className="shrink-0 text-dim pointer-events-none">
+          {accessoryEnd}
+        </span>}
       {keyCommand &&
         <KeyCommand
           modifier={keyCommandModifier}

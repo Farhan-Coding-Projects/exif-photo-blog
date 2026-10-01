@@ -43,12 +43,14 @@ export const TEXT: I18N = {
     recentPlural: 'हाल ही में',
     recentTitle: 'हाल ही में ली गई फोटो',
     recentSubhead: '{{distance}} पहले अपलोड किया गया',
+    queryTitle: '“{{query}}” से मेल खाती फोटो',
   },
   nav: {
     home: 'होम',
     full: 'पूर्ण',
     grid: 'ग्रिड',
-    about: 'के बारे में',
+    viewOptions: 'दृश्य विकल्प',
+    library: 'पुस्तकालय',
     admin: 'एडमिन',
     search: 'खोज',
     prev: 'पिछला',
@@ -56,7 +58,7 @@ export const TEXT: I18N = {
     next: 'अगला',
     nextShort: 'अगला',
   },
-  about: {
+  library: {
     titleDefault: 'इस साइट के बारे में',
     updated: '{{distance}} पहले अपडेट किया गया',
     photoCount: 'फोटो की संख्या',
@@ -68,9 +70,6 @@ export const TEXT: I18N = {
     recentAlbum: 'हाल का एल्बम',
     popularTag: 'लोकप्रिय टैग',
     popularPlace: 'लोकप्रिय स्थान',
-  },
-  footer: {
-    madeWith: 'निर्मित',
   },
   sort: {
     sort: 'क्रमबद्ध करें',
@@ -96,6 +95,7 @@ export const TEXT: I18N = {
     searching: 'खोज रहे हैं...',
     noResults: 'कोई परिणाम नहीं मिला',
     pages: 'पृष्ठ',
+    found: '{{quantity}} देखें',
   },
   tooltip: {
     '35mm': '35mm समकक्ष',
@@ -140,8 +140,13 @@ export const TEXT: I18N = {
     manageRecipes: 'रेसिपी प्रबंधित करें',
     selectPhotos: 'फोटो चुनें...',
     selectPhotosExit: 'चयन बंद करें',
+    editTitles: 'शीर्षक संपादित करें...',
+    editTitlesExit: 'शीर्षक संपादन बंद करें',
+    app: 'ऐप सेटिंग्स',
     appInsights: 'ऐप इनसाइट्स',
+    appInsightsShort: 'इनसाइट्स',
     appConfig: 'ऐप कॉन्फ़िगरेशन',
+    appConfigShort: 'कॉन्फ़िगरेशन',
     clearCache: 'कैश साफ़ करें',
     clearCacheSuccess: 'साइट कैश साफ़ हो गया है',
     edit: 'संपादित करें',
@@ -152,6 +157,8 @@ export const TEXT: I18N = {
     download: 'डाउनलोड करें',
     sync: 'सिंक करें',
     syncAutomatic: 'स्वचालित',
+    syncUpdateColor: 'रंग अपडेट करें',
+    syncUpdateColorSuccess: 'रंग अपडेट किया गया:',
     syncOverwrite: 'अधिलेखित करें',
     // eslint-disable-next-line max-len
     syncOverwriteConfirm: 'क्या आप सुनिश्चित हैं कि आप सभी फोटो फ़ील्ड को अधिलेखित करना चाहते हैं? अनुकूलित डेटा खो सकता है।',
@@ -159,6 +166,40 @@ export const TEXT: I18N = {
     delete: 'हटाएं',
     // eslint-disable-next-line max-len
     deleteConfirm: 'क्या आप सुनिश्चित हैं कि "{{photoTitle}}" को हटाना चाहते हैं?',
+    setVisibility: 'दृश्यता',
+    setVisibilityPlaceholder: '{{quantity}} के लिए दृश्यता सेट करें ...',
+    // eslint-disable-next-line max-len
+    setVisibilityConfirm: 'क्या आप सुनिश्चित हैं कि आप {{quantity}} के लिए दृश्यता "{{visibility}}" पर सेट करना चाहते हैं?',
+    setVisibilitySuccess: '{{quantity}} के लिए दृश्यता अपडेट की गई',
+    visibilityDefault: 'डिफ़ॉल्ट',
+    visibilityDefaultNote: 'हर जगह देखी जा सकती हैं',
+    visibilityExclude: 'फ़ीड से छिपाएं',
+    visibilityExcludeNote: 'होमपेज व्यू, rss.xml आदि से बाहर',
+    visibilityPrivate: 'निजी',
+    visibilityPrivateNote: 'केवल एडमिन को दिखाई देती हैं',
+    selectPhotosBelow: 'नीचे तस्वीरें चुनें',
+    selectPhotosBelowShort: 'चुनें',
+    selecting: 'चयन हो रहा है ...',
+    selectingShort: 'चयन हो रहा है',
+    photosSelected: '{{quantity}} चयनित',
+    selectAll: 'सभी चुनें',
+    apply: 'लागू करें',
+    tagPlaceholder: '{{quantity}} को टैग करें ...',
+    // eslint-disable-next-line max-len
+    tagConfirm: 'क्या आप सुनिश्चित हैं कि आप {{quantity}} पर टैग लागू करना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।',
+    tagSuccess: '{{quantity}} को {{tags}} टैग किया गया',
+    albumPlaceholder: '{{quantity}} को एल्बम में जोड़ें ...',
+    // eslint-disable-next-line max-len
+    albumConfirm: 'क्या आप सुनिश्चित हैं कि आप {{quantity}} को इन एल्बम में जोड़ना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।',
+    albumSuccess: '{{quantity}} को {{albums}} में जोड़ा गया',
+    // eslint-disable-next-line max-len
+    favoriteConfirm: 'क्या आप सुनिश्चित हैं कि आप {{quantity}} को पसंदीदा बनाना चाहते हैं?',
+    favoriteSuccess: '{{quantity}} को पसंदीदा बनाया गया',
+    batchActionFailure: '{{quantity}} अपडेट करने में कुछ गड़बड़ हो गई',
+    // eslint-disable-next-line max-len
+    deletePhotosConfirm: 'क्या आप सुनिश्चित हैं कि {{quantity}} हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।',
+    deletePhotosSuccess: '{{quantity}} हटाई गईं',
+    deletePhotosFailure: '{{quantity}} हटाने में कुछ गड़बड़ हो गई',
   },
   onboarding: {
     setupComplete: 'सेटअप पूरा हुआ!',
@@ -176,8 +217,10 @@ export const TEXT: I18N = {
     tryAgain: 'फिर से कोशिश करें',
     finishing: 'समाप्त कर रहे हैं...',
     uploading: 'अपलोड हो रहा है',
+    cancel: 'रद्द करें',
     copyPhrase: '{{label}} कॉपी किया गया',
     paginate: '{{index}} / {{count}}',
     paginateAction: '{{action}} - {{index}} / {{count}}',
+    madeWith: 'निर्मित',
   },
 };
