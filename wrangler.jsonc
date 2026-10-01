@@ -4,6 +4,9 @@
 	"name": "photo-graphy",
 	"compatibility_date": "2026-10-01",
 	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+	// Variables and secrets live in the Cloudflare dashboard, not this
+	// file; keep deploys from deleting them
+	"keep_vars": true,
 	"assets": {
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"
