@@ -21,16 +21,22 @@ export const capitalizeWords = (string = '') =>
     .map(capitalize)
     .join(' ');
 
+// Shared with SQL parameterization (db/index.ts) so both sides match.
+// Bracket expressions valid in both JS and Postgres regex.
+// Spaces, underscores, pluses, ampersands, pipes, dashes
+export const PARAMETERIZE_PATTERN_TO_DASH = '[\\s_–—+&|]';
+// Punctuation
+export const PARAMETERIZE_PATTERN_TO_REMOVE =
+  '[\'"!@#$%^*()=\\[\\]{};:/?,<>\\\\`~]';
+
 export const parameterize = (
   string: string,
   shouldRemoveNonAlphanumeric?: boolean,
 ) =>
   string
     .trim()
-    // Replace spaces, underscores, slashes, pluses, pipes, dashes with dashes
-    .replaceAll(/[\s_–—+&|]/gi, '-')
-    // Remove punctuation
-    .replaceAll(/['"!@#$%^*()=[\]{};:/?,<>\\/`~]/gi, '')
+    .replaceAll(new RegExp(PARAMETERIZE_PATTERN_TO_DASH, 'gi'), '-')
+    .replaceAll(new RegExp(PARAMETERIZE_PATTERN_TO_REMOVE, 'gi'), '')
     // Removes non-alphanumeric characters, if configured
     // (breaks i18m)
     .replaceAll(

@@ -1,5 +1,8 @@
 const MAKE_SAMSUNG = 'SAMSUNG';
 
+export const isMakeSamsung = (make?: string) =>
+  Boolean(make?.toLocaleUpperCase().startsWith(MAKE_SAMSUNG));
+
 const LABELS = {
   s25UltraWide: 'S25U ULTRAWIDE (2.2MM)',
   s25Main: 'S25U MAIN (6.765MM)',
@@ -34,7 +37,7 @@ export const normalizeSamsungLensModel = (
   lensModel?: string,
   focalLength?: string | number,
 ) => {
-  if (!make?.toLocaleUpperCase().startsWith(MAKE_SAMSUNG)) {
+  if (!isMakeSamsung(make)) {
     return lensModel;
   }
 

@@ -84,7 +84,7 @@ export default function LibraryPageClient({
   const items = useMemo(() => [
     renderItem(
       appText.library.photoCount,
-      photosCount.toString().padStart(4, '0'),
+      photosCount.toString(),
     ),
     renderItem(
       appText.library.firstPhoto,
@@ -97,6 +97,7 @@ export default function LibraryPageClient({
         type="text-only"
         contrast="high"
         showBrandLogo
+        hidePhoneMakeOnMobile
       />,
     ),
     lens && renderItem(

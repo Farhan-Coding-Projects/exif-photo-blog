@@ -1,4 +1,8 @@
-import { parameterize } from '@/utility/string';
+import {
+  parameterize,
+  PARAMETERIZE_PATTERN_TO_DASH,
+  PARAMETERIZE_PATTERN_TO_REMOVE,
+} from '@/utility/string';
 import { PhotoSetCategory } from '@/category';
 import { Camera } from '@/camera';
 import { Lens } from '@/lens';
@@ -14,17 +18,16 @@ import { getPhotoCount } from '@/photo/query';
 export const GENERATE_STATIC_PARAMS_LIMIT = 1000;
 export const PHOTO_DEFAULT_LIMIT = 100;
 
-// These must mirror utility/string.ts parameterization
-const CHARACTERS_TO_REMOVE = [',', '/'];
-const CHARACTERS_TO_REPLACE = ['+', '&', '|', ':', '_', ' '];
+const sqlString = (value: string) => `'${value.replaceAll('\'', '\'\'')}'`;
 
+// Mirrors utility/string.ts parameterize, using the same patterns
 export const parameterizeForDb = (field: string) =>
   `REGEXP_REPLACE(
     REGEXP_REPLACE(
       LOWER(TRIM(${field})),
-      '[${CHARACTERS_TO_REMOVE.join('')}]', '', 'g'
+      ${sqlString(PARAMETERIZE_PATTERN_TO_DASH)}, '-', 'g'
     ),
-    '[${CHARACTERS_TO_REPLACE.join('')}]', '-', 'g'
+    ${sqlString(PARAMETERIZE_PATTERN_TO_REMOVE)}, '', 'g'
   )`;
 
 export type PhotoQueryOptions = {

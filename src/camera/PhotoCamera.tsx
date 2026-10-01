@@ -8,6 +8,7 @@ import EntityLink, {
 } from '@/components/entity/EntityLink';
 import IconCamera from '@/components/icons/IconCamera';
 import { isCameraApple } from '@/platforms/apple';
+import { isMakeSamsung } from '@/platforms/samsung';
 import useCategoryCounts from '@/category/useCategoryCounts';
 import { getCameraBrand } from './brand';
 import CameraBrand from './CameraBrand';
@@ -16,19 +17,25 @@ export default function PhotoCamera({
   camera,
   hideAppleIcon,
   showBrandLogo,
+  hidePhoneMakeOnMobile,
   ...props
 }: {
   camera: Camera
   hideAppleIcon?: boolean
   showBrandLogo?: boolean
+  // Show only the model (e.g. "Galaxy S25 Ultra") on small screens
+  hidePhoneMakeOnMobile?: boolean
 } & EntityLinkExternalProps) {
   const { getCameraCount } = useCategoryCounts();
-  
+
   const isApple = isCameraApple(camera);
   const showAppleIcon = !hideAppleIcon && isApple;
   const brand = showBrandLogo
     ? getCameraBrand(camera.make)
     : undefined;
+  const hideMakeOnMobile = !brand &&
+    hidePhoneMakeOnMobile &&
+    isMakeSamsung(camera.make);
 
   return (
     <EntityLink
@@ -37,8 +44,13 @@ export default function PhotoCamera({
         ? <>
           <CameraBrand brand={brand} />{formatCameraText(camera, 'short')}
         </>
-        : formatCameraText(camera)}
-      labelForHover={brand
+        : hideMakeOnMobile
+          ? <>
+            <span className="max-sm:hidden">{camera.make} </span>
+            {formatCameraText(camera, 'short')}
+          </>
+          : formatCameraText(camera)}
+      labelForHover={brand || hideMakeOnMobile
         ? formatCameraText(camera)
         : undefined}
       path={pathForCamera(camera)}
