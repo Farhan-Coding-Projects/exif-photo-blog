@@ -75,7 +75,6 @@ const IMAGE_QUALITY =
     : 75;
 
 const nextConfig: NextConfig = {
-  ...(process.env.NEXT_DIST_DIR ? { distDir: process.env.NEXT_DIST_DIR } : {}),
   images: {
     imageSizes: [100, 200],
     qualities: [75, IMAGE_QUALITY],
@@ -84,7 +83,6 @@ const nextConfig: NextConfig = {
   },
   serverExternalPackages: ['exifr'],
   turbopack: {
-    root: __dirname,
     resolveAlias: {
       [LOCALE_ALIAS]: `@/${LOCALE_DYNAMIC}`,
     },
