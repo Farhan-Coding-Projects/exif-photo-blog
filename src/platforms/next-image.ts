@@ -27,7 +27,8 @@ export const getNextImageUrlForRequest = ({
   baseUrl?: string
   addBypassSecret?: boolean
 }) => {
-  const url = new URL(`${baseUrl}/_next/image`);
+  // Empty baseUrl returns a same-origin relative path
+  const url = new URL('/_next/image', baseUrl || 'http://localhost');
 
   url.searchParams.append('url', imageUrl);
   url.searchParams.append('w', size.toString());
@@ -37,5 +38,7 @@ export const getNextImageUrlForRequest = ({
     url.searchParams.append(VERCEL_BYPASS_KEY, VERCEL_BYPASS_SECRET);
   }
 
-  return url.toString();
+  return baseUrl
+    ? url.toString()
+    : `${url.pathname}${url.search}`;
 };

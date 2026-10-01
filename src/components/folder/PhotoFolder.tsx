@@ -217,6 +217,8 @@ function FolderPhotoImage({
       : size === 'medium'
         ? 200
         : 100,
+    // Relative so tiles don't depend on the configured site domain
+    baseUrl: '',
   });
   return (
     <div className={clsx('flex relative', className)}>
