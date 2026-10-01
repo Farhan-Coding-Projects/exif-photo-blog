@@ -71,7 +71,8 @@ export default function Modal({
       className={clsx(
         'fixed inset-0 z-50 flex justify-center',
         anchor === 'top'
-          ? 'items-start pt-4 sm:pt-12 lg:pt-24'
+          // Centered on phones, near the top on larger screens
+          ? 'items-center sm:items-start sm:pt-12 lg:pt-24'
           : 'items-center',
         'bg-white dark:bg-black',
       )}
