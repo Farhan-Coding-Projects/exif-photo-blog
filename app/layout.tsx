@@ -53,6 +53,9 @@ export const metadata: Metadata = {
     url: 'https://www.farhansadeek.com/favicon.svg',
     rel: 'icon',
     type: 'image/svg+xml',
+  }, {
+    url: 'https://www.farhansadeek.com/apple-touch-icon.png',
+    rel: 'apple-touch-icon',
   }],
   ...DEBUG_OUTPUTS_ENABLED && {
     other: {
