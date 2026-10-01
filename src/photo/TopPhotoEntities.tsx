@@ -57,6 +57,11 @@ export default function TopPhotoEntities({
         'flex whitespace-nowrap gap-x-3',
         // Prevent shadow clipping
         'py-1',
+        // Smaller badges on phones, larger on tablets
+        '[&_.rounded-lg]:h-6 [&_.rounded-lg]:px-1.5',
+        '[&_.rounded-lg]:text-[0.75rem]',
+        'sm:[&_.rounded-lg]:h-7.5 sm:[&_.rounded-lg]:px-2.5',
+        'sm:[&_.rounded-lg]:text-[0.95rem]',
         className,
       )}
       fadeSize={50}
