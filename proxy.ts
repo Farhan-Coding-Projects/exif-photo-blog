@@ -1,9 +1,10 @@
 import { auth } from './src/auth/server';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, userAgent } from 'next/server';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import {
   PATH_ADMIN,
   PATH_ADMIN_PHOTOS,
+  PATH_FULL,
   PATH_OG,
   PATH_OG_SAMPLE,
   PREFIX_PHOTO,
@@ -13,7 +14,12 @@ import {
 export function proxy(req: NextRequest, res:NextResponse) {
   const pathname = req.nextUrl.pathname;
 
-  if (pathname === PATH_ADMIN) {
+  if (pathname === '/') {
+    // Phones default to full view, everything else to grid
+    return userAgent(req).device.type === 'mobile' && !req.nextUrl.search
+      ? NextResponse.redirect(new URL(PATH_FULL, req.url))
+      : NextResponse.next();
+  } else if (pathname === PATH_ADMIN) {
     return NextResponse.redirect(new URL(PATH_ADMIN_PHOTOS, req.url));
   } else if (pathname === PATH_OG) {
     return NextResponse.redirect(new URL(PATH_OG_SAMPLE, req.url));
@@ -48,11 +54,10 @@ export const config = {
   // - /grid
   // - /full
   // - /library
-  // - / (root)
   // - /home-image
   // - /template-image
   // - /template-image-tight
   // - /template-url
   // eslint-disable-next-line max-len
-  matcher: ['/((?!api$|api/auth|_next/static|_next/image|favicon.ico$|favicons/|grid$|full$|library$|home-image$|template-image$|template-image-tight$|template-url$|$).*)'],
+  matcher: ['/((?!api$|api/auth|_next/static|_next/image|favicon.ico$|favicons/|grid$|full$|library$|home-image$|template-image$|template-image-tight$|template-url$).*)'],
 };

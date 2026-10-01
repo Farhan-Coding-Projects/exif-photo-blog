@@ -9,7 +9,7 @@ import {
   PARAM_SORT_TYPE_TAKEN_AT,
   PARAM_SORT_TYPE_UPLOADED_AT,
   PATH_FULL_INFERRED,
-  PATH_GRID_INFERRED,
+  PATH_GRID,
 } from '@/app/path';
 import { SortBy, SortParams } from '.';
 import {
@@ -157,8 +157,9 @@ export const getSortStateFromPath = (
   }) => {
     const { sortBy } = _getSortOptionsFromParams(sortType, sortOrder);
     if (sortBy === USER_DEFAULT_SORT_BY) {
+      // Explicit /grid: phones redirect / to full view
       return gridOrFull === 'grid'
-        ? PATH_GRID_INFERRED
+        ? PATH_GRID
         : PATH_FULL_INFERRED;
     } else {
       return `/${gridOrFull}/${sortType}/${sortOrder}`;
@@ -168,7 +169,7 @@ export const getSortStateFromPath = (
   // Core paths
   // (reset custom sort when clicking grid/full a second time)
   const pathGrid = _gridOrFull === 'grid' && sortBy !== USER_DEFAULT_SORT_BY
-    ? PATH_GRID_INFERRED
+    ? PATH_GRID
     : getPath({ gridOrFull: 'grid', sortType, sortOrder });
   const pathFull = _gridOrFull === 'full' && sortBy !== USER_DEFAULT_SORT_BY
     ? PATH_FULL_INFERRED
@@ -192,7 +193,7 @@ export const getSortStateFromPath = (
 
   // Sort clear
   const pathClearSort = _gridOrFull === 'grid'
-    ? PATH_GRID_INFERRED
+    ? PATH_GRID
     : PATH_FULL_INFERRED;
 
   return {
