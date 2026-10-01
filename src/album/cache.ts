@@ -1,5 +1,6 @@
 import {
   getAlbumFromSlug,
+  getAlbumsForPhoto,
   getAlbumsWithMeta,
   getAlbumTitlesForPhoto,
   getTagsForAlbum,
@@ -16,6 +17,12 @@ export const getAlbumFromSlugCached =
 export const getAlbumTitlesForPhotoCached =
   unstable_cache(
     getAlbumTitlesForPhoto,
+    [KEY_PHOTOS, KEY_ALBUMS],
+  );
+
+export const getAlbumsForPhotoCached =
+  unstable_cache(
+    getAlbumsForPhoto,
     [KEY_PHOTOS, KEY_ALBUMS],
   );
 

@@ -59,6 +59,8 @@ import { useEditTitlesState } from '@/admin/edit-titles/EditTitlesState';
 import { DATA_KEY_PHOTO_LARGE } from '@/admin/edit-titles/EditTitlesProvider';
 import FieldsetWithStatus from '@/components/FieldsetWithStatus';
 import PlaceEntity from '@/place/PlaceEntity';
+import PhotoCollections from '@/custom/PhotoCollections';
+import { Location } from '@/location';
 
 export default function PhotoLarge({
   photo,
@@ -96,6 +98,8 @@ export default function PhotoLarge({
   showAdminKeyCommands,
   showStorageCheck,
   hideMetaOnMobile = false,
+  photoLocations = [],
+  photoAlbums = [],
 }: {
   photo: Photo
   className?: string
@@ -132,6 +136,8 @@ export default function PhotoLarge({
   showAdminKeyCommands?: boolean
   showStorageCheck?: boolean
   hideMetaOnMobile?: boolean
+  photoLocations?: Location[]
+  photoAlbums?: Album[]
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const refZoomControls = useRef<ZoomControlsRef>(null);
@@ -199,6 +205,8 @@ export default function PhotoLarge({
   const showCameraContent = showCamera && shouldShowCameraDataForPhoto(photo);
   const showLensContent = showLens && shouldShowLensDataForPhoto(photo);
   const showTagsContent = tags.length > 0;
+  const showCollectionsContent =
+    photoLocations.length > 0 || photoAlbums.length > 0;
   const showRecipeContent = showRecipe && shouldShowRecipeDataForPhoto(photo);
   const showFilmContent = showFilm && shouldShowFilmDataForPhoto(photo);
   const showPlaceContent =
@@ -220,6 +228,7 @@ export default function PhotoLarge({
     showCameraContent ||
     showLensContent ||
     showTagsContent ||
+    showCollectionsContent ||
     showRecipeContent ||
     showFilmContent ||
     showPlaceContent ||
@@ -397,7 +406,8 @@ export default function PhotoLarge({
                     showLensContent ||
                     showRecipeContent ||
                     showPlaceContent ||
-                    showTagsContent
+                    showTagsContent ||
+                    showCollectionsContent
                   ) &&
                     <div>
                       {(showCameraContent || showLensContent) &&
@@ -430,6 +440,12 @@ export default function PhotoLarge({
                           contrast="medium"
                           prefetch={prefetchRelatedLinks}
                         />}
+                      <PhotoCollections
+                        locations={photoLocations}
+                        albums={photoAlbums}
+                        contrast="medium"
+                        prefetch={prefetchRelatedLinks}
+                      />
                     </div>}
                 </div>
               </div>

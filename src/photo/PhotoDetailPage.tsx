@@ -23,8 +23,10 @@ import RecentsHeader from '@/recents/RecentsHeader';
 import AlbumHeader from '@/album/AlbumHeader';
 import LocationHeader from '@/location/LocationHeader';
 import QueryHeader from '@/query/QueryHeader';
+import { getAlbumsForPhotoCached } from '@/album/cache';
+import { getLocationsForPhotoCached } from '@/location/cache';
 
-export default function PhotoDetailPage({
+export default async function PhotoDetailPage({
   photo,
   photos,
   photosGrid,
@@ -54,6 +56,15 @@ export default function PhotoDetailPage({
   shouldShare?: boolean
   includeFavoriteInAdminMenu?: boolean
 } & PhotoSetCategory) {
+  const [photoAlbums, photoLocations] = await Promise.all([
+    getAlbumsForPhotoCached(photo.id)
+      .then(albums => albums.filter(({ id }) => id !== album?.id))
+      .catch(() => []),
+    getLocationsForPhotoCached(photo.id)
+      .then(locations => locations.filter(({ id }) => id !== location?.id))
+      .catch(() => []),
+  ]);
+
   let customHeader: ReactNode | undefined;
 
   if (query) {
@@ -194,6 +205,8 @@ export default function PhotoDetailPage({
             showLens={!lens}
             showFilm={!film}
             showRecipe={!recipe}
+            photoAlbums={photoAlbums}
+            photoLocations={photoLocations}
             shouldShare={shouldShare}
             shouldShareQuery={query !== undefined}
             shouldShareRecents={recent !== undefined}

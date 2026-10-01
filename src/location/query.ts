@@ -158,6 +158,15 @@ export const getLocationTitlesForPhoto = (photoId: string) =>
   `.then(({ rows }) => rows.map(({ title }) => title)),
   'getLocationTitlesForPhoto');
 
+export const getLocationsForPhoto = (photoId: string) =>
+  safelyQuery(() => sql`
+    SELECT l.* FROM locations l
+    JOIN location_photo lp ON l.id = lp.location_id
+    WHERE lp.photo_id=${photoId}
+    ORDER BY l.title ASC
+  `.then(({ rows }) => rows.map(parseLocationFromDb)),
+  'getLocationsForPhoto');
+
 export const getTagsForLocation = (locationId: string) =>
   safelyQuery(() => sql`
     SELECT DISTINCT unnest(p.tags) as tag

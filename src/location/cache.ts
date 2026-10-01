@@ -1,5 +1,6 @@
 import {
   getLocationFromSlug,
+  getLocationsForPhoto,
   getLocationsWithMeta,
   getLocationTitlesForPhoto,
   getTagsForLocation,
@@ -13,6 +14,10 @@ export const getLocationFromSlugCached = unstable_cache(
 );
 export const getLocationsWithMetaCached = unstable_cache(
   getLocationsWithMeta,
+  [KEY_PHOTOS, KEY_LOCATIONS],
+);
+export const getLocationsForPhotoCached = unstable_cache(
+  getLocationsForPhoto,
   [KEY_PHOTOS, KEY_LOCATIONS],
 );
 export const getLocationTitlesForPhotoCached = unstable_cache(

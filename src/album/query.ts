@@ -123,6 +123,15 @@ export const getAlbumTitlesForPhoto = (photoId: string) =>
   `.then(({ rows }) => rows.map(({ title }) => title))
   , 'getAlbumTitlesForPhoto');
 
+export const getAlbumsForPhoto = (photoId: string) =>
+  safelyQuery(() => sql`
+    SELECT a.* FROM albums a
+    JOIN album_photo ap ON a.id = ap.album_id
+    WHERE ap.photo_id=${photoId}
+    ORDER BY a.title ASC
+  `.then(({ rows }) => rows.map(parseAlbumFromDb))
+  , 'getAlbumsForPhoto');
+
 export const getTagsForAlbum = (albumId: string) =>
   safelyQuery(() => sql`
     SELECT DISTINCT unnest(p.tags) as tag

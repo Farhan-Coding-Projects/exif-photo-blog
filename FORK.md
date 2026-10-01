@@ -26,7 +26,8 @@ Own files (never conflict):
 - `src/location/`, `app/location/`, `app/admin/locations/`,
   `src/admin/AdminLocation*.tsx`: location collections
 - `src/custom/`: small overrides, e.g. compact camera label
-  (`Samsung Galaxy S25 Ultra` -> `S25 Ultra`) in the mobile top strip
+  (`Samsung Galaxy S25 Ultra` -> `S25 Ultra`) in the mobile top strip,
+  and `PhotoCollections` (a photo's locations/albums in detail meta)
 - `__tests__/location-path.test.ts`
 - `public/favicon.ico`, `public/favicons/`, `app/manifest.ts`: branding
 - `scripts/*r2*.mjs`: R2 migration/metadata scripts
@@ -37,6 +38,7 @@ change and re-adding the hook):
 | Feature | Upstream files touched |
 | --- | --- |
 | Location collections | `src/app/path.ts`, `src/cache/index.ts`, `src/category/{index,data,mobile,useCategoryCounts,CategoryIcon}.ts*`, `src/db/{index,query}.ts`, `src/photo/{actions,PhotoDetailPage,PhotoEditPageClient,UploadPageClient,PhotoGridSidebar,TopPhotoEntities}.ts*`, `src/photo/form/{index,PhotoForm}.ts*`, `src/admin/{AdminNav,AdminBatchUploadActions,AdminUploadsClient}.tsx`, `src/admin/select/*`, `src/cmdk/CommandKClient.tsx`, `src/library/data.ts`, `app/sitemap.ts`, admin edit/upload pages, `src/app/config.ts` (`SHOW_LOCATIONS`) |
+| Locations/albums in photo detail meta | `src/photo/{PhotoDetailPage,PhotoLarge}.tsx`, `src/album/{query,cache}.ts` |
 | Quicksand font | `tailwind.css` |
 | Favicons, hydration warning fix | `app/layout.tsx` |
 | Sort categories by count, hide single-photo categories | `src/category/data.ts`, `src/{camera,lens,tag,recipe,focal}/index.ts`, `src/film/index.tsx`, `src/photo/query.ts` |
