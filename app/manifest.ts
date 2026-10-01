@@ -8,7 +8,11 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: '/',
     display: 'browser',
     icons: [
-      { src: '/favicons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+      {
+        src: '/favicons/apple-touch-icon.png',
+        sizes: '180x180',
+        type: 'image/png',
+      },
     ],
   };
 }

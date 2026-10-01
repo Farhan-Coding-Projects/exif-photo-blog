@@ -22,9 +22,9 @@ export const parameterizeForDb = (field: string) =>
   `REGEXP_REPLACE(
     REGEXP_REPLACE(
       LOWER(TRIM(${field})),
-      '[^[:alnum:][:space:]_.–—+&|]', '', 'g'
+      '[${CHARACTERS_TO_REMOVE.join('')}]', '', 'g'
     ),
-    '[[:space:]_–—+&|]', '-', 'g'
+    '[${CHARACTERS_TO_REPLACE.join('')}]', '-', 'g'
   )`;
 
 export type PhotoQueryOptions = {

@@ -679,7 +679,6 @@ export const syncPhotoAction = async (
           }
         }
 
-        const missingAiFields = photo.updateStatus?.isMissingAiTextFields ?? [];
         const {
           title: atTitle,
           caption: aiCaption,

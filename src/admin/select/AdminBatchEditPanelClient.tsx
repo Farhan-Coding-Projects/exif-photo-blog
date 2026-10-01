@@ -165,16 +165,6 @@ export default function AdminBatchEditPanelClient({
       openOnLoad
       hideLabel
     />
-    : isInLocationMode
-    ? <FieldsetLocation
-      locationOptions={uniqueLocations}
-      value={locationTitles}
-      placeholder={`Add ${photosText} to locations`}
-      onChange={setLocationTitles}
-      readOnly={isPerformingSelectEdit}
-      openOnLoad
-      hideLabel
-    />
     : isInTagMode
       ? <FieldsetTag
         tags={tags}
@@ -200,6 +190,18 @@ export default function AdminBatchEditPanelClient({
         hideLabel
       />;
 
+  const renderLocationEditField = <FieldsetLocation
+    locationOptions={uniqueLocations}
+    value={locationTitles ?? ''}
+    placeholder={`Add ${photosText} to locations`}
+    onChange={setLocationTitles}
+    readOnly={isPerformingSelectEdit}
+    openOnLoad
+    hideLabel
+  />;
+
+  const locationConfirmText = `Add ${photosText} to locations?`;
+
   const renderEditActions = <>
     <LoaderButton
       className="min-h-[2.5rem]"
@@ -213,12 +215,10 @@ export default function AdminBatchEditPanelClient({
     <LoaderButton
       className="min-h-[2.5rem]"
       icon={<FaCheck size={15} />}
-      confirmText={isInTagMode
+      confirmText={isInLocationMode ? locationConfirmText : isInTagMode
         ? appText.admin.tagConfirm(photosText)
         : isInAlbumMode
           ? appText.admin.albumConfirm(photosText)
-          : isInLocationMode
-          ? `Add ${photosText} to locations?`
           : appText.admin.setVisibilityConfirm(
             visibilityLabel ?? '',
             photosText,
@@ -377,7 +377,9 @@ export default function AdminBatchEditPanelClient({
           )}>
             {isInEditMode
               ? <>
-                {renderEditField}
+                {isInLocationMode
+                  ? renderLocationEditField
+                  : renderEditField}
                 {renderEditActions}
               </>
               : <>
