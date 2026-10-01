@@ -97,7 +97,7 @@ export default function LibraryPageClient({
         type="text-only"
         contrast="high"
         showBrandLogo
-        hidePhoneMakeOnMobile
+        hidePhoneMake
       />,
     ),
     lens && renderItem(

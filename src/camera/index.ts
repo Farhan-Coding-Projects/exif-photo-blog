@@ -3,6 +3,7 @@ import type { Photo } from '@/photo';
 import { isCameraMakeApple } from '@/platforms/apple';
 import { formatSonyModel, isMakeSony } from '@/platforms/sony';
 import { formatDjiModel, isMakeDji } from '@/platforms/dji';
+import { isMakeSamsung } from '@/platforms/samsung';
 import { MakeModelTextLength, parameterize } from '@/utility/string';
 
 const CAMERA_PLACEHOLDER: Camera = { make: 'Camera', model: 'Model' };
@@ -94,3 +95,12 @@ export const formatCameraText = (
       return model;
   }
 };
+
+// Phone makes are implied by the model (e.g. "Galaxy S25 Ultra")
+export const isCameraMakeImpliedByModel = ({ make }: Camera) =>
+  isMakeSamsung(make);
+
+export const formatCameraTextWithoutPhoneMake = (camera: Camera) =>
+  isCameraMakeImpliedByModel(camera)
+    ? formatCameraText(camera, 'short')
+    : formatCameraText(camera);

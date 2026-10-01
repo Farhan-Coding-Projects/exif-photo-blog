@@ -14,7 +14,7 @@ import {
   pathForTag,
   pathForYear,
 } from '@/app/path';
-import { formatCameraText } from '@/camera';
+import { formatCameraTextWithoutPhoneMake } from '@/camera';
 import { CategoryKey, PhotoSetCategories, getCategoryTitle } from '@/category';
 import { PhotoQueryOptions } from '@/db';
 import { labelForFilm } from '@/film';
@@ -105,7 +105,7 @@ const getFolderQueriesForCategory = (
       return categories.cameras.map(({ camera, cameraKey, count }) => ({
         key: cameraKey,
         options: { camera },
-        caption: formatCameraText(camera),
+        caption: formatCameraTextWithoutPhoneMake(camera),
         path: pathForCamera(camera),
         count,
       }));
