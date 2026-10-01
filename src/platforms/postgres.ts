@@ -1,8 +1,8 @@
 import { POSTGRES_SSL_ENABLED } from '@/app/config';
 import { removeParamsFromUrl } from '@/utility/url';
-import { Pool, QueryResult, QueryResultRow } from 'pg';
+import { Client, Pool, QueryResult, QueryResultRow } from 'pg';
 
-const pool = new Pool({
+const config = {
   ...process.env.POSTGRES_URL && {
     connectionString: removeParamsFromUrl(
       process.env.POSTGRES_URL,
@@ -10,7 +10,14 @@ const pool = new Pool({
     ),
   },
   ...POSTGRES_SSL_ENABLED && { ssl: true },
-});
+};
+
+// Cloudflare Workers can't reuse a socket across requests,
+// so each query gets its own connection there
+const IS_CLOUDFLARE_WORKER =
+  globalThis.navigator?.userAgent === 'Cloudflare-Workers';
+
+const pool = new Pool(config);
 
 export type Primitive = string | number | boolean | undefined | null;
 
@@ -18,6 +25,16 @@ export const query = async <T extends QueryResultRow = any>(
   queryString: string,
   values: Primitive[] = [],
 ) => {
+  if (IS_CLOUDFLARE_WORKER) {
+    const client = new Client(config);
+    await client.connect();
+    try {
+      return await client.query<T>(queryString, values);
+    } finally {
+      // Socket may already be closed by the runtime
+      client.end().catch(() => {});
+    }
+  }
   const client = await pool.connect();
   let response: QueryResult<T>;
   try {

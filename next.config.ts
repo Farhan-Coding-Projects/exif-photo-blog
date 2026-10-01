@@ -82,9 +82,21 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 31536000,
   },
   serverExternalPackages: ['exifr'],
+  // pg loads pg-cloudflare's workerd build at runtime, which tracing misses
+  ...process.env.CLOUDFLARE_BUILD === '1' && {
+    outputFileTracingIncludes: {
+      '/*': [
+        './node_modules/.pnpm/pg-cloudflare@*/node_modules/pg-cloudflare/**/*',
+      ],
+    },
+  },
   turbopack: {
     resolveAlias: {
       [LOCALE_ALIAS]: `@/${LOCALE_DYNAMIC}`,
+      ...process.env.CLOUDFLARE_BUILD === '1' && {
+        sharp: './src/custom/sharp-unavailable.ts',
+        undici: './src/custom/undici-workers.ts',
+      },
     },
   },
   webpack: (config) => {
@@ -99,3 +111,5 @@ const nextConfig: NextConfig = {
 module.exports = process.env.ANALYZE === 'true'
   ? require('@next/bundle-analyzer')()(nextConfig)
   : nextConfig;
+
+import('@opennextjs/cloudflare').then(m => m.initOpenNextCloudflareForDev());

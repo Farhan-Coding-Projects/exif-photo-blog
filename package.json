@@ -9,7 +9,12 @@
     "sync:r2-exif-metadata": "node --env-file-if-exists=.env.local scripts/sync-r2-exif-metadata.mjs",
     "generate:r2-ai-metadata": "node --env-file-if-exists=.env.local scripts/generate-r2-ai-metadata.mjs",
     "test": "jest --watch --transformIgnorePatterns 'node_modules/(?!my-library-dir)/'",
-    "analyze": "ANALYZE=true next build --webpack"
+    "analyze": "ANALYZE=true next build --webpack",
+    "preview": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "upload": "wrangler versions upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "build:cf": "CLOUDFLARE_BUILD=1 opennextjs-cloudflare build"
   },
   "packageManager": "pnpm@12.8.1",
   "dependencies": {
@@ -17,6 +22,7 @@
     "@ai-sdk/rsc": "^3.0.123",
     "@aws-sdk/client-s3": "3.1143.0",
     "@aws-sdk/s3-request-presigner": "3.1143.0",
+    "@opennextjs/cloudflare": "^1.20.7",
     "@radix-ui/react-dialog": "^1.1.23",
     "@radix-ui/react-dropdown-menu": "^2.1.24",
     "@radix-ui/react-tooltip": "^1.2.16",
@@ -44,6 +50,7 @@
     "next-themes": "^0.4.6",
     "ol": "^10.10.0",
     "pg": "^8.23.0",
+    "pg-cloudflare": "^1.4.1",
     "piexifjs": "^1.0.6",
     "react": "19.3.0",
     "react-dom": "19.3.0",
@@ -84,6 +91,7 @@
     "postcss": "8.5.28",
     "tailwindcss": "4.3.3",
     "ts-node": "^10.9.2",
-    "typescript": "^6"
+    "typescript": "^6",
+    "wrangler": "^4.145.0"
   }
 }
