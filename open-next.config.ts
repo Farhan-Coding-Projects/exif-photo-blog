@@ -3,4 +3,11 @@
 // to persist ISR/unstable_cache, see https://opennext.js.org/cloudflare/caching
 import { defineCloudflareConfig } from '@opennextjs/cloudflare';
 
-export default defineCloudflareConfig({});
+const config = {
+  ...defineCloudflareConfig({}),
+  // `pnpm build` runs this OpenNext build on Cloudflare CI, so call
+  // next directly to avoid recursion
+  buildCommand: 'pnpm exec next build',
+};
+
+export default config;

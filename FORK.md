@@ -31,7 +31,7 @@ Own files (never conflict):
 - `__tests__/location-path.test.ts`
 - `wrangler.jsonc`, `open-next.config.ts`, `public/_headers`,
   `src/custom/{sharp-unavailable,undici-workers}.ts`: Cloudflare Workers
-  hosting via OpenNext (`pnpm build:cf`, `pnpm preview`, `pnpm deploy`)
+  hosting via OpenNext (`pnpm build` runs `build:cf` on Cloudflare CI via `WORKERS_CI`; `pnpm preview`, `pnpm deploy` locally)
 - `public/favicon.ico`, `public/favicons/`, `app/manifest.ts`: branding
 - `scripts/*r2*.mjs`: R2 migration/metadata scripts
 

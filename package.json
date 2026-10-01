@@ -2,7 +2,7 @@
   "name": "exif-photo-blog",
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "build": "next build",
+    "build": "if [ -n \"$WORKERS_CI\" ]; then pnpm run build:cf; else next build; fi",
     "start": "next start",
     "lint": "eslint .",
     "migrate:vercel-blob-to-r2": "node --env-file-if-exists=.env.local scripts/migrate-vercel-blob-to-r2.mjs",
@@ -10,9 +10,9 @@
     "generate:r2-ai-metadata": "node --env-file-if-exists=.env.local scripts/generate-r2-ai-metadata.mjs",
     "test": "jest --watch --transformIgnorePatterns 'node_modules/(?!my-library-dir)/'",
     "analyze": "ANALYZE=true next build --webpack",
-    "preview": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "upload": "wrangler versions upload",
+    "preview": "pnpm run build:cf && opennextjs-cloudflare preview",
+    "deploy": "pnpm run build:cf && opennextjs-cloudflare deploy",
+    "upload": "pnpm run build:cf && opennextjs-cloudflare upload",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "build:cf": "CLOUDFLARE_BUILD=1 opennextjs-cloudflare build"
   },
