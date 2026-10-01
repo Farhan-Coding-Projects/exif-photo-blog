@@ -370,6 +370,7 @@ export const toggleFavoritePhotoAction = async (
         ? tags.filter(tag => !isTagFavs(tag))
         : [...tags, TAG_FAVS];
       await updatePhoto(convertPhotoToPhotoDbInsert(photo));
+      await syncFavsAlbumForPhoto(photo.id, isPhotoFav(photo));
       revalidateAllKeysAndPaths();
       if (shouldRedirect) {
         redirect(pathForPhoto({ photo: photoId }));
@@ -657,6 +658,7 @@ export const syncPhotoAction = async (
           }
         }
 
+        const missingAiFields = photo.updateStatus?.isMissingAiTextFields ?? [];
         const {
           title: atTitle,
           caption: aiCaption,

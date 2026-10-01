@@ -5,6 +5,7 @@ import { getAlbumsWithMetaCached } from '@/album/cache';
 import AdminUploadsClient from '@/admin/AdminUploadsClient';
 import { redirect } from 'next/navigation';
 import { PATH_ADMIN_PHOTOS } from '@/app/path';
+import { getLocationsWithMetaCached } from '@/location/cache';
 
 export const maxDuration = 60;
 

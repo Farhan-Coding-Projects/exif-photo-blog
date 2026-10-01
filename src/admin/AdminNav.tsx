@@ -9,6 +9,7 @@ import { getAlbumsWithMetaCached } from '@/album/cache';
 import {
   PATH_ADMIN_ALBUMS,
   PATH_ADMIN_PHOTOS,
+  PATH_ADMIN_LOCATIONS,
   PATH_ADMIN_RECIPES,
   PATH_ADMIN_TAGS,
   PATH_ADMIN_UPLOADS,

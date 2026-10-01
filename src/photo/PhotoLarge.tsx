@@ -21,7 +21,7 @@ import DownloadButton from '@/components/DownloadButton';
 import PhotoCamera from '../camera/PhotoCamera';
 import { cameraFromPhoto } from '@/camera';
 import PhotoFilm from '@/film/PhotoFilm';
-import { sortTagsArray } from '@/tag';
+import { isTagFavs, sortTagsArray } from '@/tag';
 import DivDebugBaselineGrid from '@/components/DivDebugBaselineGrid';
 import PhotoLink from './PhotoLink';
 import {
@@ -95,6 +95,7 @@ export default function PhotoLarge({
   onVisible,
   showAdminKeyCommands,
   showStorageCheck,
+  hideMetaOnMobile = false,
 }: {
   photo: Photo
   className?: string
@@ -130,6 +131,7 @@ export default function PhotoLarge({
   onVisible?: () => void
   showAdminKeyCommands?: boolean
   showStorageCheck?: boolean
+  hideMetaOnMobile?: boolean
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const refZoomControls = useRef<ZoomControlsRef>(null);
@@ -183,7 +185,10 @@ export default function PhotoLarge({
     refTriggers,
   });
 
-  const tags = sortTagsArray(photo.tags, primaryTag);
+  const tags = sortTagsArray(
+    photo.tags.filter(tag => !isTagFavs(tag)),
+    primaryTag,
+  );
 
   const camera = cameraFromPhoto(photo);
   const lens = lensFromPhoto(photo);
@@ -330,7 +335,7 @@ export default function PhotoLarge({
           {renderLargePhoto}
         </Link>}
       classNameSide="relative"
-      sideHiddenOnMobile={false}
+      sideHiddenOnMobile={hideMetaOnMobile}
       contentSide={
         <div className="md:absolute inset-0 -mt-1">
           <MaskedScroll className="sticky top-4 self-start">

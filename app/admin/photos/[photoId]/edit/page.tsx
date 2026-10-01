@@ -22,6 +22,10 @@ import {
   getOptimizedPhotoUrlForManipulation,
   getStorageUrlsForPhoto,
 } from '@/photo/storage';
+import {
+  getLocationsWithMetaCached,
+  getLocationTitlesForPhotoCached,
+} from '@/location/cache';
 
 export default async function PhotoEditPage({
   params,

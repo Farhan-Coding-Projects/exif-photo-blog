@@ -3,6 +3,7 @@ import { Photo } from '.';
 import PhotoLarge from './PhotoLarge';
 import { RevalidatePhoto } from './InfinitePhotoScroll';
 import { PhotoSetCategory } from '../category';
+import { HIDE_FEED_META_ON_MOBILE } from '@/app/config';
 
 export default function PhotosLarge({
   photos,
@@ -45,6 +46,7 @@ export default function PhotosLarge({
           prefetchRelatedLinks={prefetchFirstPhotoLinks && index === 0}
           revalidatePhoto={revalidatePhoto}
           shouldZoomOnFKeydown={false}
+          hideMetaOnMobile={HIDE_FEED_META_ON_MOBILE}
           album={album}
           primaryTag={tag}
           query={query}

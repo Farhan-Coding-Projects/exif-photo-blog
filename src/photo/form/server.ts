@@ -15,6 +15,9 @@ import { FujifilmSimulation } from '@/platforms/fujifilm/simulation';
 import type { ExifData, ExifTags } from 'ts-exif-parser';
 import { NikonPictureControl } from '@/platforms/nikon/simulation';
 import { parameterize } from '@/utility/string';
+import { normalizeDjiLensModel } from '@/platforms/dji';
+import { normalizeSonyLensModel } from '@/platforms/sony';
+import { normalizeSamsungLensModel } from '@/platforms/samsung';
 
 export const convertExifToFormData = (
   exif: ExifData,
@@ -47,18 +50,35 @@ export const convertExifToFormData = (
 
   const { width, height, aspectRatio } = getDimensionsFromExif(exif, exifr);
 
+  const make = getExifValue('Make');
+  const model = getExifValue('Model');
+  const focalLength = getExifValue('FocalLength');
+  const lensModel = normalizeSamsungLensModel(
+    make,
+    model,
+    normalizeSonyLensModel(
+      make,
+      normalizeDjiLensModel(
+        make,
+        model,
+        getExifValue('LensModel'),
+      ),
+    ),
+    focalLength,
+  );
+
   return {
     ...width && height && {
       width: width.toString(),
       height: height.toString(),
     },
     aspectRatio: aspectRatio.toString(),
-    make: getExifValue('Make'),
-    model: getExifValue('Model'),
-    focalLength: getExifValue('FocalLength')?.toString(),
+    make,
+    model,
+    focalLength: focalLength?.toString(),
     focalLengthIn35MmFormat:getExifValue('FocalLengthIn35mmFormat')?.toString(),
     lensMake: getExifValue('LensMake'),
-    lensModel: getExifValue('LensModel'),
+    lensModel,
     fNumber: (
       getExifValue('FNumber')?.toString() ||
       convertApertureValueToFNumber(getExifValue('ApertureValue'))

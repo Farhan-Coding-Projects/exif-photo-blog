@@ -24,6 +24,7 @@ import { calculateColorSort } from '@/photo/color/sort';
 
 type VirtualFields =
   'albums' |
+  'locations' |
   'visibility' |
   'favorite' |
   'applyRecipeTitleGlobally' |
@@ -128,14 +129,19 @@ const FORM_METADATA = (
       ? 'Invalid color'
       : undefined,
   },
-  visibility: {
-    section: 'text',
-    label: 'visibility',
-    excludeFromInsert: true,
-  },
   albums: {
     section: 'text',
     label: 'albums',
+    excludeFromInsert: true,
+  },
+  locations: {
+    section: 'text',
+    label: 'locations',
+    excludeFromInsert: true,
+  },
+  visibility: {
+    section: 'text',
+    label: 'visibility',
     excludeFromInsert: true,
   },
   excludeFromFeeds: {

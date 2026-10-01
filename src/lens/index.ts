@@ -76,7 +76,7 @@ export const sortLensesWithCount = (
 ) => {
   const aText = formatLensText(a.lens);
   const bText = formatLensText(b.lens);
-  return aText.localeCompare(bText);
+  return b.count - a.count || aText.localeCompare(bText);
 };
 
 export const lensFromPhoto = (
@@ -91,7 +91,14 @@ export const formatLensText = (
   lens: Lens,
   length: MakeModelTextLength = 'medium',
 ) => {
-  const { make, model: modelRaw } = lens;
+  const { make } = lens;
+  // Some EXIF sources append `u` to focal lengths in labels such as
+  // `25u ultrawide` or `22u ultrawide`. Keep the lens type but remove that
+  // shorthand suffix from the displayed focal length.
+  const modelRaw = lens.model.replace(
+    /(\d+)u(?=\s+ultra[- ]?wide\b)/gi,
+    '$1',
+  );
 
   // Capture simple make without modifiers like 'Corporation' or 'Company'
   const makeSimple = make?.match(/^(\S+)/)?.[1];

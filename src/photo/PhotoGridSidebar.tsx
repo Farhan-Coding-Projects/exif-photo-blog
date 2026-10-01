@@ -35,9 +35,11 @@ import PhotoYear from '@/year/PhotoYear';
 import { chunkArray } from '@/utility/array';
 import PhotoRecents from '@/recents/PhotoRecents';
 import PhotoAlbum from '@/album/PhotoAlbum';
+import PhotoLocation from '@/location/PhotoLocation';
 
 const APPROXIMATE_ITEM_HEIGHT = 40;
 const ABOUT_HEIGHT_OFFSET = 24;
+const HIDDEN_TAGS = new Set(['landscape', 'nature', 'city']);
 
 export default function PhotoGridSidebar({
   photosCount,
@@ -67,6 +69,7 @@ export default function PhotoGridSidebar({
     cameras,
     lenses,
     albums,
+    locations,
     tags,
     films,
     recipes,
@@ -98,9 +101,13 @@ export default function PhotoGridSidebar({
 
   const { photosCountHidden } = useAppState();
 
+  const visibleTags = useMemo(() => tags.filter(
+    ({ tag }) => !HIDDEN_TAGS.has(tag.toLocaleLowerCase()),
+  ), [tags]);
+
   const tagsIncludingHidden = useMemo(() =>
-    addPrivateToTags(tags, photosCountHidden)
-  , [tags, photosCountHidden]);
+    addPrivateToTags(visibleTags, photosCountHidden)
+  , [visibleTags, photosCountHidden]);
 
   const recentsContent = recents.length > 0
     ? <HeaderList
@@ -243,6 +250,25 @@ export default function PhotoGridSidebar({
     />
     : null;
 
+  const locationsContent = locations.length > 0
+    ? <HeaderList
+      key="locations"
+      title={getCategoryTitle('locations', appText)}
+      icon={<CategoryIcon category="locations" />}
+      maxItems={maxItemsPerCategory}
+      items={locations.map(({ location, count }) =>
+        <PhotoLocation
+          key={location.slug}
+          location={location}
+          type="text-only"
+          prefetch={false}
+          contrast="low"
+          hoverCount={count}
+          badged
+        />)}
+    />
+    : null;
+
   const recipesContent = recipes.length > 0
     ? <HeaderList
       key="recipes"
@@ -328,6 +354,7 @@ export default function PhotoGridSidebar({
           case 'cameras': return camerasContent;
           case 'lenses': return lensesContent;
           case 'albums': return albumsContent;
+          case 'locations': return locationsContent;
           case 'tags': return tagsContent;
           case 'recipes': return recipesContent;
           case 'films': return filmsContent;

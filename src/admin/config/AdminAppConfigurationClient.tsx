@@ -1127,6 +1127,47 @@ export default function AdminAppConfigurationClient({
             {renderEnvVars(['DISABLE_DEBUG_OUTPUTS'])}
           </ChecklistRow>
         </>;
+      case 'Scripts & Analytics':
+        return <>
+          <ChecklistRow
+            title="Custom page scripts"
+            status={hasPageScriptUrls}
+            optional
+          >
+            {pageScriptUrls.length > 0 &&
+              <div className="mt-2 text-xs space-y-1.5">
+                {pageScriptUrls.map(url =>
+                  <MaskedScroll
+                    key={url}
+                    className={clsx(
+                      'inline-flex items-center gap-1',
+                      'bg-dim rounded-md px-1.5 py-0.5',
+                    )}
+                    direction="horizontal"
+                  >
+                    <IoLink size={14} className="shrink-0 translate-y-[0.5px]"/>
+                    <span className="font-medium text-nowrap">
+                      {url}
+                    </span>
+                  </MaskedScroll>)}
+              </div>}
+            Set environment variable to comma-separated list of URLs
+            to be added to the bottom of the body tag via {'"next/script"'}
+            {renderEnvVars(['PAGE_SCRIPT_URLS'])}
+          </ChecklistRow>
+        </>;
+      case 'Debugging':
+        return <>
+          <ChecklistRow
+            title="Debug outputs"
+            status={isDebuggingEnabled}
+            optional
+          >
+            Set environment variable to {'"1"'} to disable build identifier
+            and admin configuration export
+            {renderEnvVars(['DISABLE_DEBUG_OUTPUTS'])}
+          </ChecklistRow>
+        </>;
       case 'Internal':
         return <>
           <ChecklistRow

@@ -38,6 +38,7 @@ export default function ImageWithFallback({
       !ref.current?.complete ||
       (ref.current?.naturalWidth ?? 0) === 0
     ) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFadeFallbackTransition(true);
     }
   }, []);

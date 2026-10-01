@@ -337,6 +337,8 @@ export const SHOW_LENSES =
   CATEGORY_VISIBILITY.includes('lenses');
 export const SHOW_ALBUMS =
   CATEGORY_VISIBILITY.includes('albums');
+export const SHOW_LOCATIONS =
+  CATEGORY_VISIBILITY.includes('locations');
 export const SHOW_TAGS =
   CATEGORY_VISIBILITY.includes('tags');
 export const SHOW_RECIPES =
@@ -353,6 +355,8 @@ export const COLLAPSE_SIDEBAR_CATEGORIES =
   process.env.NEXT_PUBLIC_EXHAUSTIVE_SIDEBAR_CATEGORIES !== '1';
 export const HIDE_TAGS_WITH_ONE_PHOTO =
   process.env.NEXT_PUBLIC_HIDE_TAGS_WITH_ONE_PHOTO === '1';
+export const HIDE_FEED_META_ON_MOBILE =
+  process.env.NEXT_PUBLIC_HIDE_FEED_META_ON_MOBILE === '1';
 
 // SORT
 

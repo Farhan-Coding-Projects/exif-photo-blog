@@ -192,7 +192,8 @@ export const getRecipePropsFromPhotos = (
 };
 
 export const sortRecipes = (recipes: Recipes = []) =>
-  recipes.sort((a, b) => a.recipe.localeCompare(b.recipe));
+  recipes.sort((a, b) =>
+    b.count - a.count || a.recipe.localeCompare(b.recipe));
 
 export const convertRecipesForForm = (recipes: Recipes = []) =>
   sortRecipes(recipes)

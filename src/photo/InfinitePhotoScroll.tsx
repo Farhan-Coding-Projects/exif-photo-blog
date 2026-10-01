@@ -72,7 +72,7 @@ export default function InfinitePhotoScroll({
   }) => ReactNode
 } & PhotoSetCategory) {
   const { isUserSignedIn } = useAppState();
-
+  
   const { utility } = useAppText();
 
   const keyGenerator = useCallback(

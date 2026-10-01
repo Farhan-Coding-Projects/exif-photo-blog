@@ -8,6 +8,7 @@ import IconRecents from '@/components/icons/IconRecents';
 import IconTag from '@/components/icons/IconTag';
 import IconYear from '@/components/icons/IconYear';
 import { CategoryKey } from '.';
+import { TbMapPin } from 'react-icons/tb';
 
 export default function CategoryIcon({
   category,
@@ -29,6 +30,7 @@ export default function CategoryIcon({
       size={13.5}
       className="translate-x-[1.5px]"
     />;
+    case 'locations': return <TbMapPin size={14} />;
     case 'tags': return <IconTag
       size={13.5}
       className="translate-x-[1.5px] translate-y-[1px]"

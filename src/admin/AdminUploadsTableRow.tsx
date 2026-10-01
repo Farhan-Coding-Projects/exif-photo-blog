@@ -138,7 +138,16 @@ export default function AdminUploadsTableRow({
                       status: 'adding',
                       statusMessage: 'Adding ...',
                     })}
-                    onAddFinish={removeRow}
+                    onAddFinish={success => {
+                      if (success) {
+                        removeRow();
+                      } else {
+                        updateStatus({
+                          status: undefined,
+                          statusMessage: 'Could not add photo—try again',
+                        });
+                      }
+                    }}
                     shouldRedirectToAdminPhotos={shouldRedirectAfterAction}
                     disabled={isRowLoading}
                     tooltipSide="bottom"

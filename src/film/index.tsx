@@ -56,7 +56,7 @@ export const sortFilmsWithCount = (
 ) => {
   const aLabel = labelForFilm(a.film).large;
   const bLabel = labelForFilm(b.film).large;
-  return aLabel.localeCompare(bLabel);
+  return b.count - a.count || aLabel.localeCompare(bLabel);
 };
 
 export const titleForFilm = (

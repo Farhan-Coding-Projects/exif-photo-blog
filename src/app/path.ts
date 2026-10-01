@@ -7,6 +7,7 @@ import { parameterize } from '@/utility/string';
 import { TAG_PRIVATE } from '@/tag';
 import { Lens } from '@/lens';
 import { AlbumOrAlbumSlug } from '@/album';
+import { LocationOrLocationSlug } from '@/location';
 
 // Core
 export const PATH_ROOT                  = '/';
@@ -54,6 +55,7 @@ export const PREFIX_YEAR                = '/year';
 export const PREFIX_CAMERA              = '/shot-on';
 export const PREFIX_LENS                = '/lens';
 export const PREFIX_ALBUM               = '/album';
+export const PREFIX_LOCATION            = '/location';
 export const PREFIX_TAG                 = '/tag';
 export const PREFIX_RECIPE              = '/recipe';
 export const PREFIX_FILM                = '/film';
@@ -66,6 +68,7 @@ const PATH_YEAR_DYNAMIC                 = `${PREFIX_YEAR}/[year]`;
 const PATH_CAMERA_DYNAMIC               = `${PREFIX_CAMERA}/[make]/[model]`;
 const PATH_LENS_DYNAMIC                 = `${PREFIX_LENS}/[make]/[model]`;
 const PATH_ALBUM_DYNAMIC                = `${PREFIX_ALBUM}/[album]`;
+const PATH_LOCATION_DYNAMIC             = `${PREFIX_LOCATION}/[location]`;
 const PATH_TAG_DYNAMIC                  = `${PREFIX_TAG}/[tag]`;
 const PATH_FILM_DYNAMIC                 = `${PREFIX_FILM}/[film]`;
 const PATH_RECIPE_DYNAMIC               = `${PREFIX_RECIPE}/[recipe]`;
@@ -76,6 +79,7 @@ export const PATH_ADMIN_PHOTOS          = `${PATH_ADMIN}/photos`;
 export const PATH_ADMIN_PHOTOS_UPDATES  = `${PATH_ADMIN_PHOTOS}/updates`;
 export const PATH_ADMIN_UPLOADS         = `${PATH_ADMIN}/uploads`;
 export const PATH_ADMIN_ALBUMS          = `${PATH_ADMIN}/albums`;
+export const PATH_ADMIN_LOCATIONS       = `${PATH_ADMIN}/locations`;
 export const PATH_ADMIN_TAGS            = `${PATH_ADMIN}/tags`;
 export const PATH_ADMIN_RECIPES         = `${PATH_ADMIN}/recipes`;
 export const PATH_ADMIN_CONFIGURATION   = `${PATH_ADMIN}/configuration`;
@@ -110,6 +114,7 @@ export const PATHS_ADMIN = [
   PATH_ADMIN_PHOTOS_UPDATES,
   PATH_ADMIN_UPLOADS,
   PATH_ADMIN_ALBUMS,
+  PATH_ADMIN_LOCATIONS,
   PATH_ADMIN_TAGS,
   PATH_ADMIN_RECIPES,
   PATH_ADMIN_INSIGHTS,
@@ -130,6 +135,7 @@ export const PATHS_TO_CACHE = [
   PATH_CAMERA_DYNAMIC,
   PATH_LENS_DYNAMIC,
   PATH_ALBUM_DYNAMIC,
+  PATH_LOCATION_DYNAMIC,
   PATH_TAG_DYNAMIC,
   PATH_FILM_DYNAMIC,
   PATH_FOCAL_LENGTH_DYNAMIC,
@@ -153,6 +159,11 @@ const getAlbumSlug = (albumOrAlbumSlug: AlbumOrAlbumSlug) =>
     ? albumOrAlbumSlug
     : albumOrAlbumSlug.slug;
 
+const getLocationSlug = (locationOrSlug: LocationOrLocationSlug) =>
+  typeof locationOrSlug === 'string'
+    ? locationOrSlug
+    : locationOrSlug.slug;
+
 export const pathForAdminUploadUrl = (url: string, title?: string) =>
   `${PATH_ADMIN_UPLOADS}/${encodeURIComponent(url)}${title ? `?${PARAM_UPLOAD_TITLE}=${encodeURIComponent(title)}` : ''}`;
 
@@ -161,6 +172,10 @@ export const pathForAdminPhotoEdit = (photo: PhotoOrPhotoId) =>
 
 export const pathForAdminAlbumEdit = (album: AlbumOrAlbumSlug) =>
   `${PATH_ADMIN_ALBUMS}/${getAlbumSlug(album)}/${EDIT}`;
+
+export const pathForAdminLocationEdit = (
+  location: LocationOrLocationSlug,
+) => `${PATH_ADMIN_LOCATIONS}/${getLocationSlug(location)}/${EDIT}`;
 
 export const pathForAdminTagEdit = (tag: string) =>
   `${PATH_ADMIN_TAGS}/${tag}/${EDIT}`;
@@ -178,6 +193,7 @@ export const pathForPhoto = ({
   camera,
   lens,
   album,
+  location,
   tag,
   film,
   focal,
@@ -199,6 +215,8 @@ export const pathForPhoto = ({
     prefix = pathForLens(lens);
   } else if (album) {
     prefix = pathForAlbum(album);
+  } else if (location) {
+    prefix = pathForLocation(location);
   } else if (tag) {
     prefix = pathForTag(tag);
   } else if (recipe) {
@@ -228,6 +246,9 @@ export const pathForLens = ({ make, model }: Lens) =>
 
 export const pathForAlbum = (album: AlbumOrAlbumSlug) =>
   `${PREFIX_ALBUM}/${getAlbumSlug(album)}`;
+
+export const pathForLocation = (location: LocationOrLocationSlug) =>
+  `${PREFIX_LOCATION}/${getLocationSlug(location)}`;
 
 export const pathForTag = (tag: string) =>
   `${PREFIX_TAG}/${tag}`;
@@ -259,6 +280,9 @@ export const pathForLensImage = (lens: Lens) =>
 
 export const pathForAlbumImage = (album: AlbumOrAlbumSlug) =>
   pathForImage(pathForAlbum(album));
+
+export const pathForLocationImage = (location: LocationOrLocationSlug) =>
+  pathForImage(pathForLocation(location));
 
 export const pathForTagImage = (tag: string) =>
   pathForImage(pathForTag(tag));
@@ -315,6 +339,11 @@ export const absolutePathForAlbum = (
 ) =>
   `${getBaseUrl(share)}${pathForAlbum(album)}`;
 
+export const absolutePathForLocation = (
+  location: LocationOrLocationSlug,
+  share?: boolean,
+) => `${getBaseUrl(share)}${pathForLocation(location)}`;
+
 export const absolutePathForTag = (tag: string, share?: boolean) =>
   `${getBaseUrl(share)}${pathForTag(tag)}`;
 
@@ -347,6 +376,10 @@ export const absolutePathForLensImage= (lens: Lens) =>
 
 export const absolutePathForAlbumImage = (album: AlbumOrAlbumSlug) =>
   `${absolutePathForAlbum(album)}/${IMAGE}`;
+
+export const absolutePathForLocationImage = (
+  location: LocationOrLocationSlug,
+) => `${absolutePathForLocation(location)}/${IMAGE}`;
 
 export const absolutePathForTagImage = (tag: string) =>
   `${absolutePathForTag(tag)}/${IMAGE}`;
@@ -418,6 +451,14 @@ export const isPathAlbum = (pathname = '') =>
 export const isPathAlbumPhoto = (pathname = '') =>
   new RegExp(`^${PREFIX_ALBUM}/[^/]+/[^/]+/?$`).test(pathname);
 
+// location/[location]
+export const isPathLocation = (pathname = '') =>
+  new RegExp(`^${PREFIX_LOCATION}/[^/]+/?$`).test(pathname);
+
+// location/[location]/[photoId]
+export const isPathLocationPhoto = (pathname = '') =>
+  new RegExp(`^${PREFIX_LOCATION}/[^/]+/[^/]+/?$`).test(pathname);
+
 // tag/[tag]
 export const isPathTag = (pathname = '') =>
   new RegExp(`^${PREFIX_TAG}/[^/]+/?$`).test(pathname);
@@ -473,6 +514,7 @@ export const isPathPhotoSet = (pathname?: string) =>
   isPathCamera(pathname) ||
   isPathLens(pathname) ||
   isPathAlbum(pathname) ||
+  isPathLocation(pathname) ||
   isPathTag(pathname) ||
   isPathRecipe(pathname) ||
   isPathFilm(pathname) ||
@@ -518,8 +560,9 @@ export const isPathProtected = (pathname?: string) =>
 
 export const getPathComponents = (
   pathname = '',
-): (Omit<PhotoSetCategory, 'album'> & {
+): (Omit<PhotoSetCategory, 'album' | 'location'> & {
   album?: string
+  location?: string
   photoId?: string
 }) => {
   const photoIdFromPhoto = pathname.match(
@@ -550,6 +593,8 @@ export const getPathComponents = (
     new RegExp(`^${PREFIX_LENS}/[^/]+/([^/]+)`))?.[1];
   const photoIdFromAlbum = pathname.match(
     new RegExp(`^${PREFIX_ALBUM}/[^/]+/([^/]+)`))?.[1];
+  const photoIdFromLocation = pathname.match(
+    new RegExp(`^${PREFIX_LOCATION}/[^/]+/([^/]+)`))?.[1];
   const photoIdFromTag = pathname.match(
     new RegExp(`^${PREFIX_TAG}/[^/]+/([^/]+)`))?.[1];
   const photoIdFromRecipe = pathname.match(
@@ -562,6 +607,8 @@ export const getPathComponents = (
     new RegExp(`^${PREFIX_YEAR}/[^/]+/([^/]+)`))?.[1];
   const album = pathname.match(
     new RegExp(`^${PREFIX_ALBUM}/([^/]+)`))?.[1];
+  const location = pathname.match(
+    new RegExp(`^${PREFIX_LOCATION}/([^/]+)`))?.[1];
   const tag = pathname.match(
     new RegExp(`^${PREFIX_TAG}/([^/]+)`))?.[1];
   const recipe = pathname.match(
@@ -590,6 +637,7 @@ export const getPathComponents = (
       photoIdFromCamera ||
       photoIdFromLens ||
       photoIdFromAlbum ||
+      photoIdFromLocation ||
       photoIdFromTag ||
       photoIdFromRecipe ||
       photoIdFromFilm ||
@@ -601,6 +649,7 @@ export const getPathComponents = (
     camera,
     lens,
     album,
+    location,
     tag,
     recipe,
     film,
@@ -617,6 +666,7 @@ export const getEscapePath = (pathname?: string) => {
     camera,
     lens,
     album,
+    location,
     tag,
     recipe,
     film,
@@ -631,6 +681,7 @@ export const getEscapePath = (pathname?: string) => {
     (camera && isPathCamera(pathname)) ||
     (lens && isPathLens(pathname)) ||
     (album && isPathAlbum(pathname)) ||
+    (location && isPathLocation(pathname)) ||
     (tag && isPathTag(pathname)) ||
     (film && isPathFilm(pathname)) ||
     (focal && isPathFocalLength(pathname)) ||
@@ -649,6 +700,8 @@ export const getEscapePath = (pathname?: string) => {
     return pathForLens(lens);
   } else if (album && isPathAlbumPhoto(pathname)) {
     return pathForAlbum(album);
+  } else if (location && isPathLocationPhoto(pathname)) {
+    return pathForLocation(location);
   } else if (tag && isPathTagPhoto(pathname)) {
     return pathForTag(tag);
   } else if (recipe && isPathRecipePhoto(pathname)) {

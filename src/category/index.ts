@@ -10,6 +10,7 @@ import { Recents } from '@/recents';
 import { Years } from '@/year';
 import { parseCommaSeparatedKeyString } from '@/utility/key';
 import { Album, Albums } from '@/album';
+import { Location, Locations } from '@/location';
 
 export const CATEGORY_KEYS = [
   'recents',
@@ -17,6 +18,7 @@ export const CATEGORY_KEYS = [
   'cameras',
   'lenses',
   'albums',
+  'locations',
   'tags',
   'recipes',
   'films',
@@ -37,6 +39,7 @@ export const getCategoryTitle = (
     case 'cameras': return appText.category.cameraPlural;
     case 'lenses': return appText.category.lensPlural;
     case 'albums': return appText.category.albumPlural;
+    case 'locations': return 'Locations';
     case 'tags': return appText.category.tagPlural;
     case 'recipes': return appText.category.recipePlural;
     case 'films': return appText.category.filmPlural;
@@ -47,6 +50,7 @@ export const getCategoryTitle = (
 export const DEFAULT_CATEGORY_KEYS: CategoryKeys = [
   'recents',
   'albums',
+  'locations',
   'tags',
   'cameras',
   'lenses',
@@ -79,6 +83,7 @@ export interface PhotoSetCategory {
   camera?: Camera
   lens?: Lens
   album?: Album
+  location?: Location
   tag?: string
   recipe?: string
   film?: string
@@ -91,6 +96,7 @@ export interface PhotoSetCategories {
   cameras: Cameras
   lenses: Lenses
   albums: Albums
+  locations: Locations
   tags: Tags
   recipes: Recipes
   films: Films

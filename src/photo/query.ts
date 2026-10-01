@@ -381,7 +381,7 @@ export const getUniqueRecipes = async () =>
     FROM photos
     WHERE hidden IS NOT TRUE AND recipe_title IS NOT NULL
     GROUP BY recipe_title
-    ORDER BY recipe_title ASC
+    ORDER BY COUNT(*) DESC, recipe_title ASC
   `.then(({ rows }): Recipes => rows
       .map(({ recipe_title, count, last_modified }) => ({
         recipe: recipe_title,
@@ -399,7 +399,7 @@ export const getUniqueYears = async () =>
     FROM photos
     WHERE hidden IS NOT TRUE
     GROUP BY year
-    ORDER BY year DESC
+    ORDER BY COUNT(*) DESC, year DESC
   `.then(({ rows }): Years => rows.map(({ year, count, last_modified }) => ({
       year,
       count: parseInt(count, 10),
@@ -472,7 +472,7 @@ export const getUniqueFilms = async () =>
     FROM photos
     WHERE hidden IS NOT TRUE AND film IS NOT NULL
     GROUP BY film
-    ORDER BY film ASC
+    ORDER BY COUNT(*) DESC, film ASC
   `.then(({ rows }): Films => rows
       .map(({ film, count, last_modified }) => ({
         film,
@@ -491,7 +491,7 @@ export const getUniqueFocalLengths = async () =>
     AND focal_length IS NOT NULL
     AND focal_length > 0
     GROUP BY focal_length
-    ORDER BY focal_length ASC
+    ORDER BY COUNT(*) DESC, focal_length ASC
   `.then(({ rows }): FocalLengths => rows
       .map(({ focal_length, count, last_modified }) => ({
         focal: parseInt(focal_length, 10),

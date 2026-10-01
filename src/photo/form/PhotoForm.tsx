@@ -838,6 +838,38 @@ export default function PhotoForm({
                             'relative z-1',
                           )}
                         />;
+                      case 'tags':
+                        return <FieldsetWithStatus
+                          key={key}
+                          {...fieldProps}
+                          className="relative z-2"
+                        />;
+                      case 'albums':
+                        return <FieldsetAlbum
+                          key={key}
+                          {...fieldProps}
+                          albumOptions={albums}
+                          value={albumTitles}
+                          onChange={value => setAlbumTitles(value)}
+                          isModified={areAlbumTitlesModified}
+                          className={clsx(
+                            fieldProps.className,
+                            'relative z-1',
+                          )}
+                        />;
+                      case 'locations':
+                        return <FieldsetLocation
+                          key={key}
+                          {...fieldProps}
+                          locationOptions={locations}
+                          value={locationTitles}
+                          onChange={value => setLocationTitles(value)}
+                          isModified={areLocationTitlesModified}
+                          className={clsx(
+                            fieldProps.className,
+                            'relative z-1',
+                          )}
+                        />;
                       case 'visibility':
                         return <FieldsetVisibility
                           key={key}
@@ -849,6 +881,28 @@ export default function PhotoForm({
                             formData,
                           )}
                           className="relative z-2"
+                        />;
+                      case 'takenAt':
+                        return <FieldsetWithStatus
+                          key={key}
+                          {...fieldProps}
+                          accessory={<DateTimePicker
+                            value={formData.takenAt ?? ''}
+                            onChange={fieldProps.onChange}
+                            type="utc"
+                            readOnly={fieldProps.readOnly}
+                          />}
+                        />;
+                      case 'takenAtNaive':
+                        return <FieldsetWithStatus
+                          key={key}
+                          {...fieldProps}
+                          accessory={<DateTimePicker
+                            value={formData.takenAtNaive ?? ''}
+                            onChange={fieldProps.onChange}
+                            type="naive"
+                            readOnly={fieldProps.readOnly}
+                          />}
                         />;
                       case 'takenAt':
                         return <FieldsetWithStatus

@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     sizes: '32x32',
   }, {
     url: '/favicons/apple-touch-icon.png',
-    rel: 'icon',
+    rel: 'apple-touch-icon',
     type: 'image/png',
     sizes: '180x180',
   }],
@@ -104,10 +104,14 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
       </head>
-      <body className={clsx(
-        // Center on large screens
-        '3xl:flex flex-col items-center',
-      )}>
+      <body
+        className={clsx(
+          // Center on large screens
+          '3xl:flex flex-col items-center',
+        )}
+        // Suppress hydration errors from extensions (e.g., Grammarly)
+        suppressHydrationWarning
+      >
         <AppStateProvider
           areAdminDebugToolsEnabled={ADMIN_DEBUG_TOOLS_ENABLED}
           isAdminAiModelDebugEnabled={ADMIN_AI_MODEL_DEBUG_ENABLED}

@@ -9,6 +9,8 @@ import {
   isPathFocalLength,
   isPathFocalLengthPhoto,
   isPathPhoto,
+  isPathLocation,
+  isPathLocationPhoto,
   isPathProtected,
   isPathTag,
   isPathTagPhoto,

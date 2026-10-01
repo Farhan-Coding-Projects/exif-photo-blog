@@ -6,6 +6,8 @@ import { APP_DEFAULT_SORT_BY, SortBy } from '@/photo/sort';
 import { Album } from '@/album';
 import { getPathComponents } from '@/app/path';
 import { getAlbumFromSlug } from '@/album/query';
+import { Location } from '@/location';
+import { getLocationFromSlug } from '@/location/query';
 import { isTagPrivate } from '@/tag';
 import { getPhotoCount } from '@/photo/query';
 
@@ -20,9 +22,9 @@ export const parameterizeForDb = (field: string) =>
   `REGEXP_REPLACE(
     REGEXP_REPLACE(
       LOWER(TRIM(${field})),
-      '[${CHARACTERS_TO_REMOVE.join('')}]', '', 'g'
+      '[^[:alnum:][:space:]_.–—+&|]', '', 'g'
     ),
-    '[${CHARACTERS_TO_REPLACE.join('')}]', '-', 'g'
+    '[[:space:]_–—+&|]', '-', 'g'
   )`;
 
 export type PhotoQueryOptions = {
@@ -37,20 +39,23 @@ export type PhotoQueryOptions = {
   updatedBefore?: Date
   excludeFromFeeds?: boolean
   hidden?: 'exclude' | 'include' | 'only'
-} & Omit<PhotoSetCategory, 'camera' | 'lens' | 'album'> & {
+} & Omit<PhotoSetCategory, 'camera' | 'lens' | 'album' | 'location'> & {
   camera?: Partial<Camera>
   lens?: Partial<Lens>
   album?: Album
+  location?: Location
   photoIds?: string[]
 };
 
 export const areOptionsSensitive = (options: PhotoQueryOptions) =>
   options.hidden === 'include' || options.hidden === 'only';
 
-export const getJoinsFromOptions = (options: PhotoQueryOptions) =>
-  options.album
-    ? 'JOIN album_photo ap ON ap.photo_id = p.id'
-    : undefined;
+export const getJoinsFromOptions = (options: PhotoQueryOptions) => [
+  options.album ? 'JOIN album_photo ap ON ap.photo_id = p.id' : undefined,
+  options.location
+    ? 'JOIN location_photo lp ON lp.photo_id = p.id'
+    : undefined,
+].filter(Boolean).join(' ') || undefined;
 
 export const getWheresFromOptions = (
   options: PhotoQueryOptions,
@@ -67,6 +72,7 @@ export const getWheresFromOptions = (
     recent,
     year,
     album,
+    location,
     tag,
     camera,
     lens,
@@ -146,6 +152,10 @@ export const getWheresFromOptions = (
   if (album) {
     wheres.push(`album_id=$${valuesIndex++}`);
     wheresValues.push(album.id);
+  }
+  if (location) {
+    wheres.push(`location_id=$${valuesIndex++}`);
+    wheresValues.push(location.id);
   }
   if (tag) {
     wheres.push(`$${valuesIndex++}=ANY(tags)`);
@@ -273,15 +283,26 @@ export const generateManyToManyValues = (idsA: string[], idsB: string[]) => {
 export const getPhotoOptionsCountForPath = async (
   path: string,
 ): Promise<{ options: PhotoQueryOptions, count: number }> => {
-  const { album: albumSlug, tag, ...components } = getPathComponents(path);
+  const {
+    album: albumSlug,
+    location: locationSlug,
+    tag,
+    ...components
+  } = getPathComponents(path);
 
   let album: Album | undefined;
   if (albumSlug) {
     album = await getAlbumFromSlug(albumSlug);
   }
 
+  let location: Location | undefined;
+  if (locationSlug) {
+    location = await getLocationFromSlug(locationSlug);
+  }
+
   const options: PhotoQueryOptions = {
     album,
+    location,
     ...isTagPrivate(tag) ? { hidden: 'only' } : { tag },
     ...components,
   };

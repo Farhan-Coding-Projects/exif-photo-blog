@@ -5,6 +5,7 @@ import {
 import {
   PREFIX_RECENTS,
   pathForAlbum,
+  pathForLocation,
   pathForCamera,
   pathForFilm,
   pathForFocalLength,
@@ -124,6 +125,16 @@ const getFolderQueriesForCategory = (
           options: { album },
           caption: album.title,
           path: pathForAlbum(album),
+          count,
+        }));
+    case 'locations':
+      return categories.locations
+        .filter(({ count }) => count > 0)
+        .map(({ location, count }) => ({
+          key: location.slug,
+          options: { location },
+          caption: location.title,
+          path: pathForLocation(location),
           count,
         }));
     case 'tags': {
