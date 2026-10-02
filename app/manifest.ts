@@ -9,7 +9,7 @@ export default function manifest(): MetadataRoute.Manifest {
     display: 'browser',
     icons: [
       {
-        src: '/apple-icon',
+        src: '/favicons/apple-touch-icon.png',
         sizes: '180x180',
         type: 'image/png',
       },
