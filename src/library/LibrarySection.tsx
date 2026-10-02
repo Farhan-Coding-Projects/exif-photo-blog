@@ -103,6 +103,8 @@ export default function LibrarySection({
               className={clsx(
                 'w-full h-full',
                 'flex items-center',
+                // Center fixed-width folders in phone columns
+                'justify-center sm:justify-start',
               )}
             >
               <PhotoFolder
