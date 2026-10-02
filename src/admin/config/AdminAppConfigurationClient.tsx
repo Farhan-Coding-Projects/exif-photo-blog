@@ -52,7 +52,6 @@ export default function AdminAppConfigurationClient({
   isPostgresSslEnabled,
   hasRedisStorage,
   hasStorageProvider,
-  hasVercelBlobStorage,
   hasCloudflareR2Storage,
   hasAwsS3Storage,
   hasMinioStorage,
@@ -348,21 +347,6 @@ export default function AdminAppConfigurationClient({
               connection: { provider: 'Storage', error: storageError},
             })}
             <div>
-              {hasVercelBlobStorage
-                ? renderSubStatus('checked', 'Vercel Blob: connected')
-                : renderSubStatus('optional', <>
-                  {labelForStorage('vercel-blob')}:
-                  {' '}
-                  <AdminLink
-                    href="https://vercel.com/docs/vercel-blob"
-                    externalIcon
-                  >
-                    create store
-                  </AdminLink>
-                  {' '}
-                  (configured as public) and connect to project
-                </>,
-                )}
               {hasCloudflareR2Storage
                 ? renderSubStatus('checked', 'Cloudflare R2: connected')
                 : renderSubStatus('optional', <>

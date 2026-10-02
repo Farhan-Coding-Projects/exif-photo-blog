@@ -184,10 +184,6 @@ export const REDIS_TOKEN = (
 export const HAS_REDIS_STORAGE =
   Boolean(REDIS_URL && REDIS_TOKEN);
 
-// STORAGE: VERCEL BLOB
-export const HAS_VERCEL_BLOB_STORAGE =
-  Boolean(process.env.BLOB_READ_WRITE_TOKEN);
-
 // STORAGE: Cloudflare R2
 // Includes separate check for client-side usage, i.e., url construction
 export const HAS_CLOUDFLARE_R2_STORAGE_CLIENT =
@@ -220,7 +216,6 @@ export const HAS_MINIO_STORAGE =
   Boolean(process.env.MINIO_SECRET_ACCESS_KEY);
 
 export const HAS_MULTIPLE_STORAGE_PROVIDERS = [
-  HAS_VERCEL_BLOB_STORAGE,
   HAS_CLOUDFLARE_R2_STORAGE,
   HAS_AWS_S3_STORAGE,
   HAS_MINIO_STORAGE,
@@ -236,7 +231,7 @@ export const CURRENT_STORAGE: StorageType =
         ? 'cloudflare-r2'
         : HAS_AWS_S3_STORAGE_CLIENT
           ? 'aws-s3'
-          : 'vercel-blob'
+          : 'cloudflare-r2'
   );
 
 // PERFORMANCE
@@ -478,12 +473,10 @@ export const APP_CONFIGURATION = {
   hasDatabase: HAS_DATABASE,
   isPostgresSslEnabled: POSTGRES_SSL_ENABLED,
   hasRedisStorage: HAS_REDIS_STORAGE,
-  hasVercelBlobStorage: HAS_VERCEL_BLOB_STORAGE,
   hasCloudflareR2Storage: HAS_CLOUDFLARE_R2_STORAGE,
   hasAwsS3Storage: HAS_AWS_S3_STORAGE,
   hasMinioStorage: HAS_MINIO_STORAGE,
   hasStorageProvider: (
-    HAS_VERCEL_BLOB_STORAGE ||
     HAS_CLOUDFLARE_R2_STORAGE ||
     HAS_AWS_S3_STORAGE ||
     HAS_MINIO_STORAGE
