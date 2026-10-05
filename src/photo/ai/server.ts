@@ -34,7 +34,7 @@ export const generateAiImageQueries = async ({
         existingTitle,
         uniqueTags,
       );
-      return generateOpenAiImageObjectQuery(
+      return await generateOpenAiImageObjectQuery(
         imageBase64,
         query,
         schema,
