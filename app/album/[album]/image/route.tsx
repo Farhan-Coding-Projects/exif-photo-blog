@@ -3,7 +3,7 @@ import {
   IMAGE_OG_DIMENSION_SMALL,
   PHOTO_PREVIEW_QUERY_OPTIONS,
 } from '@/image-response';
-import { getIBMPlexMono } from '@/app/font';
+import { getQuicksand } from '@/app/font';
 import { ImageResponse } from 'next/og';
 import { getImageResponseCacheControlHeaders } from '@/image-response/cache';
 import { staticallyGenerateCategoryIfConfigured } from '@/app/static';
@@ -33,7 +33,7 @@ export async function GET(
     headers,
   ] = await Promise.all([
     getPhotosCached({ ...PHOTO_PREVIEW_QUERY_OPTIONS, album }),
-    getIBMPlexMono(),
+    getQuicksand(),
     getImageResponseCacheControlHeaders(),
   ]);
 

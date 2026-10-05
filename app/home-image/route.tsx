@@ -4,7 +4,7 @@ import {
   MAX_PHOTOS_TO_SHOW_OG,
 } from '@/image-response';
 import HomeImageResponse from '@/app/HomeImageResponse';
-import { getIBMPlexMono } from '@/app/font';
+import { getQuicksand } from '@/app/font';
 import { getImageResponseCacheControlHeaders } from '@/image-response/cache';
 import { APP_OG_IMAGE_QUERY_OPTIONS } from '@/feed';
 import { ImageResponse } from 'next/og';
@@ -32,7 +32,7 @@ export async function GET() {
         })
           .catch(() => [])),
     getImageResponseCacheControlHeaders(),
-    getIBMPlexMono(),
+    getQuicksand(),
   ]);
 
   const { width, height } = IMAGE_OG_DIMENSION_SMALL;

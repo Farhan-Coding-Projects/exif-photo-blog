@@ -5,7 +5,7 @@ import {
 } from '@/image-response';
 import RecentsImageResponse from
   '@/recents/RecentsImageResponse';
-import { getIBMPlexMono } from '@/app/font';
+import { getQuicksand } from '@/app/font';
 import { getImageResponseCacheControlHeaders } from '@/image-response/cache';
 import { getAppText } from '@/i18n/state/server';
 import { SHOW_RECENTS } from '@/app/config';
@@ -25,7 +25,7 @@ export async function GET() {
         recent: true,
       }).catch(() => [])
       : [],
-    getIBMPlexMono(),
+    getQuicksand(),
     getImageResponseCacheControlHeaders(),
   ]);
 

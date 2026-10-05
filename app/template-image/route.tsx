@@ -5,7 +5,7 @@ import {
 } from '@/image-response';
 import TemplateImageResponse from
   '@/app/TemplateImageResponse';
-import { getIBMPlexMono } from '@/app/font';
+import { getQuicksand } from '@/app/font';
 import { getImageResponseCacheControlHeaders } from '@/image-response/cache';
 import { ImageResponse } from 'next/og';
 
@@ -19,7 +19,7 @@ export async function GET() {
       sortWithPriority: true,
       limit: MAX_PHOTOS_TO_SHOW_TEMPLATE,
     }).catch(() => []),
-    getIBMPlexMono(),
+    getQuicksand(),
     getImageResponseCacheControlHeaders(),
   ]);
 

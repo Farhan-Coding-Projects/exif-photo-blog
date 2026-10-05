@@ -4,7 +4,7 @@ import {
   PHOTO_PREVIEW_QUERY_OPTIONS,
 } from '@/image-response';
 import FilmImageResponse from '@/film/FilmImageResponse';
-import { getIBMPlexMono } from '@/app/font';
+import { getQuicksand } from '@/app/font';
 import { ImageResponse } from 'next/og';
 import { getImageResponseCacheControlHeaders } from '@/image-response/cache';
 import { getUniqueFilms } from '@/photo/query';
@@ -32,7 +32,7 @@ export async function GET(
       ...PHOTO_PREVIEW_QUERY_OPTIONS,
       film,
     }),
-    getIBMPlexMono(),
+    getQuicksand(),
     getImageResponseCacheControlHeaders(),
   ]);
 

@@ -4,7 +4,7 @@ import {
   PHOTO_PREVIEW_QUERY_OPTIONS,
 } from '@/image-response';
 import YearImageResponse from '@/year/YearImageResponse';
-import { getIBMPlexMono } from '@/app/font';
+import { getQuicksand } from '@/app/font';
 import { ImageResponse } from 'next/og';
 import { getImageResponseCacheControlHeaders } from '@/image-response/cache';
 import { getUniqueYears } from '@/photo/query';
@@ -32,7 +32,7 @@ export async function GET(
       ...PHOTO_PREVIEW_QUERY_OPTIONS,
       year: year,
     }),
-    getIBMPlexMono(),
+    getQuicksand(),
     getImageResponseCacheControlHeaders(),
   ]);
 

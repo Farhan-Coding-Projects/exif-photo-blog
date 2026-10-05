@@ -2,44 +2,48 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { cwd } from 'process';
 
-const FONT_IBM_PLEX_MONO_FAMILY = 'IBMPlexMono';
-const FONT_IBM_PLEX_MONO_PATH = '/public/fonts/IBMPlexMono-Medium.ttf';
+type FontFile = { family: string, path: string };
+
+const FONT_QUICKSAND: FontFile = {
+  family: 'Quicksand',
+  path: '/public/fonts/Quicksand-Medium.ttf',
+};
 const FONT_FALLBACK_FAMILY = 'Geist';
 const FONT_FALLBACK_PATH = '/node_modules/next/dist/compiled/@vercel/og/' +
   'Geist-Regular.ttf';
 
 // Cloudflare Workers has no filesystem: read from static assets instead
-const getFontDataFromCloudflareAssets = async () => {
+const getFontDataFromCloudflareAssets = async ({ family, path }: FontFile) => {
   const { getCloudflareContext } = await import('@opennextjs/cloudflare');
   const { env } = await getCloudflareContext({ async: true });
   const { ASSETS } = env as unknown as {
     ASSETS: { fetch: (url: URL) => Promise<Response> }
   };
   const response = await ASSETS.fetch(
-    new URL(FONT_IBM_PLEX_MONO_PATH.replace('/public', ''), 'https://assets'),
+    new URL(path.replace('/public', ''), 'https://assets'),
   );
   if (!response.ok) {
     throw new Error(`Font asset fetch failed (${response.status})`);
   }
   return {
     data: Buffer.from(await response.arrayBuffer()),
-    fontFamily: FONT_IBM_PLEX_MONO_FAMILY,
+    fontFamily: family,
   };
 };
 
-const getFontData = async () => {
+const getFontData = async (font: FontFile) => {
   if (globalThis.navigator?.userAgent === 'Cloudflare-Workers') {
-    return getFontDataFromCloudflareAssets();
+    return getFontDataFromCloudflareAssets(font);
   }
   try {
     return {
-      data: await fs.readFile(path.join(cwd(), FONT_IBM_PLEX_MONO_PATH)),
-      fontFamily: FONT_IBM_PLEX_MONO_FAMILY,
+      data: await fs.readFile(path.join(cwd(), font.path)),
+      fontFamily: font.family,
     };
   } catch (error: any) {
     if (error?.code === 'ENOENT') {
       console.warn(
-        `Font not found at ${FONT_IBM_PLEX_MONO_PATH}; ` +
+        `Font not found at ${font.path}; ` +
         `using bundled ${FONT_FALLBACK_FAMILY} for generated images.`,
       );
       return {
@@ -51,7 +55,7 @@ const getFontData = async () => {
   }
 };
 
-const loadIBMPlexMono = () => getFontData()
+const loadFont = (font: FontFile) => getFontData(font)
   .then(({ data, fontFamily }) => ({
     fontFamily,
     fonts: [{
@@ -62,9 +66,14 @@ const loadIBMPlexMono = () => getFontData()
     } as const],
   }));
 
-let fontConfigPromise: ReturnType<typeof loadIBMPlexMono> | undefined;
+const fontConfigPromises = new Map<FontFile, ReturnType<typeof loadFont>>();
 
-export const getIBMPlexMono = () => {
-  fontConfigPromise ??= loadIBMPlexMono();
-  return fontConfigPromise;
+const getFont = (font: FontFile) => {
+  if (!fontConfigPromises.has(font)) {
+    fontConfigPromises.set(font, loadFont(font));
+  }
+  return fontConfigPromises.get(font)!;
 };
+
+// Matches the site font
+export const getQuicksand = () => getFont(FONT_QUICKSAND);

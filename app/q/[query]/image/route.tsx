@@ -4,7 +4,7 @@ import {
   PHOTO_PREVIEW_QUERY_OPTIONS,
 } from '@/image-response';
 import QueryImageResponse from '@/query/QueryImageResponse';
-import { getIBMPlexMono } from '@/app/font';
+import { getQuicksand } from '@/app/font';
 import { ImageResponse } from 'next/og';
 import { getImageResponseCacheControlHeaders } from '@/image-response/cache';
 
@@ -25,7 +25,7 @@ export async function GET(
       ...PHOTO_PREVIEW_QUERY_OPTIONS,
       query,
     }),
-    getIBMPlexMono(),
+    getQuicksand(),
     getImageResponseCacheControlHeaders(),
   ]);
 

@@ -5,7 +5,7 @@ import {
   PHOTO_PREVIEW_QUERY_OPTIONS,
 } from '@/image-response';
 import CameraImageResponse from '@/camera/CameraImageResponse';
-import { getIBMPlexMono } from '@/app/font';
+import { getQuicksand } from '@/app/font';
 import { ImageResponse } from 'next/og';
 import { getImageResponseCacheControlHeaders } from '@/image-response/cache';
 import { getUniqueCameras } from '@/photo/query';
@@ -33,7 +33,7 @@ export async function GET(
       ...PHOTO_PREVIEW_QUERY_OPTIONS,
       camera: camera,
     }),
-    getIBMPlexMono(),
+    getQuicksand(),
     getImageResponseCacheControlHeaders(),
   ]);
 
