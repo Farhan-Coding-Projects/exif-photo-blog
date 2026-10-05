@@ -839,7 +839,7 @@ export default function PhotoForm({
                         return <FieldsetWithStatus
                           key={key}
                           {...fieldProps}
-                          className="relative z-3"
+                          className="relative z-4"
                         />;
                       case 'albums':
                         return <FieldsetAlbum
@@ -851,7 +851,7 @@ export default function PhotoForm({
                           isModified={areAlbumTitlesModified}
                           className={clsx(
                             fieldProps.className,
-                            'relative z-1',
+                            'relative z-3',
                           )}
                         />;
                       case 'locations':
@@ -864,7 +864,7 @@ export default function PhotoForm({
                           isModified={areLocationTitlesModified}
                           className={clsx(
                             fieldProps.className,
-                            'relative z-1',
+                            'relative z-2',
                           )}
                         />;
                       case 'visibility':
@@ -877,7 +877,7 @@ export default function PhotoForm({
                             initialPhotoForm,
                             formData,
                           )}
-                          className="relative z-2"
+                          className="relative z-1"
                         />;
                       case 'takenAt':
                         return <FieldsetWithStatus
