@@ -37,6 +37,12 @@ const openaiClient = OPENAI_SECRET_KEY
   })
   : undefined;
 
+// OpenAI-compatible endpoints (e.g. Gemini) generally only implement
+// Chat Completions, not the Responses API the SDK defaults to
+const openaiModel = (modelId: OpenAIModel) => OPENAI_BASE_URL
+  ? openaiClient?.chat(modelId)
+  : openaiClient?.(modelId);
+
 // AI_CONTENT_GENERATION_PROVIDER (src/app/config.ts) is the single
 // source of truth for which provider wins: direct OpenAI when a secret key
 // is set, else Vercel AI Gateway when a model is set, else off. `model`
@@ -45,7 +51,7 @@ const model: LanguageModel | undefined =
   AI_CONTENT_GENERATION_PROVIDER === 'gateway' && AI_GATEWAY_MODEL
     ? gateway(AI_GATEWAY_MODEL)
     : AI_CONTENT_GENERATION_PROVIDER === 'openai'
-      ? openaiClient?.(OPENAI_MODEL_ID)
+      ? openaiModel(OPENAI_MODEL_ID)
       : undefined;
 
 const getImageTextArgsForModel = (
@@ -166,7 +172,7 @@ export const generateOpenAiImageObjectQueryForModel = async <
 ): Promise<z.infer<T>> => {
   if (openaiClient) {
     return generateImageObjectQuery(
-      openaiClient(modelId),
+      openaiModel(modelId)!,
       imageBase64,
       query,
       schema,
@@ -185,7 +191,7 @@ export const generateOpenAiImageQueryForModel = async (
   if (openaiClient) {
     await checkRateLimitAndThrow(true);
     return generateText(getImageTextArgsForModel(
-      openaiClient(modelId),
+      openaiModel(modelId)!,
       imageBase64,
       query,
     )).then(({ text }) => cleanUpAiTextResponse(text));
