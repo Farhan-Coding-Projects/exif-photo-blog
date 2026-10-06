@@ -352,6 +352,8 @@ export const HIDE_TAGS_WITH_ONE_PHOTO =
   process.env.NEXT_PUBLIC_HIDE_TAGS_WITH_ONE_PHOTO === '1';
 export const HIDE_FEED_META_ON_MOBILE =
   process.env.NEXT_PUBLIC_HIDE_FEED_META_ON_MOBILE === '1';
+export const SHOW_CAMERA_BRAND_LOGOS =
+  process.env.NEXT_PUBLIC_SHOW_CAMERA_BRAND_LOGOS === '1';
 
 // SORT
 

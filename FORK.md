@@ -51,6 +51,7 @@ change and re-adding the hook):
 | Favorites (`favs` tag) first in every sort | `src/db/index.ts` (`getOrderByFromOptions`), `__tests__/postgres.test.ts` |
 | Lens/camera label cleanup (Samsung, Sony, DJI) | `src/photo/form/server.ts`, `src/platforms/sony.ts`, `src/lens/index.ts`, `src/camera/index.ts` |
 | Hide meta on mobile (`NEXT_PUBLIC_HIDE_FEED_META_ON_MOBILE`) | `src/photo/{PhotoLarge,PhotosLarge}.tsx`, `src/app/config.ts` |
+| Camera make marks (Samsung, Sony, DJI, Canon); brand wordmarks across the blog (`NEXT_PUBLIC_SHOW_CAMERA_BRAND_LOGOS = 1`) | `src/camera/PhotoCamera.tsx`, `src/app/config.ts` |
 | Upload error messages | `src/admin/{AddUploadButton,AdminUploadsTableRow}.tsx` |
 | OG font fallback | `src/app/font.ts` |
 

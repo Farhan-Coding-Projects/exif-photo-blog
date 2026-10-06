@@ -20,11 +20,12 @@ import IconCameraMake, {
 import useCategoryCounts from '@/category/useCategoryCounts';
 import { getCameraBrand } from './brand';
 import CameraBrand from './CameraBrand';
+import { SHOW_CAMERA_BRAND_LOGOS } from '@/app/config';
 
 export default function PhotoCamera({
   camera,
   hideAppleIcon,
-  showBrandLogo,
+  showBrandLogo = SHOW_CAMERA_BRAND_LOGOS,
   hidePhoneMake,
   ...props
 }: {
@@ -38,12 +39,13 @@ export default function PhotoCamera({
 
   const isApple = isCameraApple(camera);
   const showAppleIcon = !hideAppleIcon && isApple;
-  const makeMark = hideAppleIcon
-    ? undefined
-    : getCameraMakeMark(camera.make);
   const brand = showBrandLogo
     ? getCameraBrand(camera.make)
     : undefined;
+  // Wordmark replaces the make mark to avoid showing the brand twice
+  const makeMark = hideAppleIcon || brand
+    ? undefined
+    : getCameraMakeMark(camera.make);
   const hideMake = !brand &&
     hidePhoneMake &&
     isCameraMakeImpliedByModel(camera);

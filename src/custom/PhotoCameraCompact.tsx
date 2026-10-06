@@ -16,12 +16,13 @@ import IconCameraMake, {
 import useCategoryCounts from '@/category/useCategoryCounts';
 import { getCameraBrand } from '@/camera/brand';
 import CameraBrand from '@/camera/CameraBrand';
+import { SHOW_CAMERA_BRAND_LOGOS } from '@/app/config';
 
 // Copy of upstream PhotoCamera using the compact label (see ./camera.ts)
 export default function PhotoCameraCompact({
   camera,
   hideAppleIcon,
-  showBrandLogo,
+  showBrandLogo = SHOW_CAMERA_BRAND_LOGOS,
   ...props
 }: {
   camera: Camera
@@ -32,12 +33,13 @@ export default function PhotoCameraCompact({
   
   const isApple = isCameraApple(camera);
   const showAppleIcon = !hideAppleIcon && isApple;
-  const makeMark = hideAppleIcon
-    ? undefined
-    : getCameraMakeMark(camera.make);
   const brand = showBrandLogo
     ? getCameraBrand(camera.make)
     : undefined;
+  // Wordmark replaces the make mark to avoid showing the brand twice
+  const makeMark = hideAppleIcon || brand
+    ? undefined
+    : getCameraMakeMark(camera.make);
 
   return (
     <EntityLink
