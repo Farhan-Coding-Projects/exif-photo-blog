@@ -1,16 +1,25 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { cwd } from 'process';
 
-type FontFile = { family: string, path: string };
+type FontFile = {
+  family: string
+  path: string
+  // Static path literals keep build tracing scoped to the font file
+  readFile: () => Promise<Buffer>
+};
 
 const FONT_QUICKSAND: FontFile = {
   family: 'Quicksand',
   path: '/public/fonts/Quicksand-Medium.ttf',
+  readFile: () => fs.readFile(
+    path.join(process.cwd(), 'public/fonts/Quicksand-Medium.ttf'),
+  ),
 };
 const FONT_FALLBACK_FAMILY = 'Geist';
-const FONT_FALLBACK_PATH = '/node_modules/next/dist/compiled/@vercel/og/' +
-  'Geist-Regular.ttf';
+const readFontFallback = () => fs.readFile(path.join(
+  process.cwd(),
+  'node_modules/next/dist/compiled/@vercel/og/Geist-Regular.ttf',
+));
 
 // Cloudflare Workers has no filesystem: read from static assets instead
 const getFontDataFromCloudflareAssets = async ({ family, path }: FontFile) => {
@@ -37,7 +46,7 @@ const getFontData = async (font: FontFile) => {
   }
   try {
     return {
-      data: await fs.readFile(path.join(cwd(), font.path)),
+      data: await font.readFile(),
       fontFamily: font.family,
     };
   } catch (error: any) {
@@ -47,7 +56,7 @@ const getFontData = async (font: FontFile) => {
         `using bundled ${FONT_FALLBACK_FAMILY} for generated images.`,
       );
       return {
-        data: await fs.readFile(path.join(cwd(), FONT_FALLBACK_PATH)),
+        data: await readFontFallback(),
         fontFamily: FONT_FALLBACK_FAMILY,
       };
     }
