@@ -11,7 +11,7 @@ import { Photo } from '@/photo';
 import PhotoRecipe from '@/recipe/PhotoRecipe';
 import PhotoTag from '@/tag/PhotoTag';
 import clsx from 'clsx/lite';
-import { formatDistanceToNowStrict } from 'date-fns';
+import { format, formatDistanceToNowStrict, parseISO } from 'date-fns';
 import AdminLibraryMenu from './AdminLibraryMenu';
 import { ReactNode, useMemo } from 'react';
 import { Camera } from '@/camera';
@@ -88,7 +88,9 @@ export default function LibraryPageClient({
     ),
     renderItem(
       appText.library.firstPhoto,
-      photosOldest?.slice(0, 10),
+      // Parse date part only so the day doesn't shift with time zone
+      photosOldest &&
+        format(parseISO(photosOldest.slice(0, 10)), 'd MMMM yyyy'),
     ),
     camera && renderItem(
       appText.library.topCamera,
