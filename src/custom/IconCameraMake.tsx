@@ -12,9 +12,8 @@ const CAMERA_MAKE_MARKS = {
   },
   dji: {
     label: 'DJI',
-    viewBox: '0 0 504 290',
-    wide: true,
-    path: 'M427 57.4h77l-38.2 162h-76.9l38.1-162zm-98.6 0h76.9L368 212.6c-9 37.6-35 77.4-88.4 77.4H164.3l17.7-52.6h53c25 0 52.9-13.8 59-38.8l34.4-141.2zM319.3 0h-79.2l-36.9 155.5c-3.6 15.1-8.6 23.8-26.6 23.8h-67.3c-15.3 0-14.9-9-11.7-22l10.4-43c2.6-10.7 6.1-15.5 20.3-15.5h66.3l9.9-41.5H75.7c-30.5 0-48.9 14.7-56.1 45L2.2 175c-7.2 30.4 4 44.4 26 44.4h188.2c39.5 0 54.8-15.4 61.7-44.7L319.3 0z',
+    viewBox: '0 0 32 32',
+    path: 'M7,12a5,5,0,1,1,5-5H10a3,3,0,1,0-3,3ZM25,12V10a3,3,0,1,0-3-3H20a5,5,0,1,1,5,5ZM7,30A5,5,0,0,1,7,20v2a3,3,0,1,0,3,3h2A5.0055,5.0055,0,0,1,7,30ZM25,30a5.0055,5.0055,0,0,1-5-5h2a3,3,0,1,0,3-3V20a5,5,0,0,1,0,10ZM20,18.5859V13.4141L25.707,7.707a1,1,0,1,0-1.414-1.414l-4.4995,4.5a3.9729,3.9729,0,0,0-7.587,0L7.707,6.293a.9994.9994,0,0,0-1.414,0h0a.9994.9994,0,0,0,0,1.414L12,13.4141v5.1718L6.293,24.293a.9994.9994,0,0,0,0,1.414h0a.9994.9994,0,0,0,1.414,0l4.5-4.5a3.9729,3.9729,0,0,0,7.587,0l4.4995,4.5a1,1,0,0,0,1.414-1.414ZM18,20a2,2,0,0,1-4,0V12a2,2,0,0,1,4,0Z',
   },
   samsung: {
     label: 'Samsung',
@@ -30,7 +29,6 @@ const CAMERA_MAKE_MARKS = {
   label: string
   viewBox: string
   path: string
-  wide?: boolean
 }>;
 
 export type CameraMakeMark = keyof typeof CAMERA_MAKE_MARKS;
@@ -44,9 +42,6 @@ export const getCameraMakeMark = (
         : /\bcanon/i.test(make) ? 'canon'
           : undefined;
 
-export const isCameraMakeMarkWide = (mark?: CameraMakeMark) =>
-  Boolean(mark && 'wide' in CAMERA_MAKE_MARKS[mark]);
-
 export default function IconCameraMake({
   mark,
   className,
@@ -59,7 +54,7 @@ export default function IconCameraMake({
     <svg
       role="img"
       viewBox={viewBox}
-      width={isCameraMakeMarkWide(mark) ? 21 : 14}
+      width={14}
       height={12}
       fill="currentColor"
       className={className}
