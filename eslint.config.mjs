@@ -9,7 +9,12 @@ export default defineConfig([
   ...nextTs,
   // Rules only: eslint-config-next already registers the jsx-a11y plugin,
   // and redefining it errors
-  { rules: jsxA11y.flatConfigs.recommended.rules },
+  {
+    files: ['**/*.{js,jsx,mjs,ts,tsx,mts,cts}'],
+    rules: jsxA11y.flatConfigs.recommended.rules,
+  },
+  // Formatting rules moved out of ESLint core into ESLint Stylistic.
+  stylistic.configs['disable-legacy'],
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
@@ -17,7 +22,19 @@ export default defineConfig([
     'out/**',
     'build/**',
     'next-env.d.ts',
+    // Cloudflare build output and local-only folders
+    '.open-next/**',
+    '.wrangler/**',
+    'scraping/**',
   ]), {
+    // @stylistic/comma-dangle allows `<T,>` only when JSX is enabled.
+    files: ['**/*.tsx'],
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+    },
+  }, {
     plugins: {
       '@stylistic': stylistic,
     },
@@ -28,31 +45,35 @@ export default defineConfig([
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-require-imports': 'off',
       '@stylistic/indent': ['warn', 2],
-      'no-unused-expressions': ['warn'],
-      'no-duplicate-imports': ['warn'],
+      // Core rule does not understand TypeScript expressions.
+      'no-unused-expressions': 'off',
+      '@typescript-eslint/no-unused-expressions': 'warn',
+      'no-duplicate-imports': ['warn', {
+        'allowSeparateTypeImports': true,
+      }],
       '@typescript-eslint/no-unused-vars': [
         'warn', {
           'argsIgnorePattern': '^_',
           'varsIgnorePattern': '^_',
         },
       ],
-      'comma-dangle': [
+      '@stylistic/comma-dangle': [
         'warn',
         'always-multiline',
       ],
-      'linebreak-style': [
+      '@stylistic/linebreak-style': [
         'warn',
         'unix',
       ],
-      'quotes': [
+      '@stylistic/quotes': [
         'warn',
         'single',
       ],
-      'semi': [
+      '@stylistic/semi': [
         'warn',
         'always',
       ],
-      'max-len': [
+      '@stylistic/max-len': [
         'warn',
         { 'code': 80 },
       ],

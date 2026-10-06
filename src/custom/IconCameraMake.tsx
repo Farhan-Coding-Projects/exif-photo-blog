@@ -1,4 +1,4 @@
-/* eslint-disable max-len */
+/* eslint-disable @stylistic/max-len */
 import { isMakeDji } from '@/platforms/dji';
 import { isMakeSamsung } from '@/platforms/samsung';
 import { isMakeSony } from '@/platforms/sony';

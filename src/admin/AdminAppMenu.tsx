@@ -11,6 +11,7 @@ import {
   PATH_ADMIN_UPLOADS,
 } from '@/app/path';
 import { useAppState } from '@/app/AppState';
+import { useUploadState } from '@/admin/upload/UploadState';
 import { IoArrowDown, IoArrowUp } from 'react-icons/io5';
 import { clsx } from 'clsx/lite';
 import AdminAppInfoIcon from './AdminAppInfoIcon';
@@ -39,6 +40,15 @@ import {
 } from '@/components/switcher/SwitcherItem';
 import { TbSquareRoundedCheck, TbSquareRoundedX } from 'react-icons/tb';
 
+const labelWithTrailingEllipsis = (text: string) => {
+  const match = text.match(/^(.*?)\s*(\.{3}|…)\s*$/);
+  if (!match?.[1]) { return { label: text }; }
+  return {
+    label: match[1],
+    annotation: match[2],
+  };
+};
+
 export default function AdminAppMenu({
   isOpen,
   setIsOpen,
@@ -54,10 +64,11 @@ export default function AdminAppMenu({
     tagsCount = 0,
     recipesCount = 0,
     isLoadingAdminData,
-    startUpload,
     refreshAdminData,
     clearAuthStateAndRedirectIfNecessary,
   } = useAppState();
+
+  const { startUpload } = useUploadState();
 
   const {
     isSelectingPhotos,
@@ -166,9 +177,9 @@ export default function AdminAppMenu({
     }
     if (photosCountTotal) {
       items.push({
-        label: isSelectingPhotos
+        ...labelWithTrailingEllipsis(isSelectingPhotos
           ? appText.admin.selectPhotosExit
-          : appText.admin.selectPhotos,
+          : appText.admin.selectPhotos),
         icon: isSelectingPhotos
           ? <TbSquareRoundedX
             size={17}
@@ -183,9 +194,9 @@ export default function AdminAppMenu({
           : startSelectingPhotos,
       });
       items.push({
-        label: isEditingTitles
+        ...labelWithTrailingEllipsis(isEditingTitles
           ? appText.admin.editTitlesExit
-          : appText.admin.editTitles,
+          : appText.admin.editTitles),
         icon: isEditingTitles
           ? <FiXSquare
             size={15}

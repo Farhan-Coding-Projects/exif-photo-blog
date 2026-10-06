@@ -2,7 +2,9 @@ import { PARAM_UPLOAD_TITLE, PATH_ADMIN } from '@/app/path';
 import { extractImageDataFromBlobPath } from '@/photo/server';
 import { redirect } from 'next/navigation';
 import {
+  getUniqueCamerasCached,
   getUniqueFilmsCached,
+  getUniqueLensesCached,
   getUniqueRecipesCached,
   getUniqueTagsCached,
 } from '@/photo/cache';
@@ -36,7 +38,9 @@ export default async function UploadPage({ params, searchParams }: Params) {
     locations,
     uniqueRecipes,
     uniqueFilms,
-    uniqueTags, {
+    uniqueTags,
+    uniqueCameras,
+    uniqueLenses, {
       blobId,
       formDataFromExif: _formDataFromExif,
       imageResizedBase64: imageThumbnailBase64,
@@ -48,6 +52,8 @@ export default async function UploadPage({ params, searchParams }: Params) {
     getUniqueRecipesCached(),
     getUniqueFilmsCached(),
     getUniqueTagsCached(),
+    getUniqueCamerasCached(true),
+    getUniqueLensesCached(true),
     extractImageDataFromBlobPath(uploadPath, {
       includeInitialPhotoFields: true,
       generateBlurData: BLUR_ENABLED,
@@ -103,6 +109,8 @@ export default async function UploadPage({ params, searchParams }: Params) {
         uniqueTags,
         uniqueRecipes,
         uniqueFilms,
+        uniqueCameras,
+        uniqueLenses,
         hasAiContentGeneration,
         imageThumbnailBase64,
         shouldStripGpsData,
