@@ -30,7 +30,6 @@ const CAMERA_MAKE_MARKS = {
   label: string
   viewBox: string
   path: string
-  wide?: boolean
 }>;
 
 export type CameraMakeMark = keyof typeof CAMERA_MAKE_MARKS;
@@ -44,9 +43,6 @@ export const getCameraMakeMark = (
         : /\bcanon/i.test(make) ? 'canon'
           : undefined;
 
-export const isCameraMakeMarkWide = (mark?: CameraMakeMark) =>
-  Boolean(mark && 'wide' in CAMERA_MAKE_MARKS[mark]);
-
 export default function IconCameraMake({
   mark,
   className,
@@ -59,7 +55,7 @@ export default function IconCameraMake({
     <svg
       role="img"
       viewBox={viewBox}
-      width={isCameraMakeMarkWide(mark) ? 21 : 14}
+      width={14}
       height={12}
       fill="currentColor"
       className={className}
