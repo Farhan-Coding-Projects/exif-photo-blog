@@ -4,7 +4,7 @@ import { META_TITLE } from '@/app/config';
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: META_TITLE,
-    short_name: 'Photos',
+    short_name: 'Farhan\'s Photography',
     start_url: '/',
     display: 'browser',
     icons: [
