@@ -9,6 +9,10 @@ import EntityLink, {
 } from '@/components/entity/EntityLink';
 import IconCamera from '@/components/icons/IconCamera';
 import { isCameraApple } from '@/platforms/apple';
+import IconCameraMake, {
+  getCameraMakeMark,
+  isCameraMakeMarkWide,
+} from '@/custom/IconCameraMake';
 import useCategoryCounts from '@/category/useCategoryCounts';
 import { getCameraBrand } from '@/camera/brand';
 import CameraBrand from '@/camera/CameraBrand';
@@ -28,6 +32,9 @@ export default function PhotoCameraCompact({
   
   const isApple = isCameraApple(camera);
   const showAppleIcon = !hideAppleIcon && isApple;
+  const makeMark = hideAppleIcon
+    ? undefined
+    : getCameraMakeMark(camera.make);
   const brand = showBrandLogo
     ? getCameraBrand(camera.make)
     : undefined;
@@ -51,10 +58,16 @@ export default function PhotoCameraCompact({
           className="translate-x-[-0.5px] translate-y-[-1px]"
           size={16}
         />
-        : <IconCamera
-          size={15}
-          className="translate-x-[-0.5px] translate-y-[-0.5px]"
-        />}
+        : makeMark
+          ? <IconCameraMake
+            mark={makeMark}
+            className="translate-y-[-1px]"
+          />
+          : <IconCamera
+            size={15}
+            className="translate-x-[-0.5px] translate-y-[-0.5px]"
+          />}
+      iconWide={isCameraMakeMarkWide(makeMark)}
       hoverCount={props.hoverCount ?? getCameraCount(camera)}
     />
   );
