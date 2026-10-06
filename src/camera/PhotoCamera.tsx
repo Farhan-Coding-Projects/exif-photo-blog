@@ -13,10 +13,7 @@ import EntityLink, {
 } from '@/components/entity/EntityLink';
 import IconCamera from '@/components/icons/IconCamera';
 import { isCameraApple } from '@/platforms/apple';
-import IconCameraMake, {
-  getCameraMakeMark,
-  isCameraMakeMarkWide,
-} from '@/custom/IconCameraMake';
+import IconCameraMake, { getCameraMakeMark } from '@/custom/IconCameraMake';
 import useCategoryCounts from '@/category/useCategoryCounts';
 import { getCameraBrand } from './brand';
 import CameraBrand from './CameraBrand';
@@ -80,7 +77,6 @@ export default function PhotoCamera({
             size={15}
             className="translate-x-[-0.5px] translate-y-[-0.5px]"
           />}
-      iconWide={isCameraMakeMarkWide(makeMark)}
       hoverCount={props.hoverCount ?? getCameraCount(camera)}
     />
   );
