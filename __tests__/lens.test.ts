@@ -29,6 +29,11 @@ const PIXEL_6A_BACK: Lens = { make: 'Google', model: 'Pixel 6a back camera 2.35m
 
 describe('Lens', () => {
   describe('correctly formats', () => {
+    it('DJI Mini 4K lens', () => {
+      expect(formatLensText({ model: 'MINI 4K' })).toBe('Mini 4K (24mm)');
+      expect(formatLensText({ model: 'Mini 4K (20.7 mm)' }))
+        .toBe('Mini 4K (24mm)');
+    });
     it('iPhone lenses', () => {
       expect(formatLensText(IPHONE_15_PRO_FRONT)).toBe('15 Pro front');
       expect(formatLensText(IPHONE_15_PRO_FRONT, 'long')).toBe('Apple iPhone 15 Pro front TrueDepth camera 2.69mm f/1.9');
