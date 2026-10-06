@@ -11,7 +11,7 @@ import { Photo } from '@/photo';
 import PhotoRecipe from '@/recipe/PhotoRecipe';
 import PhotoTag from '@/tag/PhotoTag';
 import clsx from 'clsx/lite';
-import { formatDistanceToNowStrict } from 'date-fns';
+import { format, formatDistanceToNowStrict, parseISO } from 'date-fns';
 import AdminLibraryMenu from './AdminLibraryMenu';
 import { ReactNode, useMemo } from 'react';
 import { Camera } from '@/camera';
@@ -22,7 +22,7 @@ import PhotoAvatar from '@/photo/PhotoAvatar';
 import Link from 'next/link';
 import { PATH_ADMIN_LIBRARY_EDIT } from '@/app/path';
 import { LuCirclePlus, LuUser } from 'react-icons/lu';
-import AdminEmptyState from '@/admin/AdminEmptyState';
+import EmptyState from '@/components/EmptyState';
 import { Place } from '@/place';
 import PlaceEntity from '@/place/PlaceEntity';
 import LibrarySection from './LibrarySection';
@@ -88,7 +88,9 @@ export default function LibraryPageClient({
     ),
     renderItem(
       appText.library.firstPhoto,
-      photosOldest?.slice(0, 10),
+      // Parse date part only so the day doesn't shift with time zone
+      photosOldest &&
+        format(parseISO(photosOldest.slice(0, 10)), 'd MMMM yyyy'),
     ),
     camera && renderItem(
       appText.library.topCamera,
@@ -206,13 +208,13 @@ export default function LibraryPageClient({
                       'border border-dashed border-medium rounded-lg',
                     )}
                   >
-                    <AdminEmptyState
+                    <EmptyState
                       icon={<LuCirclePlus size={22} />}
                       includeContainer={false}
                       className="gap-3! p-6!"
                     >
                       Add optional description
-                    </AdminEmptyState>
+                    </EmptyState>
                   </Link>}
             <AnimateItems
               className={clsx(

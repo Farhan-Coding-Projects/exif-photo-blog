@@ -53,6 +53,7 @@ import { useTheme } from 'next-themes';
 import { BiDesktop, BiLockAlt, BiMoon, BiSun } from 'react-icons/bi';
 import { IoClose, IoInvertModeSharp } from 'react-icons/io5';
 import { useAppState } from '@/app/AppState';
+import { useUploadState } from '@/admin/upload/UploadState';
 import { RiToolsFill } from 'react-icons/ri';
 import { signOutAction } from '@/auth/actions';
 import {
@@ -133,13 +134,13 @@ type CommandKItem = {
   annotationAria?: string
   path?: string
   action?: () => void | Promise<void | boolean>
-}
+};
 
 type CommandKSection = {
   heading: string
   accessory?: ReactNode
   items: CommandKItem[]
-}
+};
 
 const renderCheck = (isChecked?: boolean) =>
   isChecked
@@ -182,7 +183,6 @@ export default function CommandKClient({
     clearAuthStateAndRedirectIfNecessary,
     isCommandKOpen: isOpen,
     nextCommandKQuery,
-    startUpload,
     invalidateSwr,
     photosCountTotal,
     photosCountHidden = 0,
@@ -210,6 +210,8 @@ export default function CommandKClient({
     setShouldDebugInsights,
     setShouldDebugRecipeOverlays,
   } = useAppState();
+
+  const { startUpload } = useUploadState();
 
   const {
     isSelectingPhotos,
@@ -439,12 +441,14 @@ export default function CommandKClient({
           case 'albums': return {
             heading,
             accessory: <IconAlbum size={14} />,
-            items: albums.map(({ album, count }) => ({
-              label: album.title,
-              annotation: formatCount(count),
-              annotationAria: formatCountDescriptive(count),
-              path: pathForAlbum(album),
-            })),
+            items: albums
+              .filter(({ count }) => count > 0)
+              .map(({ album, count }) => ({
+                label: album.title,
+                annotation: formatCount(count),
+                annotationAria: formatCountDescriptive(count),
+                path: pathForAlbum(album),
+              })),
           };
           case 'locations': return {
             heading,
